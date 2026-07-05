@@ -6,7 +6,7 @@ info:
     Calls the dog-health-check rules engine to generate a dog health habit
     dashboard. Agents must not score or override the returned result.
 servers:
-  - url: http://localhost:3000
+  - url: https://dog-health-check.vercel.app
     description: Local development server
 paths:
   /api/assess:
