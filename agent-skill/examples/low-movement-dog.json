@@ -1,0 +1,17 @@
+{
+  "dogName": "豆豆",
+  "age": "2 岁",
+  "breed": "泰迪",
+  "weight": "6kg",
+  "size": "small",
+  "bodyCondition": "ideal",
+  "foodTypes": ["kibble"],
+  "snackLevel": "medium",
+  "movement": {
+    "outdoorFrequency": "once_toilet_only",
+    "dailyMinutes": "under_10",
+    "sniffing": "little"
+  },
+  "recentSignals": ["normal"],
+  "homeEnvironment": ["unknown"]
+}

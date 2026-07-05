@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dog-health-check.local/schemas/assess-response.schema.json",
+  "title": "DogHealthAssessResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "status",
+    "statusText",
+    "coreConclusion",
+    "longevityScore",
+    "dimensionScores",
+    "strengths",
+    "coreRisk",
+    "todayAction",
+    "vetReminder",
+    "allowShare",
+    "shareCopy"
+  ],
+  "properties": {
+    "status": {
+      "type": "string",
+      "enum": ["excellent", "good", "watch", "adjust", "risk_confirm", "red_vet"]
+    },
+    "statusText": {
+      "type": "string"
+    },
+    "coreConclusion": {
+      "type": "string"
+    },
+    "longevityScore": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "dimensionScores": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["body", "diet", "movement", "recent", "environment"],
+      "properties": {
+        "body": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "diet": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "movement": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "recent": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "environment": { "type": "integer", "minimum": 0, "maximum": 100 }
+      }
+    },
+    "strengths": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1,
+      "maxItems": 2
+    },
+    "coreRisk": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "reason"],
+      "properties": {
+        "title": { "type": "string" },
+        "reason": { "type": "string" }
+      }
+    },
+    "todayAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "body"],
+      "properties": {
+        "title": { "type": "string" },
+        "body": { "type": "string" }
+      }
+    },
+    "vetReminder": {
+      "type": "string"
+    },
+    "allowShare": {
+      "type": "boolean"
+    },
+    "shareCopy": {
+      "type": "string",
+      "description": "Empty string when status is red_vet or sharing is blocked by safety rules."
+    }
+  }
+}

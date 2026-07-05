@@ -1,0 +1,86 @@
+openapi: 3.1.0
+info:
+  title: Dog Health Check Assessment API
+  version: 1.0.0
+  description: >
+    Calls the dog-health-check rules engine to generate a dog health habit
+    dashboard. Agents must not score or override the returned result.
+servers:
+  - url: http://localhost:3000
+    description: Local development server
+paths:
+  /api/assess:
+    post:
+      operationId: assess_dog_health
+      summary: Generate a dog health habit dashboard
+      description: >
+        Submit assessment inputs and receive the complete dashboard JSON.
+        The API reuses the same generateResult rules as the Web app.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/assess-request.schema.json"
+            examples:
+              healthyDog:
+                summary: Healthy dog
+                value:
+                  dogName: 百万
+                  age: "3 岁"
+                  breed: 柯基
+                  weight: "12kg"
+                  size: medium
+                  bodyCondition: ideal
+                  foodTypes: [kibble, canned]
+                  snackLevel: low
+                  movement:
+                    outdoorFrequency: two_plus
+                    dailyMinutes: over_30
+                    sniffing: rich
+                  recentSignals: [normal]
+                  homeEnvironment: [none]
+              vetBoundaryDog:
+                summary: Vet boundary dog
+                value:
+                  dogName: 小白
+                  age: "8 岁"
+                  breed: 串串
+                  weight: ""
+                  size: medium
+                  bodyCondition: unknown
+                  foodTypes: [kibble]
+                  snackLevel: medium
+                  movement:
+                    outdoorFrequency: one_to_two
+                    dailyMinutes: 10_20
+                    sniffing: normal
+                  recentSignals: [low_energy, appetite_change]
+                  homeEnvironment: [unknown]
+      responses:
+        "200":
+          description: Complete dog health habit dashboard
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/assess-response.schema.json"
+        "400":
+          description: Invalid request body
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required: [error]
+                properties:
+                  error:
+                    type: object
+                    additionalProperties: false
+                    required: [message, details]
+                    properties:
+                      message:
+                        type: string
+                      details:
+                        type: array
+                        items:
+                          type: string

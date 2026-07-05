@@ -1,0 +1,50 @@
+{
+  "priority": [
+    {
+      "id": "vet_boundary",
+      "title": "需要咨询兽医的异常信号",
+      "dimension": "recent"
+    },
+    {
+      "id": "body_weight",
+      "title": "体重管理",
+      "dimension": "body",
+      "when": ["thin", "slightly_fat", "obese"]
+    },
+    {
+      "id": "stool",
+      "title": "肠道状态不稳定",
+      "dimension": "recent",
+      "when": ["unstable_poop"]
+    },
+    {
+      "id": "oral",
+      "title": "口腔护理不足",
+      "dimension": "recent",
+      "when": ["bad_breath"]
+    },
+    {
+      "id": "skin",
+      "title": "皮肤 / 舔爪 / 抓痒信号",
+      "dimension": "recent",
+      "when": ["paw_licking_or_scratching"]
+    },
+    {
+      "id": "movement",
+      "title": "运动与嗅闻不足",
+      "dimension": "movement",
+      "when": ["rare", "once_toilet_only", "under_10", "none", "little"]
+    },
+    {
+      "id": "diet_treats",
+      "title": "饮食单一或零食偏多",
+      "dimension": "diet",
+      "when": ["high"]
+    },
+    {
+      "id": "environment",
+      "title": "家庭环境暴露",
+      "dimension": "environment"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "dogName": "奶茶",
+  "age": "5 岁",
+  "breed": "比熊",
+  "weight": "偏重",
+  "size": "small",
+  "bodyCondition": "slightly_fat",
+  "foodTypes": ["kibble", "mixed"],
+  "snackLevel": "high",
+  "movement": {
+    "outdoorFrequency": "two_to_three",
+    "dailyMinutes": "around_30",
+    "sniffing": "normal"
+  },
+  "recentSignals": ["normal"],
+  "homeEnvironment": ["none"]
+}

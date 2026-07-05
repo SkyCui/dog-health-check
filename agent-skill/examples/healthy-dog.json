@@ -1,0 +1,17 @@
+{
+  "dogName": "百万",
+  "age": "3 岁",
+  "breed": "柯基",
+  "weight": "12kg",
+  "size": "medium",
+  "bodyCondition": "ideal",
+  "foodTypes": ["kibble", "canned"],
+  "snackLevel": "low",
+  "movement": {
+    "outdoorFrequency": "two_plus",
+    "dailyMinutes": "over_30",
+    "sniffing": "rich"
+  },
+  "recentSignals": ["normal"],
+  "homeEnvironment": ["none"]
+}

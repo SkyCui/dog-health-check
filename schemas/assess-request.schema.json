@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dog-health-check.local/schemas/assess-request.schema.json",
+  "title": "DogHealthAssessRequest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "age",
+    "breed",
+    "size",
+    "bodyCondition",
+    "foodTypes",
+    "snackLevel",
+    "movement",
+    "recentSignals",
+    "homeEnvironment"
+  ],
+  "properties": {
+    "dogName": {
+      "type": "string",
+      "description": "可选，狗狗昵称。不要包含用户个人信息。",
+      "maxLength": 60
+    },
+    "age": {
+      "type": "string",
+      "description": "狗狗年龄，例如 '3 岁' 或 '8 months'。",
+      "minLength": 1,
+      "maxLength": 60
+    },
+    "breed": {
+      "type": "string",
+      "description": "品种或混种描述。",
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "weight": {
+      "type": "string",
+      "description": "体重，可选，例如 '10kg'。",
+      "maxLength": 80
+    },
+    "size": {
+      "type": "string",
+      "enum": ["small", "medium", "large", "unknown"]
+    },
+    "bodyCondition": {
+      "type": "string",
+      "enum": ["thin", "ideal", "slightly_fat", "obese", "unknown"]
+    },
+    "foodTypes": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": ["kibble", "canned", "freeze_dried", "fresh", "homemade", "mixed"]
+      }
+    },
+    "snackLevel": {
+      "type": "string",
+      "enum": ["low", "medium", "high"]
+    },
+    "movement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["outdoorFrequency", "dailyMinutes", "sniffing"],
+      "properties": {
+        "outdoorFrequency": {
+          "type": "string",
+          "enum": ["rare", "once_toilet_only", "one_to_two", "two_to_three", "two_plus"]
+        },
+        "dailyMinutes": {
+          "type": "string",
+          "enum": ["unknown", "under_10", "10_20", "around_30", "over_30"]
+        },
+        "sniffing": {
+          "type": "string",
+          "enum": ["none", "little", "normal", "rich", "unknown"]
+        }
+      }
+    },
+    "recentSignals": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "description": "normal 只能单独使用。安全边界信号包括 low_energy、appetite_change、vomiting、diarrhea、pain、mobility_issue。",
+      "items": {
+        "type": "string",
+        "enum": [
+          "normal",
+          "unstable_poop",
+          "bad_breath",
+          "paw_licking_or_scratching",
+          "low_energy",
+          "appetite_change",
+          "vomiting",
+          "diarrhea",
+          "pain",
+          "mobility_issue"
+        ]
+      }
+    },
+    "homeEnvironment": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "description": "none 或 unknown 只能单独使用。",
+      "items": {
+        "type": "string",
+        "enum": [
+          "aromatherapy",
+          "strong_cleaner",
+          "secondhand_smoke",
+          "plastic_bowl",
+          "pesticide",
+          "none",
+          "unknown"
+        ]
+      }
+    }
+  }
+}

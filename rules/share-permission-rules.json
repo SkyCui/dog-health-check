@@ -1,0 +1,5 @@
+{
+  "allowWhenStatus": ["excellent", "good", "watch", "adjust", "risk_confirm"],
+  "blockWhenStatus": ["red_vet"],
+  "blockedMessage": "这次结果不建议生成分享文案。目前更重要的是先联系兽医，确认狗狗是否需要检查或治疗。"
+}

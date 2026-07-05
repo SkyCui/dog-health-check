@@ -1,0 +1,17 @@
+{
+  "dogName": "小白",
+  "age": "8 岁",
+  "breed": "串串",
+  "weight": "",
+  "size": "medium",
+  "bodyCondition": "unknown",
+  "foodTypes": ["kibble"],
+  "snackLevel": "medium",
+  "movement": {
+    "outdoorFrequency": "one_to_two",
+    "dailyMinutes": "10_20",
+    "sniffing": "normal"
+  },
+  "recentSignals": ["low_energy", "appetite_change"],
+  "homeEnvironment": ["unknown"]
+}
