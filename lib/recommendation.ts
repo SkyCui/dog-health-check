@@ -55,7 +55,7 @@ export function getAllowShare(status: StatusKey, vetBoundary: VetBoundaryResult)
   return (shareRules.allowWhenStatus as StatusKey[]).includes(status);
 }
 
-export function getShareCopy(result: Omit<GeneratedResult, "shareCopy">, input: AssessmentInput) {
+export function getShareCopy(result: Omit<GeneratedResult, "shareCopy" | "dashboardReport" | "shareGuide">, input: AssessmentInput) {
   if (!result.allowShare) {
     return "";
   }

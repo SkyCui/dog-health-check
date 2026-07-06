@@ -63,6 +63,33 @@ export type VetBoundaryResult = {
   reminder: string;
 };
 
+export type DashboardReportSection = {
+  id: string;
+  title: string;
+  body?: string;
+  items?: string[];
+};
+
+export type DashboardReport = {
+  title: string;
+  subtitle: string;
+  scoreLabel: string;
+  sections: DashboardReportSection[];
+};
+
+export type ShareAction = {
+  id: "copy_text" | "download_image" | "wechat_moments" | "xiaohongshu" | "weibo";
+  label: string;
+  description: string;
+  enabled: boolean;
+};
+
+export type ShareGuide = {
+  primaryCta: string;
+  safetyNote: string;
+  actions: ShareAction[];
+};
+
 export type GeneratedResult = {
   status: StatusKey;
   statusText: string;
@@ -81,4 +108,6 @@ export type GeneratedResult = {
   vetReminder: string;
   allowShare: boolean;
   shareCopy: string;
+  dashboardReport: DashboardReport;
+  shareGuide: ShareGuide;
 };

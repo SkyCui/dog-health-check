@@ -25,6 +25,55 @@ function assertNotEqual(actual, unexpected, message) {
   }
 }
 
+function assertArray(value, message) {
+  if (!Array.isArray(value)) {
+    throw new Error(`${message}\nExpected an array.\nActual: ${JSON.stringify(value)}`);
+  }
+}
+
+function assertObject(value, message) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    throw new Error(`${message}\nExpected an object.\nActual: ${JSON.stringify(value)}`);
+  }
+}
+
+function assertDashboardAndShareGuide(body, caseName) {
+  assertObject(body.dashboardReport, `${caseName}: dashboardReport should exist`);
+  assertIncludes(body.dashboardReport.title, "Dashboard", `${caseName}: dashboardReport title should mention Dashboard`);
+  assertIncludes(body.dashboardReport.scoreLabel, "/100", `${caseName}: dashboardReport scoreLabel should include /100`);
+  assertArray(body.dashboardReport.sections, `${caseName}: dashboardReport.sections should be an array`);
+
+  const requiredSectionIds = [
+    "core_conclusion",
+    "dimension_scores",
+    "strengths",
+    "core_risk",
+    "today_action",
+    "vet_reminder"
+  ];
+  const sectionIds = body.dashboardReport.sections.map((section) => section.id);
+  for (const sectionId of requiredSectionIds) {
+    if (!sectionIds.includes(sectionId)) {
+      throw new Error(`${caseName}: dashboardReport missing section ${sectionId}`);
+    }
+  }
+
+  assertObject(body.shareGuide, `${caseName}: shareGuide should exist`);
+  assertIncludes(body.shareGuide.primaryCta, body.allowShare ? "分享" : "暂不分享", `${caseName}: shareGuide primary CTA mismatch`);
+  assertArray(body.shareGuide.actions, `${caseName}: shareGuide.actions should be an array`);
+
+  const actionIds = body.shareGuide.actions.map((action) => action.id);
+  for (const actionId of ["copy_text", "download_image", "wechat_moments", "xiaohongshu", "weibo"]) {
+    if (!actionIds.includes(actionId)) {
+      throw new Error(`${caseName}: shareGuide missing action ${actionId}`);
+    }
+  }
+
+  for (const action of body.shareGuide.actions) {
+    assertEqual(action.enabled, body.allowShare, `${caseName}: shareGuide action enabled should follow allowShare`);
+  }
+}
+
 async function canReach(url) {
   try {
     const response = await fetch(url, { method: "GET" });
@@ -216,6 +265,7 @@ async function run() {
     assertEqual(body.status, testCase.expected.status, `${testCase.name}: status mismatch`);
     assertEqual(body.coreRisk?.title, testCase.expected.coreRisk, `${testCase.name}: coreRisk mismatch`);
     assertEqual(body.allowShare, testCase.expected.allowShare, `${testCase.name}: allowShare mismatch`);
+    assertDashboardAndShareGuide(body, testCase.name);
 
     if (testCase.expected.status === "red_vet") {
       assertEqual(body.shareCopy, "", `${testCase.name}: shareCopy should be empty`);

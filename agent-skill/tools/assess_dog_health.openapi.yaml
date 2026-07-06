@@ -7,7 +7,7 @@ info:
     dashboard. Agents must not score or override the returned result.
 servers:
   - url: https://dog-health-check.vercel.app
-    description: Local development server
+    description: Production Vercel server
 paths:
   /api/assess:
     post:
@@ -21,7 +21,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "../schemas/assess-request.schema.json"
+              $ref: "#/components/schemas/AssessRequest"
             examples:
               healthyDog:
                 summary: Healthy dog
@@ -63,24 +63,338 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "../schemas/assess-response.schema.json"
+                $ref: "#/components/schemas/AssessResponse"
         "400":
           description: Invalid request body
           content:
             application/json:
               schema:
+                $ref: "#/components/schemas/ErrorResponse"
+components:
+  schemas:
+    AssessRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - age
+        - breed
+        - size
+        - bodyCondition
+        - foodTypes
+        - snackLevel
+        - movement
+        - recentSignals
+        - homeEnvironment
+      properties:
+        dogName:
+          type: string
+          description: Optional dog nickname. Do not include user personal information.
+          maxLength: 60
+        age:
+          type: string
+          description: Dog age, for example "3 岁" or "8 months".
+          minLength: 1
+          maxLength: 60
+        breed:
+          type: string
+          description: Breed or mixed-breed description.
+          minLength: 1
+          maxLength: 80
+        weight:
+          type: string
+          description: Optional dog weight, for example "10kg".
+          maxLength: 80
+        size:
+          type: string
+          enum:
+            - small
+            - medium
+            - large
+            - unknown
+        bodyCondition:
+          type: string
+          enum:
+            - thin
+            - ideal
+            - slightly_fat
+            - obese
+            - unknown
+        foodTypes:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items:
+            type: string
+            enum:
+              - kibble
+              - canned
+              - freeze_dried
+              - fresh
+              - homemade
+              - mixed
+        snackLevel:
+          type: string
+          enum:
+            - low
+            - medium
+            - high
+        movement:
+          type: object
+          additionalProperties: false
+          required:
+            - outdoorFrequency
+            - dailyMinutes
+            - sniffing
+          properties:
+            outdoorFrequency:
+              type: string
+              enum:
+                - rare
+                - once_toilet_only
+                - one_to_two
+                - two_to_three
+                - two_plus
+            dailyMinutes:
+              type: string
+              enum:
+                - unknown
+                - under_10
+                - 10_20
+                - around_30
+                - over_30
+            sniffing:
+              type: string
+              enum:
+                - none
+                - little
+                - normal
+                - rich
+                - unknown
+        recentSignals:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          description: >
+            Use normal only by itself. Safety-boundary values include
+            low_energy, appetite_change, vomiting, diarrhea, pain, and
+            mobility_issue.
+          items:
+            type: string
+            enum:
+              - normal
+              - unstable_poop
+              - bad_breath
+              - paw_licking_or_scratching
+              - low_energy
+              - appetite_change
+              - vomiting
+              - diarrhea
+              - pain
+              - mobility_issue
+        homeEnvironment:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          description: Use none or unknown only by itself.
+          items:
+            type: string
+            enum:
+              - aromatherapy
+              - strong_cleaner
+              - secondhand_smoke
+              - plastic_bowl
+              - pesticide
+              - none
+              - unknown
+    AssessResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - status
+        - statusText
+        - coreConclusion
+        - longevityScore
+        - dimensionScores
+        - strengths
+        - coreRisk
+        - todayAction
+        - vetReminder
+        - allowShare
+        - shareCopy
+        - dashboardReport
+        - shareGuide
+      properties:
+        status:
+          type: string
+          enum:
+            - excellent
+            - good
+            - watch
+            - adjust
+            - risk_confirm
+            - red_vet
+        statusText:
+          type: string
+        coreConclusion:
+          type: string
+        longevityScore:
+          type: integer
+          minimum: 0
+          maximum: 100
+        dimensionScores:
+          type: object
+          additionalProperties: false
+          required:
+            - body
+            - diet
+            - movement
+            - recent
+            - environment
+          properties:
+            body:
+              type: integer
+              minimum: 0
+              maximum: 100
+            diet:
+              type: integer
+              minimum: 0
+              maximum: 100
+            movement:
+              type: integer
+              minimum: 0
+              maximum: 100
+            recent:
+              type: integer
+              minimum: 0
+              maximum: 100
+            environment:
+              type: integer
+              minimum: 0
+              maximum: 100
+        strengths:
+          type: array
+          minItems: 1
+          maxItems: 2
+          items:
+            type: string
+        coreRisk:
+          type: object
+          additionalProperties: false
+          required:
+            - title
+            - reason
+          properties:
+            title:
+              type: string
+            reason:
+              type: string
+        todayAction:
+          type: object
+          additionalProperties: false
+          required:
+            - title
+            - body
+          properties:
+            title:
+              type: string
+            body:
+              type: string
+        vetReminder:
+          type: string
+        allowShare:
+          type: boolean
+        shareCopy:
+          type: string
+          description: Empty string when status is red_vet or sharing is blocked by safety rules.
+        dashboardReport:
+          type: object
+          additionalProperties: false
+          required:
+            - title
+            - subtitle
+            - scoreLabel
+            - sections
+          properties:
+            title:
+              type: string
+            subtitle:
+              type: string
+            scoreLabel:
+              type: string
+            sections:
+              type: array
+              minItems: 1
+              items:
                 type: object
                 additionalProperties: false
-                required: [error]
+                required:
+                  - id
+                  - title
                 properties:
-                  error:
-                    type: object
-                    additionalProperties: false
-                    required: [message, details]
-                    properties:
-                      message:
-                        type: string
-                      details:
-                        type: array
-                        items:
-                          type: string
+                  id:
+                    type: string
+                  title:
+                    type: string
+                  body:
+                    type: string
+                  items:
+                    type: array
+                    items:
+                      type: string
+        shareGuide:
+          type: object
+          additionalProperties: false
+          required:
+            - primaryCta
+            - safetyNote
+            - actions
+          properties:
+            primaryCta:
+              type: string
+            safetyNote:
+              type: string
+            actions:
+              type: array
+              minItems: 1
+              items:
+                type: object
+                additionalProperties: false
+                required:
+                  - id
+                  - label
+                  - description
+                  - enabled
+                properties:
+                  id:
+                    type: string
+                    enum:
+                      - copy_text
+                      - download_image
+                      - wechat_moments
+                      - xiaohongshu
+                      - weibo
+                  label:
+                    type: string
+                  description:
+                    type: string
+                  enabled:
+                    type: boolean
+    ErrorResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - error
+      properties:
+        error:
+          type: object
+          additionalProperties: false
+          required:
+            - message
+            - details
+          properties:
+            message:
+              type: string
+            details:
+              type: array
+              items:
+                type: string

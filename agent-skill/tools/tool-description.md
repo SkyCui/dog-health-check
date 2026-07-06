@@ -13,10 +13,10 @@ Important:
 - Safety boundary signals are handled by the API.
 - If the response has `status=red_vet`, `allowShare=false`, and `shareCopy=""`, the Agent must not generate sharing content.
 
-Local endpoint:
+Production endpoint:
 
 ```text
-POST http://localhost:3000/api/assess
+POST https://dog-health-check.vercel.app/api/assess
 ```
 
 Request schema:
@@ -30,3 +30,11 @@ Response schema:
 ```text
 agent-skill/schemas/assess-response.schema.json
 ```
+
+Agent should render these response fields:
+
+- `dashboardReport`: structured report for the final dashboard. Render this first.
+- `shareGuide`: primary CTA, safety note, and enabled social share actions.
+- `shareCopy`: copyable social text. Show only when `allowShare=true`.
+
+Do not synthesize a different dashboard or sharing plan.
