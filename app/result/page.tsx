@@ -9,7 +9,7 @@ import TodayActionCard from "@/components/TodayActionCard";
 import VetReminderCard from "@/components/VetReminderCard";
 import { generateResult } from "@/lib/generateResult";
 import type { AssessmentInput, GeneratedResult } from "@/lib/types";
-import { ArrowLeft, ClipboardList, ExternalLink, ShieldCheck, Sparkles } from "lucide-react";
+import { ArrowLeft, ClipboardList, ShieldCheck, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -132,20 +132,6 @@ export default function ResultPage() {
         </div>
 
         {needsSupport ? <div className="mt-5"><VetReminderCard reminder={result.supportReminder} urgent={urgent} title={urgent ? "就医提醒" : "行为专业支持提醒"} /></div> : null}
-
-        <div className="mt-5">
-          <DashboardCard title="评测依据" eyebrow={`知识版本 ${result.knowledgeVersion}`}>
-            <p className="mb-4 text-sm leading-6 text-slate-600">评分方向仅使用知识库中登记的 A1、A2、B 级来源；数值权重为可复现的产品规则，并非临床验证公式。</p>
-            <div className="grid gap-3 md:grid-cols-2">
-              {result.evidenceRefs.map((reference) => (
-                <a key={reference.id} href={reference.url} target="_blank" rel="noreferrer" className="flex items-start justify-between gap-3 rounded-lg bg-slate-50 p-3 text-sm text-slate-700 hover:bg-roseSoft/50">
-                  <span><strong className="text-ink">{reference.level}</strong> · {reference.organization}<br />{reference.title}</span>
-                  <ExternalLink size={16} className="mt-0.5 shrink-0 text-rose" aria-hidden="true" />
-                </a>
-              ))}
-            </div>
-          </DashboardCard>
-        </div>
 
         <div className="mt-5">
           <ShareCopyCard allowShare={result.allowShare} shareCopy={result.shareCopy} result={result} assessment={assessment} />

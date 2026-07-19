@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Copy, Download, Image as ImageIcon, MessageCircle, RotateCcw, Send, Sparkles } from "lucide-react";
+import { BookOpen, Check, Copy, Download, Image as ImageIcon, MessageCircle, Radio, RotateCcw, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import type { AssessmentInput, GeneratedResult } from "@/lib/types";
@@ -13,6 +13,14 @@ type Props = {
 };
 
 const DEFAULT_DOG_PHOTO = "/images/default-dog-avatar.png";
+const PUBLIC_SHARE_URL = "https://dog-health-check.vercel.app/";
+type SharePlatform = "wechat" | "xiaohongshu" | "weibo";
+
+const platformNames: Record<SharePlatform, string> = {
+  wechat: "朋友圈",
+  xiaohongshu: "小红书",
+  weibo: "微博"
+};
 
 function roundRect(context: CanvasRenderingContext2D, x: number, y: number, width: number, height: number, radius: number) {
   context.beginPath();
@@ -134,7 +142,7 @@ function downloadFile(file: File) {
 
 export default function ShareCopyCard({ allowShare, shareCopy, result, assessment }: Props) {
   const [copied, setCopied] = useState(false);
-  const [busy, setBusy] = useState(false);
+  const [busyPlatform, setBusyPlatform] = useState<SharePlatform | "download" | null>(null);
   const [status, setStatus] = useState("");
 
   async function copyText() {
@@ -145,17 +153,62 @@ export default function ShareCopyCard({ allowShare, shareCopy, result, assessmen
     }
   }
   async function handleCopy() { await copyText(); setCopied(true); setTimeout(() => setCopied(false), 1600); }
-  async function imageAction(share = false) {
-    setBusy(true); setStatus("");
+  async function downloadImage() {
+    setBusyPlatform("download"); setStatus("");
     try {
       const file = await createShareImageFile(result, assessment);
-      if (share && navigator.share && (!navigator.canShare || navigator.canShare({ files: [file] }))) {
-        try { await navigator.share({ title: "毛孩子幸福小档案", text: shareCopy, files: [file] }); setStatus("已打开系统分享面板。"); return; }
-        catch (error) { if (error instanceof DOMException && error.name === "AbortError") { setStatus("已取消分享。"); return; } }
+      downloadFile(file);
+      setStatus("分享图已保存到下载目录。");
+    } catch {
+      setStatus("图片生成失败了，请换个浏览器或重新上传照片后再试。");
+    } finally {
+      setBusyPlatform(null);
+    }
+  }
+
+  async function shareToPlatform(platform: SharePlatform) {
+    const platformName = platformNames[platform];
+    const probeFile = new File(["share"], "share.png", { type: "image/png" });
+    const supportsNativeFileShare = Boolean(
+      "share" in navigator && (!("canShare" in navigator) || navigator.canShare({ files: [probeFile] }))
+    );
+    const weiboWindow = platform === "weibo" && !supportsNativeFileShare
+      ? window.open("", "_blank")
+      : null;
+    setBusyPlatform(platform); setStatus("");
+    try {
+      const file = await createShareImageFile(result, assessment);
+
+      if (supportsNativeFileShare) {
+        try {
+          await navigator.share({ title: "毛孩子幸福小档案", text: shareCopy, files: [file] });
+          setStatus(`已完成${platformName}系统分享。`);
+          return;
+        } catch (error) {
+          if (error instanceof DOMException && error.name === "AbortError") {
+            setStatus("已取消分享。");
+            return;
+          }
+        }
       }
-      downloadFile(file); await copyText(); setStatus(share ? "分享图已保存、文案已复制，可打开社交应用发布。" : "分享图已保存到下载目录。");
-    } catch { setStatus("图片生成失败了，文案仍可复制分享。请换个浏览器或重新上传照片后再试。"); }
-    finally { setBusy(false); }
+
+      await copyText();
+      downloadFile(file);
+      if (platform === "weibo") {
+        const query = new URLSearchParams({ url: PUBLIC_SHARE_URL, title: shareCopy });
+        const weiboUrl = `https://service.weibo.com/share/share.php?${query.toString()}`;
+        if (weiboWindow) weiboWindow.location.href = weiboUrl;
+        else window.open(weiboUrl, "_blank", "noopener,noreferrer");
+        setStatus("分享图已保存、文案已复制，并已打开微博发布页。");
+      } else {
+        setStatus(`分享图已保存、文案已复制，请在${platformName}发布页选择图片。`);
+      }
+    } catch {
+      weiboWindow?.close();
+      setStatus("分享准备失败了，请换个浏览器或重新上传照片后再试。");
+    } finally {
+      setBusyPlatform(null);
+    }
   }
 
   return (
@@ -186,8 +239,10 @@ export default function ShareCopyCard({ allowShare, shareCopy, result, assessmen
           {allowShare ? <div className="mt-4 max-h-44 overflow-auto whitespace-pre-wrap rounded-3xl bg-white/75 p-4 text-sm leading-6 text-cocoa/75">{shareCopy}</div> : <div className="mt-4 rounded-3xl bg-red-50 p-4 text-sm leading-6 text-red-800">先处理健康确认，分享按钮已暂时关闭。</div>}
           <div className="mt-5 flex flex-wrap gap-3">
             {allowShare ? <>
-              <button disabled={busy} onClick={() => imageAction(true)} className="candy-button inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-black text-white disabled:opacity-60"><MessageCircle size={18} />{busy ? "生成中…" : "一键分享"}</button>
-              <button disabled={busy} onClick={() => imageAction(false)} className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-black text-rose shadow-panel ring-1 ring-rose/20 disabled:opacity-60"><Download size={18} />保存分享图</button>
+              <button disabled={busyPlatform !== null} onClick={() => shareToPlatform("wechat")} className="inline-flex items-center gap-2 rounded-full bg-[#1aad19] px-5 py-3 text-sm font-black text-white shadow-panel disabled:opacity-60"><MessageCircle size={18} />{busyPlatform === "wechat" ? "准备中…" : "朋友圈"}</button>
+              <button disabled={busyPlatform !== null} onClick={() => shareToPlatform("xiaohongshu")} className="inline-flex items-center gap-2 rounded-full bg-[#ff2442] px-5 py-3 text-sm font-black text-white shadow-panel disabled:opacity-60"><BookOpen size={18} />{busyPlatform === "xiaohongshu" ? "准备中…" : "小红书"}</button>
+              <button disabled={busyPlatform !== null} onClick={() => shareToPlatform("weibo")} className="inline-flex items-center gap-2 rounded-full bg-[#ff8200] px-5 py-3 text-sm font-black text-white shadow-panel disabled:opacity-60"><Radio size={18} />{busyPlatform === "weibo" ? "准备中…" : "微博"}</button>
+              <button disabled={busyPlatform !== null} onClick={downloadImage} className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-black text-rose shadow-panel ring-1 ring-rose/20 disabled:opacity-60"><Download size={18} />{busyPlatform === "download" ? "生成中…" : "保存分享图"}</button>
               <button onClick={handleCopy} className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-black text-cocoa shadow-panel ring-1 ring-rose/10">{copied ? <Check size={18} /> : <Copy size={18} />}{copied ? "已复制" : "复制文案"}</button>
             </> : null}
             <Link href="/assessment" className="inline-flex items-center gap-2 rounded-full px-4 py-3 text-sm font-black text-cocoa/70"><RotateCcw size={18} />重新测一次</Link>
