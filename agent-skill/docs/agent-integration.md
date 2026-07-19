@@ -1,6 +1,6 @@
-# Agent Integration
+# Agent integration
 
-## Local Test
+## Local test
 
 From the project root:
 
@@ -9,71 +9,27 @@ npm install
 npm run dev
 ```
 
-The local API server runs at:
-
-```text
-http://localhost:3000
-```
-
-Test with curl:
+In another terminal:
 
 ```bash
 curl -X POST http://localhost:3000/api/assess \
-  -H "Content-Type: application/json" \
+  -H 'Content-Type: application/json' \
   --data @agent-skill/examples/healthy-dog.json
 ```
 
-Safety boundary test:
+Run contract and safety scenarios with:
 
 ```bash
-curl -X POST http://localhost:3000/api/assess \
-  -H "Content-Type: application/json" \
-  --data @agent-skill/examples/vet-boundary-dog.json
+npm run test:knowledge
+npm run test:api
 ```
 
-Expected safety-boundary response includes:
+## Deploy and connect
 
-```json
-{
-  "status": "red_vet",
-  "allowShare": false,
-  "shareCopy": ""
-}
-```
+1. Deploy the Next.js project to Vercel or another Node-compatible host.
+2. Confirm `POST https://YOUR-DOMAIN/api/assess` returns JSON.
+3. Replace the `servers[0].url` in `tools/assess_dog_health.openapi.yaml` if the production domain differs.
+4. Import that single YAML file into GPT Builder Actions. It contains no external schema references.
+5. Add `agent/system-prompt.md` to the Agent instructions and keep tool output authoritative.
 
-## Agent Tool Setup
-
-Use:
-
-```text
-agent-skill/tools/assess_dog_health.openapi.yaml
-```
-
-The OpenAPI server URL is currently:
-
-```text
-http://localhost:3000
-```
-
-After deployment, replace it with the production domain:
-
-```yaml
-servers:
-  - url: https://your-production-domain.com
-```
-
-## Deployment Notes
-
-Deploy the Next.js app to any platform that supports App Router route handlers, such as Vercel or a Node.js server.
-
-The Agent only needs access to:
-
-```text
-POST /api/assess
-```
-
-No database, login, payment, RAG service, or image export service is required for this API.
-
-## Integration Rule
-
-The Agent must call the API for every assessment. It must not copy the rules and score locally, because the Web app and Agent API need to stay aligned through `generateResult`.
+The Agent must send `mentalState`, must not calculate scores, and must not override `red_vet`, `behavior_support`, `allowShare`, or `shareCopy`.

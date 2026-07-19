@@ -2,13 +2,14 @@
 
 import DashboardCard from "@/components/DashboardCard";
 import DimensionBars from "@/components/DimensionBars";
+import MentalDimensionBars from "@/components/MentalDimensionBars";
 import ScoreRing from "@/components/ScoreRing";
 import ShareCopyCard from "@/components/ShareCopyCard";
 import TodayActionCard from "@/components/TodayActionCard";
 import VetReminderCard from "@/components/VetReminderCard";
 import { generateResult } from "@/lib/generateResult";
 import type { AssessmentInput, GeneratedResult } from "@/lib/types";
-import { ArrowLeft, ClipboardList, HeartPulse, ShieldCheck } from "lucide-react";
+import { ArrowLeft, ClipboardList, ExternalLink, ShieldCheck, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -16,6 +17,7 @@ const STORAGE_KEY = "dogHealthAssessment";
 
 export default function ResultPage() {
   const [result, setResult] = useState<GeneratedResult | null>(null);
+  const [assessment, setAssessment] = useState<AssessmentInput | null>(null);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
@@ -27,6 +29,7 @@ export default function ResultPage() {
 
     try {
       const input = JSON.parse(rawInput) as AssessmentInput;
+      setAssessment(input);
       setResult(generateResult(input));
     } catch {
       localStorage.removeItem(STORAGE_KEY);
@@ -38,7 +41,7 @@ export default function ResultPage() {
   if (!loaded) {
     return (
       <main className="grid min-h-screen place-items-center px-4">
-        <p className="text-slate-600">正在生成健康习惯 Dashboard...</p>
+        <p className="text-slate-600">正在生成幸福自查 Dashboard...</p>
       </main>
     );
   }
@@ -48,7 +51,7 @@ export default function ResultPage() {
       <main className="grid min-h-screen place-items-center px-4">
         <section className="max-w-md rounded-lg border border-slate-200 bg-white p-6 text-center shadow-panel">
           <h1 className="text-2xl font-bold text-ink">还没有自测结果</h1>
-          <p className="mt-3 leading-7 text-slate-600">先完成 6 个轻量问题，就能生成 Dashboard。</p>
+          <p className="mt-3 leading-7 text-slate-600">先完成 10 个轻量题组，就能生成 Dashboard。</p>
           <Link
             href="/assessment"
             className="mt-5 inline-flex items-center gap-2 rounded-lg bg-leaf px-5 py-3 font-semibold text-white transition hover:bg-leaf/90"
@@ -62,43 +65,52 @@ export default function ResultPage() {
   }
 
   const urgent = result.status === "red_vet";
+  const needsSupport = result.supportRoute !== "none";
 
   return (
-    <main className="min-h-screen px-4 py-8 sm:px-6 lg:px-8">
+    <main className="relative min-h-screen px-4 py-8 sm:px-6 lg:px-8">
+      <span className="pointer-events-none absolute right-6 top-28 text-5xl opacity-50" aria-hidden="true">🦴</span>
       <div className="mx-auto max-w-6xl">
         <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
           <Link
             href="/assessment"
-            className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+            className="inline-flex items-center gap-2 rounded-full border border-rose/20 bg-white/80 px-4 py-2 text-sm font-black text-cocoa shadow-panel transition hover:bg-white"
           >
             <ArrowLeft size={17} aria-hidden="true" />
             返回自测
           </Link>
-          <p className="rounded-lg bg-white px-3 py-2 text-sm text-slate-500">本地规则生成，不替代兽医诊断</p>
+          <p className="rounded-full bg-white/80 px-4 py-2 text-sm font-bold text-cocoa/70 shadow-panel">循证轻量自查 Beta，不替代兽医或行为专业评估</p>
         </div>
 
-        <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-panel">
+        <section className="candy-card paw-bg rounded-[2.2rem] p-5 sm:p-7">
           <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
             <div>
-              <p className="flex items-center gap-2 text-sm font-semibold text-leaf">
-                <HeartPulse size={18} aria-hidden="true" />
-                狗狗 1 分钟健康自测看板
+              <p className="inline-flex items-center gap-2 rounded-full bg-white/80 px-4 py-2 text-sm font-black text-rose">
+                <Sparkles size={18} aria-hidden="true" />
+                {assessment?.dogName?.trim() ? `${assessment.dogName.trim()}的幸福小档案` : "狗狗幸福小档案"}
               </p>
-              <h1 className="mt-3 text-3xl font-bold text-ink">{result.statusText}</h1>
-              <p className="mt-3 max-w-3xl text-lg leading-8 text-slate-600">{result.coreConclusion}</p>
+              <h1 className="mt-4 text-4xl font-black tracking-[-0.03em] text-ink">{result.statusText}</h1>
+              <p className="mt-3 max-w-3xl text-lg leading-8 text-cocoa/75">{result.coreConclusion}</p>
             </div>
-            <ScoreRing score={result.longevityScore} />
+            <ScoreRing score={result.happinessScore} />
           </div>
         </section>
 
         <div className="mt-5 grid gap-5 lg:grid-cols-[1fr_0.95fr]">
-          <DashboardCard title="五维小指标" eyebrow="狗狗长寿习惯指数">
-            <DimensionBars scores={result.dimensionScores} />
+          <DashboardCard title="健康五维" eyebrow={`身体健康习惯 ${result.healthScore} 分`}>
+            <DimensionBars scores={result.healthDimensionScores} />
             <p className="mt-4 text-sm leading-6 text-slate-500">
-              这些分数代表生活习惯友好程度，不是疾病评分、寿命预测或医疗诊断。
+              健康维度来自生活习惯观察，不是疾病评分、寿命预测或医疗诊断。
             </p>
           </DashboardCard>
 
+          <DashboardCard title="精神四维" eyebrow={`精神福祉 ${result.mentalWellbeingScore} 分`}>
+            <MentalDimensionBars scores={result.mentalDimensionScores} />
+            <p className="mt-4 text-sm leading-6 text-slate-500">请结合最近两周与它自身平时状态的变化理解，不以活泼或服从程度判断幸福。</p>
+          </DashboardCard>
+        </div>
+
+        <div className="mt-5">
           <DashboardCard title="做得好的地方" eyebrow="先肯定已经在发生的好事">
             <div className="space-y-3">
               {result.strengths.map((strength) => (
@@ -119,12 +131,24 @@ export default function ResultPage() {
           <TodayActionCard title={result.todayAction.title} body={result.todayAction.body} />
         </div>
 
+        {needsSupport ? <div className="mt-5"><VetReminderCard reminder={result.supportReminder} urgent={urgent} title={urgent ? "就医提醒" : "行为专业支持提醒"} /></div> : null}
+
         <div className="mt-5">
-          <VetReminderCard reminder={result.vetReminder} urgent={urgent} />
+          <DashboardCard title="评测依据" eyebrow={`知识版本 ${result.knowledgeVersion}`}>
+            <p className="mb-4 text-sm leading-6 text-slate-600">评分方向仅使用知识库中登记的 A1、A2、B 级来源；数值权重为可复现的产品规则，并非临床验证公式。</p>
+            <div className="grid gap-3 md:grid-cols-2">
+              {result.evidenceRefs.map((reference) => (
+                <a key={reference.id} href={reference.url} target="_blank" rel="noreferrer" className="flex items-start justify-between gap-3 rounded-lg bg-slate-50 p-3 text-sm text-slate-700 hover:bg-roseSoft/50">
+                  <span><strong className="text-ink">{reference.level}</strong> · {reference.organization}<br />{reference.title}</span>
+                  <ExternalLink size={16} className="mt-0.5 shrink-0 text-rose" aria-hidden="true" />
+                </a>
+              ))}
+            </div>
+          </DashboardCard>
         </div>
 
         <div className="mt-5">
-          <ShareCopyCard allowShare={result.allowShare} shareCopy={result.shareCopy} result={result} />
+          <ShareCopyCard allowShare={result.allowShare} shareCopy={result.shareCopy} result={result} assessment={assessment} />
         </div>
       </div>
     </main>

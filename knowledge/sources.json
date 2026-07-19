@@ -1,0 +1,91 @@
+{
+  "knowledgeVersion": "dog-happiness-kb-2.0.0-beta",
+  "evidenceLevels": {
+    "A1": "国际或国家级兽医组织正式指南",
+    "A2": "同行评审且经过信效度验证的犬只评估工具",
+    "B": "同行评审的动物福利理论或方法框架",
+    "C": "官方科普、专家共识或尚未独立验证的辅助材料"
+  },
+  "sources": [
+    {
+      "id": "wsava-welfare-2018",
+      "level": "A1",
+      "title": "WSAVA Animal Welfare Guidelines",
+      "organization": "World Small Animal Veterinary Association",
+      "year": 2018,
+      "url": "https://wsava.org/global-guidelines/animal-welfare-guidelines/",
+      "peerReviewed": true,
+      "validation": "全球小动物兽医福利指南，并获多个国家和专业组织认可。",
+      "conflicts": "指南可能包含机构合作与行业支持；使用时以福利框架和安全原则为限。",
+      "scope": "身体、心理、社会与环境福利；Five Domains/Five Welfare Needs。",
+      "limitations": "不是犬只幸福量表，不提供本产品分值或权重。"
+    },
+    {
+      "id": "aaha-behavior-2015",
+      "level": "A1",
+      "title": "AAHA Canine and Feline Behavior Management Guidelines",
+      "organization": "American Animal Hospital Association",
+      "year": 2015,
+      "url": "https://www.aaha.org/resources/2015-aaha-canine-and-feline-behavior-management-guidelines/",
+      "peerReviewed": true,
+      "validation": "兽医行为管理临床指南，列出焦虑、痛苦及需专业评估的可观察行为。",
+      "conflicts": "指南页面披露行业教育支持；安全边界采用指南原意，不采用产品营销内容。",
+      "scope": "恐惧、焦虑、分离痛苦、重复行为、活动变化、攻击风险和非厌恶式管理。",
+      "limitations": "不是幸福总分工具，不能单独证明本产品评分准确。"
+    },
+    {
+      "id": "cbarq-upenn",
+      "level": "A2",
+      "title": "Canine Behavioral Assessment & Research Questionnaire (C-BARQ)",
+      "organization": "University of Pennsylvania School of Veterinary Medicine",
+      "year": 2003,
+      "url": "https://vetapps.vet.upenn.edu/cbarq/about.cfm",
+      "peerReviewed": true,
+      "sampleSize": "官方数据库约 50,000 只犬；完整版约 100 题，短版约 42 题。",
+      "validation": "标准化、经过验证的犬只行为问题与气质量表。",
+      "conflicts": "大学研究工具；具体使用和复制受其条款约束。",
+      "scope": "恐惧、分离相关行为、兴奋恢复、社交行为、攻击与重复行为。",
+      "limitations": "主要测行为问题，不是幸福量表；本项目不复制完整题目，也不声称使用 C-BARQ 计分。"
+    },
+    {
+      "id": "dog-qol-2022",
+      "level": "A2",
+      "title": "Development and initial validation of a dog quality of life instrument",
+      "organization": "Scientific Reports / Waltham Petcare Science Institute",
+      "year": 2022,
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9334304/",
+      "peerReviewed": true,
+      "sampleSize": "最终数据 2,813 只犬；817 只用于独立结构验证，约 208 只有重测数据。",
+      "validation": "32 题、8 领域的初步内容效度、结构效度与重测可靠性评估。",
+      "conflicts": "研究具有宠物护理行业机构背景，知识库保留该限制。",
+      "scope": "energetic、mobile、relaxed、happy、sociable 及进食相关体验。",
+      "limitations": "属于初步验证；完整工具为 32 题，不能把本项目 4 题视为其验证短版。"
+    },
+    {
+      "id": "five-domains-2020",
+      "level": "B",
+      "title": "The 2020 Five Domains Model",
+      "organization": "Animals (peer-reviewed journal)",
+      "year": 2020,
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7602120/",
+      "peerReviewed": true,
+      "validation": "长期演进的动物福利概念框架，覆盖营养、环境、健康、行为互动和精神状态。",
+      "conflicts": "理论框架，不是临床量表。",
+      "scope": "积极与消极体验、与环境/动物/人的互动以及选择感。",
+      "limitations": "不提供统一量化聚合方法，不能直接支持本产品数字阈值。"
+    },
+    {
+      "id": "five-domains-critique-2023",
+      "level": "B",
+      "title": "Rethinking the utility of the Five Domains model",
+      "organization": "Animal Welfare (peer-reviewed journal)",
+      "year": 2023,
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10936274/",
+      "peerReviewed": true,
+      "validation": "方法学批评，讨论专家判断、量化聚合、重复性和不确定性问题。",
+      "conflicts": "学术评论。",
+      "scope": "限制 Five Domains 被误用为精确量化工具。",
+      "limitations": "不提供替代犬只幸福计分方案。"
+    }
+  ]
+}

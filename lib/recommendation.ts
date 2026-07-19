@@ -1,80 +1,36 @@
-import recommendationRules from "@/rules/recommendation-rules.json";
-import shareRules from "@/rules/share-permission-rules.json";
-import type {
-  AssessmentInput,
-  DimensionScores,
-  GeneratedResult,
-  StatusKey,
-  VetBoundaryResult
-} from "./types";
+import content from "@/knowledge/rules/content-rules.json";
+import rules from "@/knowledge/rules/assessment-rules.json";
+import type { AssessmentInput, GeneratedResult, HealthDimensionScores, MentalDimensionScores, StatusKey } from "./types";
 
-const actionMap = recommendationRules.actions as Record<string, { title: string; body: string }>;
+const actions = content.actions as Record<string, { title: string; body: string }>;
+const strengthCopy = content.strengths;
 
-export function getStrengths(input: AssessmentInput, dimensionScores: DimensionScores) {
-  const strengths: string[] = [];
-
-  if (input.bodyCondition === "ideal") {
-    strengths.push("体况看起来比较接近理想状态，这是很好的长期健康基础。");
-  }
-
-  if (
-    ["two_to_three", "two_plus"].includes(input.movement.outdoorFrequency) ||
-    ["normal", "rich"].includes(input.movement.sniffing)
-  ) {
-    strengths.push("它有比较稳定的出门节奏，散步和嗅闻能帮助身体活动和情绪放松。");
-  }
-
-  if (input.recentSignals.includes("normal") && input.recentSignals.length === 1) {
-    strengths.push("最近状态整体稳定，精神、食欲和日常表现都没有明显异常信号。");
-  }
-
-  if (dimensionScores.environment >= 88) {
-    strengths.push("家庭环境里暂时没有看到明显刺激源，这是舒服生活区的重要基础。");
-  }
-
-  if (strengths.length === 0) {
-    strengths.push("你已经开始主动观察它的日常变化，这本身就是很好的健康管理习惯。");
-  }
-
-  return strengths.slice(0, 2);
+export function getStrengths(input: AssessmentInput, health: HealthDimensionScores, mental: MentalDimensionScores) {
+  const values: string[] = [];
+  if (input.bodyCondition === "ideal") values.push(strengthCopy.idealBody);
+  if (["two_to_three", "two_plus"].includes(input.movement.outdoorFrequency) || ["normal", "rich"].includes(input.movement.sniffing)) values.push(strengthCopy.movement);
+  if (input.recentSignals.length === 1 && input.recentSignals[0] === "normal") values.push(strengthCopy.recentNormal);
+  if (health.environment >= 88) values.push(strengthCopy.environment);
+  if (mental.positiveEngagement >= 90) values.push(strengthCopy.engagement);
+  if (mental.relaxation >= 90) values.push(strengthCopy.relaxation);
+  if (mental.socialConnection >= 90) values.push(strengthCopy.social);
+  if (!values.length) values.push(strengthCopy.fallback);
+  return values.slice(0, 2);
 }
 
-export function getTodayAction(coreRiskTitle: string, score: number) {
-  if (score >= 95 && coreRiskTitle === "继续保持") {
-    return actionMap["继续保持"];
-  }
-
-  return actionMap[coreRiskTitle] ?? actionMap["继续保持"];
-}
-
-export function getAllowShare(status: StatusKey, vetBoundary: VetBoundaryResult) {
-  if (vetBoundary.triggered) {
-    return false;
-  }
-
-  return (shareRules.allowWhenStatus as StatusKey[]).includes(status);
-}
+export const getTodayAction = (riskTitle: string) => actions[riskTitle] ?? actions["继续保持"];
+export const getAllowShare = (status: StatusKey) => (rules.share.allowStatuses as StatusKey[]).includes(status);
 
 export function getShareCopy(result: Omit<GeneratedResult, "shareCopy" | "dashboardReport" | "shareGuide">, input: AssessmentInput) {
-  if (!result.allowShare) {
-    return "";
-  }
-
+  if (!result.allowShare) return "";
   const name = input.dogName?.trim() || "我家狗狗";
-
   return [
-    `给${name}做了一个 1 分钟健康自测。`,
-    "",
-    `结果是：狗狗长寿习惯指数 ${result.longevityScore} 分。`,
-    `目前状态：${result.statusText}。`,
-    `最值得关注的是：${result.coreRisk.title}。`,
-    "",
-    "今天先从一件小事开始：",
-    result.todayAction.body,
-    "",
-    "小狗不会说话，",
-    "但我们可以多懂它一点。",
-    "",
-    "#狗狗健康 #科学养狗 #狗狗长寿习惯指数"
+    content.shareCopy.introTemplate.replace("{name}", name), "",
+    `幸福观察指数：${result.happinessScore} 分。`,
+    `身体健康：${result.healthScore} 分；精神状态：${result.mentalWellbeingScore} 分。`,
+    `目前最值得关注的是：${result.coreRisk.title}。`, "",
+    "今天先从一件小事开始：", result.todayAction.body, "",
+    content.shareCopy.closing, "",
+    content.shareCopy.disclaimer, content.shareCopy.hashtags
   ].join("\n");
 }

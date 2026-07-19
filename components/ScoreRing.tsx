@@ -3,7 +3,7 @@ type ScoreRingProps = {
 };
 
 function getRingColor(score: number) {
-  if (score >= 85) return "#2f7d5c";
+  if (score >= 85) return "#c94f82";
   if (score >= 70) return "#d6a026";
   if (score >= 55) return "#d96b5f";
   return "#b94a48";
@@ -15,8 +15,8 @@ export default function ScoreRing({ score }: ScoreRingProps) {
   return (
     <div
       className="grid aspect-square w-40 place-items-center rounded-full"
-      style={{ background: `conic-gradient(${color} ${score * 3.6}deg, #e7ece7 0deg)` }}
-      aria-label={`狗狗长寿习惯指数 ${score} 分`}
+      style={{ background: `conic-gradient(${color} ${score * 3.6}deg, #f8dce8 0deg)` }}
+      aria-label={`狗狗幸福指数 ${score} 分`}
     >
       <div className="grid h-28 w-28 place-items-center rounded-full bg-white text-center">
         <div>

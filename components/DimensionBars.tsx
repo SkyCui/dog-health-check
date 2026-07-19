@@ -1,6 +1,6 @@
-import type { DimensionKey, DimensionScores } from "@/lib/types";
+import type { HealthDimensionKey, HealthDimensionScores } from "@/lib/types";
 
-const dimensionLabels: Record<DimensionKey, string> = {
+const dimensionLabels: Record<HealthDimensionKey, string> = {
   body: "体况",
   diet: "饮食",
   movement: "运动嗅闻",
@@ -9,16 +9,16 @@ const dimensionLabels: Record<DimensionKey, string> = {
 };
 
 function getBarColor(score: number) {
-  if (score >= 85) return "bg-leaf";
+  if (score >= 85) return "bg-[#c94f82]";
   if (score >= 70) return "bg-amber-500";
   if (score >= 55) return "bg-coral";
   return "bg-red-700";
 }
 
-export default function DimensionBars({ scores }: { scores: DimensionScores }) {
+export default function DimensionBars({ scores }: { scores: HealthDimensionScores }) {
   return (
     <div className="space-y-4">
-      {(Object.keys(dimensionLabels) as DimensionKey[]).map((key) => {
+      {(Object.keys(dimensionLabels) as HealthDimensionKey[]).map((key) => {
         const score = scores[key];
         return (
           <div key={key}>

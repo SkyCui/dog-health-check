@@ -13,5 +13,6 @@
     "sniffing": "normal"
   },
   "recentSignals": ["low_energy", "appetite_change"],
-  "homeEnvironment": ["unknown"]
+  "homeEnvironment": ["unknown"],
+  "mentalState": { "positiveEngagement": "rare", "relaxation": "often_difficult", "socialConnection": "withdrawn", "distressSignals": ["sudden_behavior_change"] }
 }

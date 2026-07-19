@@ -1,41 +1,7 @@
-# Safety Boundaries
+# Safety boundaries
 
-This skill does not diagnose disease and does not replace veterinary care.
-
-## Red Vet Signals
-
-The API safety boundary is triggered when `recentSignals` includes one or more of:
-
-- `low_energy`
-- `appetite_change`
-- `vomiting`
-- `diarrhea`
-- `pain`
-- `mobility_issue`
-
-When triggered, the API returns:
-
-- `status=red_vet`
-- `allowShare=false`
-- `shareCopy=""`
-
-## Agent Behavior
-
-When `status=red_vet`:
-
-- Present the API's `vetReminder`.
-- Do not output ordinary lifestyle recommendations.
-- Do not generate share copy.
-- Do not ask the user to post or share the result.
-- Do not diagnose or speculate about a disease.
-
-## Medical Boundaries
-
-Never provide:
-
-- Medication recommendations
-- Prescription-food recommendations
-- Treatment plans
-- Disease diagnosis
-- Lab or imaging interpretation
-- Prognosis or lifespan predictions
+- `red_vet`: medical warning signals, sudden behavior change, or self-injury. Follow `supportRoute=vet`; do not provide ordinary lifestyle advice.
+- `behavior_support`: persistent fear, separation distress, pacing/vocalizing, repetitive behavior, or realistic aggression risk. Reduce immediate triggers, avoid force and punishment, and follow `supportRoute=veterinary_behavior`.
+- A low score alone must never create either safety status.
+- Both safety statuses require `allowShare=false` and `shareCopy=""`.
+- Never weaken, reinterpret, or conceal the API safety result.

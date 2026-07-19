@@ -1,117 +1,63 @@
-import dimensionRules from "@/rules/dimension-score-rules.json";
-import scoringRules from "@/rules/scoring-rules.json";
+import rules from "@/knowledge/rules/assessment-rules.json";
+import content from "@/knowledge/rules/content-rules.json";
 import type {
-  AssessmentInput,
-  DailyMinutes,
-  DimensionKey,
-  DimensionScores,
-  FoodType,
-  HomeEnvironment,
-  OutdoorFrequency,
-  SniffingLevel,
+  AssessmentInput, DailyMinutes, DistressSignal, HealthDimensionKey, HealthDimensionScores,
+  HomeEnvironment, MentalDimensionKey, MentalDimensionScores, OutdoorFrequency, SniffingLevel,
   StatusKey
 } from "./types";
 
-function clampScore(score: number) {
-  return Math.max(0, Math.min(100, Math.round(score)));
+const clamp = (value: number) => Math.max(0, Math.min(100, Math.round(value)));
+
+export function getHealthDimensionScores(input: AssessmentInput): HealthDimensionScores {
+  const health = rules.health;
+  const foodAdjustments = health.diet.foodTypeAdjustments as Record<string, number>;
+  const foodTypes = input.foodTypes.length ? input.foodTypes : ["kibble" as const];
+  const foodAverage = foodTypes.reduce((sum, item) => sum + (foodAdjustments[item] ?? 0), 0) / foodTypes.length;
+  const diet = health.diet.base + foodAverage + (foodTypes.length >= 2 ? 5 : 0)
+    + health.diet.snackAdjustments[input.snackLevel]
+    + (foodTypes.includes("homemade") && !foodTypes.includes("mixed") ? health.diet.homemadeWithoutMixedPenalty : 0);
+  const movement = health.movement.outdoorFrequency[input.movement.outdoorFrequency as OutdoorFrequency]
+    * 0.4 + health.movement.dailyMinutes[input.movement.dailyMinutes as DailyMinutes] * 0.3
+    + health.movement.sniffing[input.movement.sniffing as SniffingLevel] * 0.3;
+  const recent = input.recentSignals.length === 1 && input.recentSignals[0] === "normal"
+    ? health.recent.normal
+    : health.recent.base - input.recentSignals.reduce((sum, item) => sum + ((health.recent.signalDeductions as Record<string, number>)[item] ?? 0), 0);
+  const environment = input.homeEnvironment.length === 1 && input.homeEnvironment[0] === "none"
+    ? health.environment.none
+    : input.homeEnvironment.length === 1 && input.homeEnvironment[0] === "unknown"
+      ? health.environment.unknown
+      : health.environment.base - input.homeEnvironment.reduce((sum, item) => sum + ((health.environment.exposureDeductions as Record<HomeEnvironment, number>)[item] ?? 0), 0);
+  return { body: clamp(health.body[input.bodyCondition]), diet: clamp(diet), movement: clamp(movement), recent: clamp(recent), environment: clamp(environment) };
 }
 
-function scoreDiet(input: AssessmentInput) {
-  const rules = dimensionRules.diet;
-  const foodAdjustments = rules.foodTypeAdjustments as Record<FoodType, number>;
-  const snackAdjustments = rules.snackAdjustments as Record<string, number>;
-  const uniqueFoodTypes: FoodType[] = input.foodTypes.length > 0 ? input.foodTypes : ["kibble"];
-  const foodTotal = uniqueFoodTypes.reduce((sum, type) => sum + (foodAdjustments[type] ?? 0), 0);
-  const varietyBonus = uniqueFoodTypes.length >= 2 ? 5 : 0;
-  const homemadePenalty =
-    uniqueFoodTypes.includes("homemade") && !uniqueFoodTypes.includes("mixed")
-      ? rules.homemadeWithoutMixedPenalty
-      : 0;
-
-  return clampScore(
-    rules.base + foodTotal / uniqueFoodTypes.length + varietyBonus + snackAdjustments[input.snackLevel] + homemadePenalty
-  );
-}
-
-function scoreMovement(input: AssessmentInput) {
-  const rules = dimensionRules.movement;
-  const frequencyScores = rules.outdoorFrequency as Record<OutdoorFrequency, number>;
-  const minuteScores = rules.dailyMinutes as Record<DailyMinutes, number>;
-  const sniffingScores = rules.sniffing as Record<SniffingLevel, number>;
-
-  return clampScore(
-    frequencyScores[input.movement.outdoorFrequency] * 0.4 +
-      minuteScores[input.movement.dailyMinutes] * 0.3 +
-      sniffingScores[input.movement.sniffing] * 0.3
-  );
-}
-
-function scoreRecent(input: AssessmentInput) {
-  const rules = dimensionRules.recent;
-  if (input.recentSignals.includes("normal") && input.recentSignals.length === 1) {
-    return rules.normal;
-  }
-
-  const deductions = rules.signalDeductions as Record<string, number>;
-  const totalDeduction = input.recentSignals.reduce((sum, signal) => sum + (deductions[signal] ?? 0), 0);
-  return clampScore(rules.base - totalDeduction);
-}
-
-function scoreEnvironment(input: AssessmentInput) {
-  const rules = dimensionRules.environment;
-  if (input.homeEnvironment.includes("none") && input.homeEnvironment.length === 1) {
-    return rules.none;
-  }
-
-  if (input.homeEnvironment.includes("unknown") && input.homeEnvironment.length === 1) {
-    return rules.unknown;
-  }
-
-  const deductions = rules.exposureDeductions as Record<HomeEnvironment, number>;
-  const totalDeduction = input.homeEnvironment.reduce(
-    (sum, exposure) => sum + (deductions[exposure] ?? 0),
-    0
-  );
-  return clampScore(rules.base - totalDeduction);
-}
-
-export function getDimensionScores(input: AssessmentInput): DimensionScores {
+export function getMentalDimensionScores(input: AssessmentInput): MentalDimensionScores {
+  const mental = rules.mental;
+  const signals = input.mentalState.distressSignals;
+  const distress = signals.length === 1 && signals[0] === "none" ? mental.distress.none
+    : signals.length === 1 && signals[0] === "unknown" ? mental.distress.unknown
+      : mental.distress.base - signals.reduce((sum, item) => sum + ((mental.distress.deductions as Record<DistressSignal, number>)[item] ?? 0), 0);
   return {
-    body: clampScore(dimensionRules.body[input.bodyCondition]),
-    diet: scoreDiet(input),
-    movement: scoreMovement(input),
-    recent: scoreRecent(input),
-    environment: scoreEnvironment(input)
+    positiveEngagement: clamp(mental.positiveEngagement[input.mentalState.positiveEngagement]),
+    relaxation: clamp(mental.relaxation[input.mentalState.relaxation]),
+    socialConnection: clamp(mental.socialConnection[input.mentalState.socialConnection]),
+    distress: clamp(distress)
   };
 }
 
-export function getLongevityScore(dimensionScores: DimensionScores) {
-  const weights = dimensionRules.weights as Record<DimensionKey, number>;
-  const weightedScore = (Object.keys(dimensionScores) as DimensionKey[]).reduce(
-    (sum, key) => sum + dimensionScores[key] * weights[key],
-    0
-  );
-
-  return clampScore(weightedScore);
+function weightedScore<T extends string>(scores: Record<T, number>, weights: Record<T, number>) {
+  return clamp((Object.keys(scores) as T[]).reduce((sum, key) => sum + scores[key] * weights[key], 0));
 }
 
-export function getStatus(score: number, vetBoundaryTriggered: boolean): StatusKey {
-  if (vetBoundaryTriggered) {
-    return "red_vet";
-  }
+export const getHealthScore = (scores: HealthDimensionScores) => weightedScore(scores, rules.health.weights as Record<HealthDimensionKey, number>);
+export const getMentalWellbeingScore = (scores: MentalDimensionScores) => weightedScore(scores, rules.mental.weights as Record<MentalDimensionKey, number>);
+export const getHappinessScore = (healthScore: number, mentalScore: number) => clamp(healthScore * rules.happiness.healthWeight + mentalScore * rules.happiness.mentalWeight);
 
-  const matchedRange = scoringRules.statusRanges.find(
-    (range) => score >= range.min && score <= range.max
-  );
-
-  return (matchedRange?.status ?? "watch") as StatusKey;
+export function getStatus(score: number, override: "red_vet" | "behavior_support" | null): StatusKey {
+  if (override) return override;
+  return (rules.happiness.statusRanges.find((range) => score >= range.min && score <= range.max)?.status ?? "watch") as StatusKey;
 }
 
 export function getStatusText(status: StatusKey) {
-  if (status === "red_vet") {
-    return "建议优先确认健康风险";
-  }
-
-  const range = scoringRules.statusRanges.find((item) => item.status === status);
-  return range?.label ?? "有一项值得关注";
+  if (status === "red_vet" || status === "behavior_support") return content.statusOverrides[status];
+  return rules.happiness.statusRanges.find((item) => item.status === status)?.label ?? "有一项影响幸福感的因素值得关注";
 }

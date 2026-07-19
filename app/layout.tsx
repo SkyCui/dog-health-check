@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "狗狗 1 分钟健康自测",
-  description: "用 6 个轻量问题生成狗狗健康习惯 Dashboard。"
+  title: "你的狗狗幸福吗？",
+  description: "从身体健康与精神状态出发的循证轻量自查 Beta。"
 };
 
 export default function RootLayout({

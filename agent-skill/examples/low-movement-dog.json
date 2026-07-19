@@ -13,5 +13,6 @@
     "sniffing": "little"
   },
   "recentSignals": ["normal"],
-  "homeEnvironment": ["unknown"]
+  "homeEnvironment": ["unknown"],
+  "mentalState": { "positiveEngagement": "sometimes", "relaxation": "easy", "socialConnection": "secure", "distressSignals": ["none"] }
 }

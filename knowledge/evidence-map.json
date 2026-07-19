@@ -1,0 +1,14 @@
+{
+  "knowledgeVersion": "dog-happiness-kb-2.0.0-beta",
+  "mappings": [
+    { "id": "health_dimensions", "evidenceRefs": ["wsava-welfare-2018", "five-domains-2020"], "use": "健康五维的问题方向与福利关联" },
+    { "id": "positive_engagement", "evidenceRefs": ["dog-qol-2022", "five-domains-2020"], "use": "积极参与和兴趣" },
+    { "id": "relaxation", "evidenceRefs": ["dog-qol-2022", "aaha-behavior-2015"], "use": "放松恢复与压力表现" },
+    { "id": "social_connection", "evidenceRefs": ["five-domains-2020", "dog-qol-2022", "cbarq-upenn"], "use": "社交安全、互动偏好与选择感" },
+    { "id": "distress_signals", "evidenceRefs": ["aaha-behavior-2015", "cbarq-upenn"], "use": "持续恐惧、分离痛苦、重复行为与攻击风险" },
+    { "id": "vet_boundary", "evidenceRefs": ["wsava-welfare-2018", "aaha-behavior-2015"], "use": "突发行为变化、自伤及医疗异常优先就医" },
+    { "id": "behavior_support", "evidenceRefs": ["aaha-behavior-2015", "cbarq-upenn"], "use": "持续行为痛苦需要兽医行为专业支持" },
+    { "id": "scoring_method", "evidenceRefs": ["five-domains-critique-2023"], "use": "数字分值仅为产品启发式并披露局限" },
+    { "id": "non_aversive_action", "evidenceRefs": ["aaha-behavior-2015"], "use": "避免强迫、惩罚和 flooding" }
+  ]
+}

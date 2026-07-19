@@ -3,9 +3,10 @@ import { Stethoscope } from "lucide-react";
 type VetReminderCardProps = {
   reminder: string;
   urgent?: boolean;
+  title?: string;
 };
 
-export default function VetReminderCard({ reminder, urgent = false }: VetReminderCardProps) {
+export default function VetReminderCard({ reminder, urgent = false, title = "专业支持提醒" }: VetReminderCardProps) {
   return (
     <section className={`rounded-lg border p-5 ${urgent ? "border-coral/30 bg-red-50" : "border-sky-200 bg-skySoft"}`}>
       <div className="flex items-start gap-3">
@@ -13,7 +14,7 @@ export default function VetReminderCard({ reminder, urgent = false }: VetReminde
           <Stethoscope size={20} aria-hidden="true" />
         </div>
         <div>
-          <h2 className="text-lg font-semibold text-ink">就医提醒</h2>
+          <h2 className="text-lg font-semibold text-ink">{title}</h2>
           <p className="mt-2 leading-7 text-slate-700">{reminder}</p>
         </div>
       </div>

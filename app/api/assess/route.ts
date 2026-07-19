@@ -6,6 +6,10 @@ import type {
   DailyMinutes,
   FoodType,
   HomeEnvironment,
+  PositiveEngagement,
+  RelaxationLevel,
+  SocialConnection,
+  DistressSignal,
   OutdoorFrequency,
   RecentSignal,
   Size,
@@ -38,6 +42,20 @@ const homeEnvironments = [
   "secondhand_smoke",
   "plastic_bowl",
   "pesticide",
+  "none",
+  "unknown"
+] as const;
+const positiveEngagementLevels = ["often", "sometimes", "rare", "unknown"] as const;
+const relaxationLevels = ["easy", "sometimes_difficult", "often_difficult", "unknown"] as const;
+const socialConnectionLevels = ["secure", "variable", "withdrawn", "unknown"] as const;
+const distressSignals = [
+  "frequent_fear_or_hiding",
+  "separation_distress",
+  "persistent_pacing_or_vocalizing",
+  "repetitive_behavior",
+  "sudden_behavior_change",
+  "aggression_safety_risk",
+  "self_injury",
   "none",
   "unknown"
 ] as const;
@@ -113,6 +131,47 @@ function parseMovement(payload: Record<string, unknown>, errors: string[]) {
   };
 }
 
+function parseMentalState(payload: Record<string, unknown>, errors: string[]) {
+  if (!isRecord(payload.mentalState)) {
+    errors.push("mentalState is required and must be an object.");
+    return null;
+  }
+
+  const mentalState = payload.mentalState;
+
+  if (!isEnumValue(mentalState.positiveEngagement, positiveEngagementLevels)) {
+    errors.push("mentalState.positiveEngagement is invalid.");
+  }
+  if (!isEnumValue(mentalState.relaxation, relaxationLevels)) {
+    errors.push("mentalState.relaxation is invalid.");
+  }
+  if (!isEnumValue(mentalState.socialConnection, socialConnectionLevels)) {
+    errors.push("mentalState.socialConnection is invalid.");
+  }
+  if (!isEnumArray(mentalState.distressSignals, distressSignals)) {
+    errors.push("mentalState.distressSignals must be a non-empty array of unique valid values.");
+  }
+
+  const submittedSignals = mentalState.distressSignals as DistressSignal[] | undefined;
+  if (submittedSignals?.includes("none") && submittedSignals.length > 1) {
+    errors.push("mentalState.distressSignals cannot combine none with other values.");
+  }
+  if (submittedSignals?.includes("unknown") && submittedSignals.length > 1) {
+    errors.push("mentalState.distressSignals cannot combine unknown with other values.");
+  }
+
+  if (errors.length > 0) {
+    return null;
+  }
+
+  return {
+    positiveEngagement: mentalState.positiveEngagement as PositiveEngagement,
+    relaxation: mentalState.relaxation as RelaxationLevel,
+    socialConnection: mentalState.socialConnection as SocialConnection,
+    distressSignals: mentalState.distressSignals as DistressSignal[]
+  };
+}
+
 function parseAssessmentInput(payload: unknown) {
   const errors: string[] = [];
 
@@ -142,6 +201,7 @@ function parseAssessmentInput(payload: unknown) {
   }
 
   const movement = parseMovement(payload, errors);
+  const mentalState = parseMentalState(payload, errors);
 
   if (!isEnumArray(payload.recentSignals, recentSignals)) {
     errors.push("recentSignals must be a non-empty array of unique valid values.");
@@ -165,7 +225,7 @@ function parseAssessmentInput(payload: unknown) {
     errors.push("homeEnvironment cannot combine unknown with other values.");
   }
 
-  if (!movement || errors.length > 0) {
+  if (!movement || !mentalState || errors.length > 0) {
     return { errors };
   }
 
@@ -180,7 +240,8 @@ function parseAssessmentInput(payload: unknown) {
     snackLevel: payload.snackLevel as SnackLevel,
     movement,
     recentSignals: payload.recentSignals as RecentSignal[],
-    homeEnvironment: payload.homeEnvironment as HomeEnvironment[]
+    homeEnvironment: payload.homeEnvironment as HomeEnvironment[],
+    mentalState
   };
 
   return { input, errors };

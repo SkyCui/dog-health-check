@@ -1,400 +1,237 @@
 openapi: 3.1.0
 info:
-  title: Dog Health Check Assessment API
-  version: 1.0.0
-  description: >
-    Calls the dog-health-check rules engine to generate a dog health habit
-    dashboard. Agents must not score or override the returned result.
+  title: Is Your Dog Happy? Evidence-Informed Beta API
+  version: 2.0.0-beta
+  description: Generates a reproducible dog happiness self-check from the project knowledge base. Agents must never score or override safety results.
 servers:
   - url: https://dog-health-check.vercel.app
     description: Production Vercel server
 paths:
   /api/assess:
     post:
-      operationId: assess_dog_health
-      summary: Generate a dog health habit dashboard
-      description: >
-        Submit assessment inputs and receive the complete dashboard JSON.
-        The API reuses the same generateResult rules as the Web app.
+      operationId: assessDogHappiness
+      summary: Generate a dog happiness self-check dashboard
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/AssessRequest"
-            examples:
-              healthyDog:
-                summary: Healthy dog
-                value:
-                  dogName: 百万
-                  age: "3 岁"
-                  breed: 柯基
-                  weight: "12kg"
-                  size: medium
-                  bodyCondition: ideal
-                  foodTypes: [kibble, canned]
-                  snackLevel: low
-                  movement:
-                    outdoorFrequency: two_plus
-                    dailyMinutes: over_30
-                    sniffing: rich
-                  recentSignals: [normal]
-                  homeEnvironment: [none]
-              vetBoundaryDog:
-                summary: Vet boundary dog
-                value:
-                  dogName: 小白
-                  age: "8 岁"
-                  breed: 串串
-                  weight: ""
-                  size: medium
-                  bodyCondition: unknown
-                  foodTypes: [kibble]
-                  snackLevel: medium
-                  movement:
-                    outdoorFrequency: one_to_two
-                    dailyMinutes: 10_20
-                    sniffing: normal
-                  recentSignals: [low_energy, appetite_change]
-                  homeEnvironment: [unknown]
+              $ref: '#/components/schemas/AssessRequest'
       responses:
-        "200":
-          description: Complete dog health habit dashboard
+        '200':
+          description: Complete evidence-informed dashboard
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AssessResponse"
-        "400":
-          description: Invalid request body
+                $ref: '#/components/schemas/AssessResponse'
+        '400':
+          description: Invalid or incomplete input
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
 components:
   schemas:
     AssessRequest:
       type: object
       additionalProperties: false
-      required:
-        - age
-        - breed
-        - size
-        - bodyCondition
-        - foodTypes
-        - snackLevel
-        - movement
-        - recentSignals
-        - homeEnvironment
+      required: [age, breed, size, bodyCondition, foodTypes, snackLevel, movement, recentSignals, homeEnvironment, mentalState]
       properties:
-        dogName:
-          type: string
-          description: Optional dog nickname. Do not include user personal information.
-          maxLength: 60
-        age:
-          type: string
-          description: Dog age, for example "3 岁" or "8 months".
-          minLength: 1
-          maxLength: 60
-        breed:
-          type: string
-          description: Breed or mixed-breed description.
-          minLength: 1
-          maxLength: 80
-        weight:
-          type: string
-          description: Optional dog weight, for example "10kg".
-          maxLength: 80
+        dogName: { type: string, maxLength: 60 }
+        age: { type: string, minLength: 1, maxLength: 60 }
+        breed: { type: string, minLength: 1, maxLength: 80 }
+        weight: { type: string, maxLength: 80 }
         size:
           type: string
-          enum:
-            - small
-            - medium
-            - large
-            - unknown
+          enum: [small, medium, large, unknown]
         bodyCondition:
           type: string
-          enum:
-            - thin
-            - ideal
-            - slightly_fat
-            - obese
-            - unknown
+          enum: [thin, ideal, slightly_fat, obese, unknown]
         foodTypes:
           type: array
           minItems: 1
           uniqueItems: true
           items:
             type: string
-            enum:
-              - kibble
-              - canned
-              - freeze_dried
-              - fresh
-              - homemade
-              - mixed
+            enum: [kibble, canned, freeze_dried, fresh, homemade, mixed]
         snackLevel:
           type: string
-          enum:
-            - low
-            - medium
-            - high
+          enum: [low, medium, high]
         movement:
           type: object
           additionalProperties: false
-          required:
-            - outdoorFrequency
-            - dailyMinutes
-            - sniffing
+          required: [outdoorFrequency, dailyMinutes, sniffing]
           properties:
             outdoorFrequency:
               type: string
-              enum:
-                - rare
-                - once_toilet_only
-                - one_to_two
-                - two_to_three
-                - two_plus
+              enum: [rare, once_toilet_only, one_to_two, two_to_three, two_plus]
             dailyMinutes:
               type: string
-              enum:
-                - unknown
-                - under_10
-                - 10_20
-                - around_30
-                - over_30
+              enum: [unknown, under_10, 10_20, around_30, over_30]
             sniffing:
               type: string
-              enum:
-                - none
-                - little
-                - normal
-                - rich
-                - unknown
+              enum: [none, little, normal, rich, unknown]
         recentSignals:
           type: array
           minItems: 1
           uniqueItems: true
-          description: >
-            Use normal only by itself. Safety-boundary values include
-            low_energy, appetite_change, vomiting, diarrhea, pain, and
-            mobility_issue.
+          description: normal must be selected alone.
           items:
             type: string
-            enum:
-              - normal
-              - unstable_poop
-              - bad_breath
-              - paw_licking_or_scratching
-              - low_energy
-              - appetite_change
-              - vomiting
-              - diarrhea
-              - pain
-              - mobility_issue
+            enum: [normal, unstable_poop, bad_breath, paw_licking_or_scratching, low_energy, appetite_change, vomiting, diarrhea, pain, mobility_issue]
         homeEnvironment:
           type: array
           minItems: 1
           uniqueItems: true
-          description: Use none or unknown only by itself.
+          description: none and unknown must each be selected alone.
           items:
             type: string
-            enum:
-              - aromatherapy
-              - strong_cleaner
-              - secondhand_smoke
-              - plastic_bowl
-              - pesticide
-              - none
-              - unknown
+            enum: [aromatherapy, strong_cleaner, secondhand_smoke, plastic_bowl, pesticide, none, unknown]
+        mentalState:
+          type: object
+          additionalProperties: false
+          required: [positiveEngagement, relaxation, socialConnection, distressSignals]
+          properties:
+            positiveEngagement:
+              type: string
+              enum: [often, sometimes, rare, unknown]
+            relaxation:
+              type: string
+              enum: [easy, sometimes_difficult, often_difficult, unknown]
+            socialConnection:
+              type: string
+              enum: [secure, variable, withdrawn, unknown]
+            distressSignals:
+              type: array
+              minItems: 1
+              uniqueItems: true
+              description: none and unknown must each be selected alone.
+              items:
+                type: string
+                enum: [frequent_fear_or_hiding, separation_distress, persistent_pacing_or_vocalizing, repetitive_behavior, sudden_behavior_change, aggression_safety_risk, self_injury, none, unknown]
     AssessResponse:
       type: object
       additionalProperties: false
-      required:
-        - status
-        - statusText
-        - coreConclusion
-        - longevityScore
-        - dimensionScores
-        - strengths
-        - coreRisk
-        - todayAction
-        - vetReminder
-        - allowShare
-        - shareCopy
-        - dashboardReport
-        - shareGuide
+      required: [status, statusText, coreConclusion, happinessScore, healthScore, mentalWellbeingScore, healthDimensionScores, mentalDimensionScores, strengths, coreRisk, todayAction, supportRoute, supportReminder, allowShare, shareCopy, knowledgeVersion, evidenceRefs, dashboardReport, shareGuide]
       properties:
         status:
           type: string
-          enum:
-            - excellent
-            - good
-            - watch
-            - adjust
-            - risk_confirm
-            - red_vet
-        statusText:
-          type: string
-        coreConclusion:
-          type: string
-        longevityScore:
-          type: integer
-          minimum: 0
-          maximum: 100
-        dimensionScores:
+          enum: [excellent, good, watch, adjust, risk_confirm, behavior_support, red_vet]
+        statusText: { type: string }
+        coreConclusion: { type: string }
+        happinessScore: { type: integer, minimum: 0, maximum: 100 }
+        healthScore: { type: integer, minimum: 0, maximum: 100 }
+        mentalWellbeingScore: { type: integer, minimum: 0, maximum: 100 }
+        healthDimensionScores:
           type: object
           additionalProperties: false
-          required:
-            - body
-            - diet
-            - movement
-            - recent
-            - environment
+          required: [body, diet, movement, recent, environment]
           properties:
-            body:
-              type: integer
-              minimum: 0
-              maximum: 100
-            diet:
-              type: integer
-              minimum: 0
-              maximum: 100
-            movement:
-              type: integer
-              minimum: 0
-              maximum: 100
-            recent:
-              type: integer
-              minimum: 0
-              maximum: 100
-            environment:
-              type: integer
-              minimum: 0
-              maximum: 100
+            body: { type: integer, minimum: 0, maximum: 100 }
+            diet: { type: integer, minimum: 0, maximum: 100 }
+            movement: { type: integer, minimum: 0, maximum: 100 }
+            recent: { type: integer, minimum: 0, maximum: 100 }
+            environment: { type: integer, minimum: 0, maximum: 100 }
+        mentalDimensionScores:
+          type: object
+          additionalProperties: false
+          required: [positiveEngagement, relaxation, socialConnection, distress]
+          properties:
+            positiveEngagement: { type: integer, minimum: 0, maximum: 100 }
+            relaxation: { type: integer, minimum: 0, maximum: 100 }
+            socialConnection: { type: integer, minimum: 0, maximum: 100 }
+            distress: { type: integer, minimum: 0, maximum: 100 }
         strengths:
           type: array
           minItems: 1
-          maxItems: 2
-          items:
-            type: string
+          items: { type: string }
         coreRisk:
           type: object
           additionalProperties: false
-          required:
-            - title
-            - reason
+          required: [title, reason, domain]
           properties:
-            title:
+            title: { type: string }
+            reason: { type: string }
+            domain:
               type: string
-            reason:
-              type: string
+              enum: [health, mental, safety]
         todayAction:
           type: object
           additionalProperties: false
-          required:
-            - title
-            - body
+          required: [title, body]
           properties:
-            title:
-              type: string
-            body:
-              type: string
-        vetReminder:
+            title: { type: string }
+            body: { type: string }
+        supportRoute:
           type: string
-        allowShare:
-          type: boolean
+          enum: [none, vet, veterinary_behavior]
+        supportReminder: { type: string }
+        allowShare: { type: boolean }
         shareCopy:
           type: string
-          description: Empty string when status is red_vet or sharing is blocked by safety rules.
+          description: Must be empty for behavior_support and red_vet.
+        knowledgeVersion: { type: string }
+        evidenceRefs:
+          type: array
+          minItems: 1
+          items:
+            type: object
+            additionalProperties: false
+            required: [id, title, organization, level, url]
+            properties:
+              id: { type: string }
+              title: { type: string }
+              organization: { type: string }
+              level:
+                type: string
+                enum: [A1, A2, B, C]
+              url: { type: string, format: uri }
         dashboardReport:
           type: object
-          additionalProperties: false
-          required:
-            - title
-            - subtitle
-            - scoreLabel
-            - sections
+          required: [title, subtitle, scoreLabel, sections]
           properties:
-            title:
-              type: string
-            subtitle:
-              type: string
-            scoreLabel:
-              type: string
+            title: { type: string }
+            subtitle: { type: string }
+            scoreLabel: { type: string }
             sections:
               type: array
-              minItems: 1
               items:
                 type: object
-                additionalProperties: false
-                required:
-                  - id
-                  - title
+                required: [id, title]
                 properties:
-                  id:
-                    type: string
-                  title:
-                    type: string
-                  body:
-                    type: string
-                  items:
-                    type: array
-                    items:
-                      type: string
+                  id: { type: string }
+                  title: { type: string }
+                  body: { type: string }
+                  items: { type: array, items: { type: string } }
         shareGuide:
           type: object
-          additionalProperties: false
-          required:
-            - primaryCta
-            - safetyNote
-            - actions
+          required: [primaryCta, safetyNote, actions]
           properties:
-            primaryCta:
-              type: string
-            safetyNote:
-              type: string
+            primaryCta: { type: string }
+            safetyNote: { type: string }
             actions:
               type: array
-              minItems: 1
               items:
                 type: object
-                additionalProperties: false
-                required:
-                  - id
-                  - label
-                  - description
-                  - enabled
+                required: [id, label, description, enabled]
                 properties:
                   id:
                     type: string
-                    enum:
-                      - copy_text
-                      - download_image
-                      - wechat_moments
-                      - xiaohongshu
-                      - weibo
-                  label:
-                    type: string
-                  description:
-                    type: string
-                  enabled:
-                    type: boolean
+                    enum: [copy_text, download_image, wechat_moments, xiaohongshu, weibo]
+                  label: { type: string }
+                  description: { type: string }
+                  enabled: { type: boolean }
     ErrorResponse:
       type: object
       additionalProperties: false
-      required:
-        - error
+      required: [error]
       properties:
         error:
           type: object
           additionalProperties: false
-          required:
-            - message
-            - details
+          required: [message, details]
           properties:
-            message:
-              type: string
+            message: { type: string }
             details:
               type: array
-              items:
-                type: string
+              items: { type: string }

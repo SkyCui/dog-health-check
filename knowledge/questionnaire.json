@@ -1,0 +1,54 @@
+{
+  "knowledgeVersion": "dog-happiness-kb-2.0.0-beta",
+  "title": "你的狗狗幸福吗？",
+  "recallPeriod": "精神状态题统一观察最近两周，并与这只狗平时的状态比较。",
+  "questions": [
+    { "id": "basic", "number": 1, "field": "basic", "title": "基础信息", "fieldEnums": { "size": ["small", "medium", "large", "unknown"] }, "evidenceRefs": ["wsava-welfare-2018"] },
+    { "id": "body", "number": 2, "field": "bodyCondition", "title": "它现在的身材更像哪一种？", "fieldEnums": { "bodyCondition": ["thin", "ideal", "slightly_fat", "obese", "unknown"] }, "evidenceRefs": ["wsava-welfare-2018"] },
+    { "id": "diet", "number": 3, "field": "foodTypes/snackLevel", "title": "日常饮食和零食情况", "fieldEnums": { "foodTypes": ["kibble", "canned", "freeze_dried", "fresh", "homemade", "mixed"], "snackLevel": ["low", "medium", "high"] }, "evidenceRefs": ["wsava-welfare-2018"] },
+    { "id": "movement", "number": 4, "field": "movement", "title": "运动与嗅闻", "fieldEnums": { "movement.outdoorFrequency": ["rare", "once_toilet_only", "one_to_two", "two_to_three", "two_plus"], "movement.dailyMinutes": ["unknown", "under_10", "10_20", "around_30", "over_30"], "movement.sniffing": ["none", "little", "normal", "rich", "unknown"] }, "evidenceRefs": ["wsava-welfare-2018", "five-domains-2020"] },
+    { "id": "recent", "number": 5, "field": "recentSignals", "title": "最近一个月有没有这些健康信号？", "fieldEnums": { "recentSignals": ["normal", "unstable_poop", "bad_breath", "paw_licking_or_scratching", "low_energy", "appetite_change", "vomiting", "diarrhea", "pain", "mobility_issue"] }, "evidenceRefs": ["wsava-welfare-2018", "aaha-behavior-2015"] },
+    { "id": "environment", "number": 6, "field": "homeEnvironment", "title": "家庭环境里常接触这些吗？", "fieldEnums": { "homeEnvironment": ["aromatherapy", "strong_cleaner", "secondhand_smoke", "plastic_bowl", "pesticide", "none", "unknown"] }, "evidenceRefs": ["wsava-welfare-2018"] },
+    {
+      "id": "positive_engagement", "number": 7, "field": "mentalState.positiveEngagement", "title": "最近两周，它还会主动投入自己喜欢的活动吗？",
+      "options": [
+        { "value": "often", "label": "经常", "description": "经常会主动邀请玩耍、期待散步或吃饭，并愿意闻嗅探索。" },
+        { "value": "sometimes", "label": "有时", "description": "有时愿意参与，但兴趣或持续时间比平时少。" },
+        { "value": "rare", "label": "很少", "description": "多数时候不太参与，或很快退出原本喜欢的活动。" },
+        { "value": "unknown", "label": "不确定", "description": "近期没有足够机会观察。" }
+      ], "fieldEnums": { "mentalState.positiveEngagement": ["often", "sometimes", "rare", "unknown"] }, "evidenceRefs": ["dog-qol-2022", "five-domains-2020"]
+    },
+    {
+      "id": "relaxation", "number": 8, "field": "mentalState.relaxation", "title": "日常活动或普通刺激结束后，它通常能放松下来吗？",
+      "options": [
+        { "value": "easy", "label": "容易放松", "description": "能自行安静休息，睡眠姿势放松，普通刺激后能较快恢复。" },
+        { "value": "sometimes_difficult", "label": "偶尔困难", "description": "偶尔需要较长时间才能平静或入睡。" },
+        { "value": "often_difficult", "label": "经常困难", "description": "经常保持警觉、踱步、喘气、反复叫或难以安睡。" },
+        { "value": "unknown", "label": "不确定", "description": "近期没有足够机会观察。" }
+      ], "fieldEnums": { "mentalState.relaxation": ["easy", "sometimes_difficult", "often_difficult", "unknown"] }, "evidenceRefs": ["dog-qol-2022", "aaha-behavior-2015"]
+    },
+    {
+      "id": "social_connection", "number": 9, "field": "mentalState.socialConnection", "title": "和熟悉的人或动物相处时，它是否能按自己的意愿互动或离开？",
+      "options": [
+        { "value": "secure", "label": "安全自在", "description": "会以自己喜欢的方式接近互动，也能自由离开、休息或独处。" },
+        { "value": "variable", "label": "有些波动", "description": "有时愿意互动，有时明显回避或显得不自在。" },
+        { "value": "withdrawn", "label": "明显退缩", "description": "经常躲避、僵住、退缩，或无法安心离开、表现出异常黏附。" },
+        { "value": "unknown", "label": "不确定", "description": "不适合仅用社交行为判断。" }
+      ], "fieldEnums": { "mentalState.socialConnection": ["secure", "variable", "withdrawn", "unknown"] }, "evidenceRefs": ["five-domains-2020", "dog-qol-2022", "cbarq-upenn"]
+    },
+    {
+      "id": "distress_signals", "number": 10, "field": "mentalState.distressSignals", "title": "最近两周，它是否经常出现以下行为？可多选。",
+      "options": [
+        { "value": "frequent_fear_or_hiding", "label": "经常害怕、躲藏、僵住或试图逃离" },
+        { "value": "separation_distress", "label": "独处时持续叫、破坏、喘气、流口水或无法平静" },
+        { "value": "persistent_pacing_or_vocalizing", "label": "无明显原因持续踱步或反复叫" },
+        { "value": "repetitive_behavior", "label": "反复转圈、追尾、舔咬或其他仪式化行为" },
+        { "value": "sudden_behavior_change", "label": "性情、活动或互动方式突然明显变化" },
+        { "value": "aggression_safety_risk", "label": "对人或动物出现具有伤害风险的攻击行为" },
+        { "value": "self_injury", "label": "舔咬、撞击或其他行为已经造成自身受伤" },
+        { "value": "none", "label": "最近都没有" },
+        { "value": "unknown", "label": "不确定" }
+      ], "fieldEnums": { "mentalState.distressSignals": ["frequent_fear_or_hiding", "separation_distress", "persistent_pacing_or_vocalizing", "repetitive_behavior", "sudden_behavior_change", "aggression_safety_risk", "self_injury", "none", "unknown"] }, "exclusiveValues": ["none", "unknown"], "evidenceRefs": ["aaha-behavior-2015", "cbarq-upenn"]
+    }
+  ]
+}

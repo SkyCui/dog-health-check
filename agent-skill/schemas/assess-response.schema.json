@@ -1,128 +1,35 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://dog-health-check.local/schemas/assess-response.schema.json",
-  "title": "DogHealthAssessResponse",
+  "title": "DogHappinessAssessResponse",
   "type": "object",
   "additionalProperties": false,
-  "required": [
-    "status",
-    "statusText",
-    "coreConclusion",
-    "longevityScore",
-    "dimensionScores",
-    "strengths",
-    "coreRisk",
-    "todayAction",
-    "vetReminder",
-    "allowShare",
-    "shareCopy",
-    "dashboardReport",
-    "shareGuide"
-  ],
+  "required": ["status", "statusText", "coreConclusion", "happinessScore", "healthScore", "mentalWellbeingScore", "healthDimensionScores", "mentalDimensionScores", "strengths", "coreRisk", "todayAction", "supportRoute", "supportReminder", "allowShare", "shareCopy", "knowledgeVersion", "evidenceRefs", "dashboardReport", "shareGuide"],
   "properties": {
-    "status": {
-      "type": "string",
-      "enum": ["excellent", "good", "watch", "adjust", "risk_confirm", "red_vet"]
-    },
+    "status": { "type": "string", "enum": ["excellent", "good", "watch", "adjust", "risk_confirm", "behavior_support", "red_vet"] },
     "statusText": { "type": "string" },
     "coreConclusion": { "type": "string" },
-    "longevityScore": { "type": "integer", "minimum": 0, "maximum": 100 },
-    "dimensionScores": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["body", "diet", "movement", "recent", "environment"],
-      "properties": {
-        "body": { "type": "integer", "minimum": 0, "maximum": 100 },
-        "diet": { "type": "integer", "minimum": 0, "maximum": 100 },
-        "movement": { "type": "integer", "minimum": 0, "maximum": 100 },
-        "recent": { "type": "integer", "minimum": 0, "maximum": 100 },
-        "environment": { "type": "integer", "minimum": 0, "maximum": 100 }
-      }
-    },
-    "strengths": {
-      "type": "array",
-      "items": { "type": "string" },
-      "minItems": 1,
-      "maxItems": 2
-    },
-    "coreRisk": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["title", "reason"],
-      "properties": {
-        "title": { "type": "string" },
-        "reason": { "type": "string" }
-      }
-    },
-    "todayAction": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["title", "body"],
-      "properties": {
-        "title": { "type": "string" },
-        "body": { "type": "string" }
-      }
-    },
-    "vetReminder": { "type": "string" },
+    "happinessScore": { "$ref": "#/$defs/score" },
+    "healthScore": { "$ref": "#/$defs/score" },
+    "mentalWellbeingScore": { "$ref": "#/$defs/score" },
+    "healthDimensionScores": { "$ref": "#/$defs/healthDimensions" },
+    "mentalDimensionScores": { "$ref": "#/$defs/mentalDimensions" },
+    "strengths": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "coreRisk": { "type": "object", "additionalProperties": false, "required": ["title", "reason", "domain"], "properties": { "title": { "type": "string" }, "reason": { "type": "string" }, "domain": { "type": "string", "enum": ["health", "mental", "safety"] } } },
+    "todayAction": { "type": "object", "additionalProperties": false, "required": ["title", "body"], "properties": { "title": { "type": "string" }, "body": { "type": "string" } } },
+    "supportRoute": { "type": "string", "enum": ["none", "vet", "veterinary_behavior"] },
+    "supportReminder": { "type": "string" },
     "allowShare": { "type": "boolean" },
-    "shareCopy": {
-      "type": "string",
-      "description": "Empty string when status is red_vet or sharing is blocked by safety rules."
-    },
-    "dashboardReport": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["title", "subtitle", "scoreLabel", "sections"],
-      "properties": {
-        "title": { "type": "string" },
-        "subtitle": { "type": "string" },
-        "scoreLabel": { "type": "string" },
-        "sections": {
-          "type": "array",
-          "minItems": 1,
-          "items": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": ["id", "title"],
-            "properties": {
-              "id": { "type": "string" },
-              "title": { "type": "string" },
-              "body": { "type": "string" },
-              "items": {
-                "type": "array",
-                "items": { "type": "string" }
-              }
-            }
-          }
-        }
-      }
-    },
-    "shareGuide": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["primaryCta", "safetyNote", "actions"],
-      "properties": {
-        "primaryCta": { "type": "string" },
-        "safetyNote": { "type": "string" },
-        "actions": {
-          "type": "array",
-          "minItems": 1,
-          "items": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": ["id", "label", "description", "enabled"],
-            "properties": {
-              "id": {
-                "type": "string",
-                "enum": ["copy_text", "download_image", "wechat_moments", "xiaohongshu", "weibo"]
-              },
-              "label": { "type": "string" },
-              "description": { "type": "string" },
-              "enabled": { "type": "boolean" }
-            }
-          }
-        }
-      }
-    }
+    "shareCopy": { "type": "string", "description": "behavior_support 或 red_vet 时必须为空字符串。" },
+    "knowledgeVersion": { "type": "string" },
+    "evidenceRefs": { "type": "array", "items": { "$ref": "#/$defs/evidenceRef" }, "minItems": 1 },
+    "dashboardReport": { "type": "object" },
+    "shareGuide": { "type": "object" }
+  },
+  "$defs": {
+    "score": { "type": "integer", "minimum": 0, "maximum": 100 },
+    "healthDimensions": { "type": "object", "additionalProperties": false, "required": ["body", "diet", "movement", "recent", "environment"], "properties": { "body": { "$ref": "#/$defs/score" }, "diet": { "$ref": "#/$defs/score" }, "movement": { "$ref": "#/$defs/score" }, "recent": { "$ref": "#/$defs/score" }, "environment": { "$ref": "#/$defs/score" } } },
+    "mentalDimensions": { "type": "object", "additionalProperties": false, "required": ["positiveEngagement", "relaxation", "socialConnection", "distress"], "properties": { "positiveEngagement": { "$ref": "#/$defs/score" }, "relaxation": { "$ref": "#/$defs/score" }, "socialConnection": { "$ref": "#/$defs/score" }, "distress": { "$ref": "#/$defs/score" } } },
+    "evidenceRef": { "type": "object", "additionalProperties": false, "required": ["id", "title", "organization", "level", "url"], "properties": { "id": { "type": "string" }, "title": { "type": "string" }, "organization": { "type": "string" }, "level": { "type": "string", "enum": ["A1", "A2", "B", "C"] }, "url": { "type": "string", "format": "uri" } } }
   }
 }

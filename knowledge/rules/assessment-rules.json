@@ -1,0 +1,97 @@
+{
+  "knowledgeVersion": "dog-happiness-kb-2.0.0-beta",
+  "method": "product_heuristic",
+  "health": {
+    "evidenceRefs": ["wsava-welfare-2018", "five-domains-2020"],
+    "body": { "thin": 72, "ideal": 96, "slightly_fat": 68, "obese": 48, "unknown": 76 },
+    "diet": {
+      "base": 92,
+      "foodTypeAdjustments": { "kibble": -4, "canned": 0, "freeze_dried": 1, "fresh": 4, "homemade": -6, "mixed": 5 },
+      "snackAdjustments": { "low": 3, "medium": -2, "high": -18 },
+      "homemadeWithoutMixedPenalty": -6
+    },
+    "movement": {
+      "outdoorFrequency": { "rare": 45, "once_toilet_only": 58, "one_to_two": 74, "two_to_three": 88, "two_plus": 92 },
+      "dailyMinutes": { "unknown": 70, "under_10": 55, "10_20": 74, "around_30": 88, "over_30": 94 },
+      "sniffing": { "none": 50, "little": 66, "normal": 84, "rich": 96, "unknown": 72 }
+    },
+    "recent": {
+      "base": 94, "normal": 96,
+      "signalDeductions": { "unstable_poop": 18, "bad_breath": 12, "paw_licking_or_scratching": 14, "low_energy": 45, "appetite_change": 45, "vomiting": 55, "diarrhea": 55, "pain": 60, "mobility_issue": 50 }
+    },
+    "environment": {
+      "base": 94, "none": 96, "unknown": 88,
+      "exposureDeductions": { "aromatherapy": 10, "strong_cleaner": 12, "secondhand_smoke": 20, "plastic_bowl": 6, "pesticide": 18 }
+    },
+    "weights": { "body": 0.22, "diet": 0.2, "movement": 0.2, "recent": 0.23, "environment": 0.15 }
+  },
+  "mental": {
+    "evidenceRefs": ["dog-qol-2022", "five-domains-2020", "aaha-behavior-2015", "cbarq-upenn"],
+    "positiveEngagement": { "often": 96, "sometimes": 80, "rare": 50, "unknown": 72 },
+    "relaxation": { "easy": 96, "sometimes_difficult": 75, "often_difficult": 48, "unknown": 72 },
+    "socialConnection": { "secure": 94, "variable": 78, "withdrawn": 48, "unknown": 72 },
+    "distress": {
+      "base": 96, "none": 96, "unknown": 72,
+      "deductions": { "frequent_fear_or_hiding": 25, "separation_distress": 25, "persistent_pacing_or_vocalizing": 25, "repetitive_behavior": 30, "sudden_behavior_change": 50, "aggression_safety_risk": 35, "self_injury": 60 }
+    },
+    "weights": { "positiveEngagement": 0.3, "relaxation": 0.25, "socialConnection": 0.2, "distress": 0.25 }
+  },
+  "happiness": {
+    "evidenceRefs": ["five-domains-critique-2023"],
+    "healthWeight": 0.5,
+    "mentalWeight": 0.5,
+    "statusRanges": [
+      { "status": "excellent", "min": 95, "max": 100, "label": "幸福感很好，继续保持" },
+      { "status": "good", "min": 85, "max": 94, "label": "整体幸福感不错，可轻量优化" },
+      { "status": "watch", "min": 70, "max": 84, "label": "有一项影响幸福感的因素值得关注" },
+      { "status": "adjust", "min": 55, "max": 69, "label": "需要尽快改善生活体验" },
+      { "status": "risk_confirm", "min": 0, "max": 54, "label": "建议优先确认健康或行为风险" }
+    ]
+  },
+  "safety": {
+    "evidenceRefs": ["wsava-welfare-2018", "aaha-behavior-2015", "cbarq-upenn"],
+    "redVetRecentSignals": ["low_energy", "appetite_change", "vomiting", "diarrhea", "pain", "mobility_issue"],
+    "redVetMentalSignals": ["sudden_behavior_change", "self_injury"],
+    "behaviorSupportSignals": ["frequent_fear_or_hiding", "separation_distress", "persistent_pacing_or_vocalizing", "repetitive_behavior", "aggression_safety_risk"],
+    "signalLabels": {
+      "low_energy": "精神明显变差",
+      "appetite_change": "食欲明显变化",
+      "vomiting": "呕吐",
+      "diarrhea": "腹泻",
+      "pain": "明显疼痛",
+      "mobility_issue": "行动异常",
+      "frequent_fear_or_hiding": "持续恐惧或躲藏",
+      "separation_distress": "分离痛苦",
+      "persistent_pacing_or_vocalizing": "持续踱步或叫",
+      "repetitive_behavior": "重复行为",
+      "sudden_behavior_change": "突发行为变化",
+      "aggression_safety_risk": "攻击安全风险",
+      "self_injury": "自伤"
+    },
+    "vetMessage": "这个情况已经超出日常自查范围，建议尽快联系兽医或宠物急诊。现在先不要只靠生活方式调整。",
+    "behaviorMessage": "这些持续行为提示它可能正在承受明显压力。请先减少触发、避免强迫和惩罚，并联系兽医行为科或有资质的正向行为专业人士。",
+    "safeMessage": "目前没有看到需要立即转介的信号。若后续出现突发行为变化、自伤、持续恐惧或攻击风险，请及时联系兽医或行为专业人士。"
+  },
+  "riskPriority": {
+    "evidenceRefs": ["wsava-welfare-2018", "aaha-behavior-2015", "five-domains-2020"],
+    "candidates": [
+      { "title": "体重管理", "domain": "health", "dimension": "body", "priority": 1, "when": { "field": "bodyCondition", "operator": "in", "values": ["thin", "slightly_fat", "obese"] } },
+      { "title": "肠道状态不稳定", "domain": "health", "dimension": "recent", "priority": 2, "when": { "field": "recentSignals", "operator": "includes", "values": ["unstable_poop"] } },
+      { "title": "口腔护理不足", "domain": "health", "dimension": "recent", "priority": 3, "when": { "field": "recentSignals", "operator": "includes", "values": ["bad_breath"] } },
+      { "title": "皮肤 / 舔爪 / 抓痒信号", "domain": "health", "dimension": "recent", "priority": 4, "when": { "field": "recentSignals", "operator": "includes", "values": ["paw_licking_or_scratching"] } },
+      { "title": "运动与嗅闻不足", "domain": "health", "dimension": "movement", "priority": 5, "whenAny": [{ "field": "movement.outdoorFrequency", "operator": "in", "values": ["rare", "once_toilet_only"] }, { "field": "movement.sniffing", "operator": "in", "values": ["none", "little"] }] },
+      { "title": "饮食单一或零食偏多", "domain": "health", "dimension": "diet", "priority": 6, "when": { "field": "snackLevel", "operator": "in", "values": ["high"] } },
+      { "title": "家庭环境暴露", "domain": "health", "dimension": "environment", "priority": 7, "whenScoreBelow": 80 },
+      { "title": "难以放松", "domain": "mental", "dimension": "relaxation", "priority": 2, "when": { "field": "mentalState.relaxation", "operator": "in", "values": ["often_difficult"] } },
+      { "title": "积极参与不足", "domain": "mental", "dimension": "positiveEngagement", "priority": 3, "when": { "field": "mentalState.positiveEngagement", "operator": "in", "values": ["rare"] } },
+      { "title": "社交安全感不足", "domain": "mental", "dimension": "socialConnection", "priority": 4, "when": { "field": "mentalState.socialConnection", "operator": "in", "values": ["withdrawn"] } }
+    ],
+    "ignoreAtOrAbove": 88,
+    "fallbackTitle": "继续保持"
+  },
+  "share": {
+    "evidenceRefs": ["wsava-welfare-2018"],
+    "allowStatuses": ["excellent", "good", "watch", "adjust", "risk_confirm"],
+    "blockStatuses": ["red_vet", "behavior_support"]
+  }
+}
