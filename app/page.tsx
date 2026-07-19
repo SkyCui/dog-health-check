@@ -63,12 +63,14 @@ export default function HomePage() {
 
           <div className="candy-card paw-bg rounded-[2.4rem] p-5">
             <div className="rounded-[2rem] bg-white/70 p-5">
-              <div className="flex items-center justify-between gap-4">
-                <div>
+              <div className="flex items-center justify-between gap-3">
+                <div className="min-w-0">
                   <p className="text-sm font-black text-rose">分享卡预览</p>
-                  <h3 className="mt-1 text-3xl font-black text-ink">百万的幸福小档案</h3>
+                  <h3 className="mt-1 whitespace-nowrap text-[clamp(1.45rem,6vw,1.875rem)] font-black leading-tight text-ink">
+                    百万的幸福小档案
+                  </h3>
                 </div>
-                <div className="grid h-16 w-16 place-items-center rounded-3xl bg-goldSoft text-3xl shadow-panel">
+                <div className="grid h-14 w-14 shrink-0 place-items-center rounded-3xl bg-goldSoft text-2xl shadow-panel">
                   💌
                 </div>
               </div>
