@@ -67,7 +67,7 @@ export default function HomePage() {
                 <div className="min-w-0">
                   <p className="text-sm font-black text-rose">分享卡预览</p>
                   <h3 className="mt-1 whitespace-nowrap text-[clamp(1.45rem,6vw,1.875rem)] font-black leading-tight text-ink">
-                    百万的幸福小档案
+                    你家狗狗的幸福小档案
                   </h3>
                 </div>
                 <div className="grid h-14 w-14 shrink-0 place-items-center rounded-3xl bg-goldSoft text-2xl shadow-panel">
