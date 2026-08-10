@@ -33,3 +33,9 @@ npm run test:api
 5. Add `agent/system-prompt.md` to the Agent instructions and keep tool output authoritative.
 
 The Agent must send `mentalState`, must not calculate scores, and must not override `red_vet`, `behavior_support`, `allowShare`, or `shareCopy`.
+
+## Red Skill phase one
+
+Upload `red-skill/SKILL.md` as the standalone Red Skill file. It prefers the production Web assessment because Markdown-only runtimes cannot render custom option cards. Chat collection is allowed only when the runtime can POST to `/api/assess`; otherwise the Skill must not collect ten groups it cannot score.
+
+No quota, account, payment, or membership claim is included in phase one.

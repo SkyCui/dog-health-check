@@ -79,7 +79,7 @@ export default function ResultPage() {
             <ArrowLeft size={17} aria-hidden="true" />
             返回自测
           </Link>
-          <p className="rounded-full bg-white/80 px-4 py-2 text-sm font-bold text-cocoa/70 shadow-panel">循证轻量自查 Beta，不替代兽医或行为专业评估</p>
+          <p className="rounded-full bg-white/80 px-4 py-2 text-sm font-bold text-cocoa/70 shadow-panel">我助力你更好了解毛孩子，但无法替代兽医或行为专业评估</p>
         </div>
 
         <section className="candy-card paw-bg rounded-[2.2rem] p-5 sm:p-7">

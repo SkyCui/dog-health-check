@@ -83,8 +83,7 @@ const bodyOptions: { value: BodyCondition; label: string; helper: string }[] = [
   { value: "thin", label: "偏瘦", helper: "肋骨明显，腰很细" },
   { value: "ideal", label: "刚刚好", helper: "能摸到肋骨，有腰线" },
   { value: "slightly_fat", label: "有点胖", helper: "肋骨不太好摸" },
-  { value: "obese", label: "明显胖", helper: "肚子圆，走路容易喘" },
-  { value: "unknown", label: "不确定", helper: "凭第一感觉也可以" }
+  { value: "obese", label: "明显胖", helper: "肚子圆，走路容易喘" }
 ];
 
 const foodOptions: { value: FoodType; label: string }[] = [

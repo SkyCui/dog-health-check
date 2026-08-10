@@ -1,5 +1,5 @@
 import PuppyIllustration from "@/components/PuppyIllustration";
-import { ArrowRight, Camera, Gift, HeartPulse, PawPrint, Sparkles } from "lucide-react";
+import { ArrowRight, Camera, Gift, PawPrint, Sparkles } from "lucide-react";
 import Link from "next/link";
 
 const highlights = [
@@ -56,7 +56,7 @@ export default function HomePage() {
                 <ArrowRight size={20} aria-hidden="true" />
               </Link>
               <span className="inline-flex items-center rounded-full border border-rose/20 bg-white/75 px-5 py-4 text-sm font-bold text-cocoa shadow-panel">
-                循证轻量自查 Beta · 不替代专业评估
+                我助力你更好了解毛孩子，但无法替代兽医或行为专业评估
               </span>
             </div>
           </div>
@@ -95,18 +95,13 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="grid gap-4 md:grid-cols-3">
-          {[
-            ["📷", "照片卡片", "上传自家宠物照片，自动放进圆角头像框，搭配贴纸装饰。"],
-            ["🎀", "可爱问卷", "每题像小贴纸选择，不再是冷冰冰的表单。"],
-            ["🍪", "分享闭环", "结果页强化保存图片、复制文案、邀请朋友也测一张。"]
-          ].map(([emoji, title, text]) => (
-            <div key={title} className="sticker-card rounded-[2rem] p-5">
-              <div className="text-3xl">{emoji}</div>
-              <h3 className="mt-3 text-xl font-black text-ink">{title}</h3>
-              <p className="mt-2 leading-7 text-cocoa/75">{text}</p>
-            </div>
-          ))}
+        <section className="border-t border-rose/15 py-8 text-center sm:py-10">
+          <p className="text-lg font-black leading-8 text-ink sm:text-xl">
+            毛孩子不会说话，Ta的身心健康就靠咱们家长守护了。
+          </p>
+          <p className="mt-2 text-base font-bold leading-7 text-cocoa/70 sm:text-lg">
+            这个Agent也会不断成长，持续陪伴毛孩子们～
+          </p>
         </section>
       </div>
     </main>

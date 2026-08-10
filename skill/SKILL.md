@@ -11,7 +11,7 @@ description: Run the evidence-informed "你的狗狗幸福吗？" Beta self-chec
 - Collect every required field defined by `knowledge/questionnaire.json` before calling the API.
 - Call `POST /api/assess`; repeat its result without changing scores, status, risk priority, support route, sharing permission, or evidence.
 - Never describe this Beta as clinically validated, diagnostic, or guaranteed accurate.
-- Always state: `循证轻量自查 Beta，不替代兽医或行为专业评估。`
+- Always state: `我助力你更好了解毛孩子，但无法替代兽医或行为专业评估。`
 
 ## Evidence levels
 

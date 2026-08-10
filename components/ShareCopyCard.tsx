@@ -128,7 +128,7 @@ async function createShareImageFile(result: GeneratedResult, assessment: Assessm
   context.fillStyle = "#fff8e8"; roundRect(context, 120, 1100, 840, 156, 30); context.fill();
   context.fillStyle = "#56313d"; context.font = "800 28px system-ui, sans-serif"; context.fillText("今天先做这一件事", 155, 1144);
   context.fillStyle = "#744552"; context.font = "500 22px system-ui, sans-serif"; wrappedText(context, result.todayAction.body, 155, 1184, 785, 30, 2);
-  context.fillStyle = "#9a7180"; context.font = "600 21px system-ui, sans-serif"; context.fillText("循证轻量自查 Beta · 不替代兽医或行为专业评估", 120, 1335);
+  context.fillStyle = "#9a7180"; context.font = "600 21px system-ui, sans-serif"; context.fillText("我助力你更好了解毛孩子，但无法替代兽医或行为专业评估", 120, 1335);
 
   const blob = await new Promise<Blob>((resolve, reject) => canvas.toBlob((value) => value ? resolve(value) : reject(new Error("分享图生成失败。")), "image/png"));
   return new File([blob], `${assessment?.dogName?.trim() || "狗狗"}-幸福小档案.png`, { type: "image/png" });
@@ -229,7 +229,7 @@ export default function ShareCopyCard({ allowShare, shareCopy, result, assessmen
           </div>
           <div className="mt-5 rounded-3xl bg-white/85 p-4"><p className="text-xs font-black text-cocoa/60">幸福指数</p><p className="mt-1 text-5xl font-black text-rose">{result.happinessScore}<span className="ml-1 text-base text-cocoa/50">/ 100</span></p><p className="mt-2 text-xs font-bold text-cocoa/60">健康 {result.healthScore} · 精神 {result.mentalWellbeingScore}</p></div>
           <div className="mt-4 rounded-3xl bg-goldSoft/80 p-4"><p className="text-xs font-black text-gold">今日关注</p><p className="mt-1 font-black text-ink">{result.coreRisk.title}</p></div>
-          <p className="absolute bottom-4 pr-4 text-xs font-bold leading-5 text-cocoa/45">循证轻量自查 Beta · 不替代专业评估</p>
+          <p className="absolute bottom-4 pr-4 text-xs font-bold leading-5 text-cocoa/45">我助力你更好了解毛孩子，但无法替代兽医或行为专业评估</p>
         </div>
 
         <div>

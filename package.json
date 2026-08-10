@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "test:api": "node scripts/test-api-assess.mjs",
-    "test:knowledge": "node scripts/validate-knowledge.mjs"
+    "test:knowledge": "node scripts/validate-knowledge.mjs",
+    "test:red-skill": "node scripts/validate-red-skill.mjs"
   },
   "dependencies": {
     "lucide-react": "^0.468.0",
