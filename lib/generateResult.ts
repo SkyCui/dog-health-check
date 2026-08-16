@@ -13,7 +13,7 @@ const formatScore = (score: number | null) => score === null ? "信息不足" : 
 
 function createShareGuide(allowShare: boolean, status: GeneratedResult["status"]): ShareGuide {
   const actions = [
-    ["copy_text", "复制分享文案", "复制循证轻量自查结果。"], ["download_image", "生成/保存分享图", "生成幸福观察卡。"],
+    ["copy_text", "复制分享文案", "复制循证轻量自查结果。"], ["download_image", "生成/保存分享图", "生成带参与二维码的幸福观察卡。"],
     ["wechat_moments", "分享到朋友圈", "保存图片后打开微信发布。"], ["xiaohongshu", "分享到小红书", "保存图片后打开小红书发布。"],
     ["weibo", "分享到微博", "保存图片后打开微博发布。"]
   ] as const;

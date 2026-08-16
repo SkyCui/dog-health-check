@@ -2,7 +2,8 @@
 
 import { BookOpen, Check, Copy, Download, Image as ImageIcon, MessageCircle, Radio, RotateCcw, Sparkles } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import QRCode from "qrcode";
+import { useEffect, useState } from "react";
 import type { AssessmentInput, GeneratedResult } from "@/lib/types";
 
 type Props = {
@@ -13,7 +14,7 @@ type Props = {
 };
 
 const DEFAULT_DOG_PHOTO = "/images/default-dog-avatar.png";
-const PUBLIC_SHARE_URL = "https://dog-health-check.vercel.app/";
+const PUBLIC_SHARE_URL = "https://dogcare.cc/";
 type SharePlatform = "wechat" | "xiaohongshu" | "weibo";
 
 const platformNames: Record<SharePlatform, string> = {
@@ -49,6 +50,15 @@ function loadImage(source: string) {
     image.onerror = () => reject(new Error("photo-load-failed"));
     if (/^https?:/i.test(source)) image.crossOrigin = "anonymous";
     image.src = source;
+  });
+}
+
+function createEntryQrCode(width: number) {
+  return QRCode.toDataURL(PUBLIC_SHARE_URL, {
+    errorCorrectionLevel: "H",
+    margin: 2,
+    width,
+    color: { dark: "#56313d", light: "#ffffff" }
   });
 }
 
@@ -118,20 +128,28 @@ async function createShareImageFile(result: GeneratedResult, assessment: Assessm
   context.fillStyle = "#ff78a7"; context.font = "800 27px system-ui, sans-serif"; context.fillText("今天最值得关注", 160, 630);
   context.fillStyle = "#56313d"; context.font = "900 43px system-ui, sans-serif"; wrappedText(context, result.coreRisk.title, 160, 700, 750, 50, 2);
 
-  context.fillStyle = "#56313d"; context.font = "900 34px system-ui, sans-serif"; context.fillText("身心双指标", 120, 825);
-  let y = 885;
+  context.fillStyle = "#56313d"; context.font = "900 34px system-ui, sans-serif"; context.fillText("身心双指标", 120, 800);
+  let y = 860;
   ([{ label: "健康习惯", score: result.healthScore }, { label: "精神福祉", score: result.mentalWellbeingScore }]).forEach(({ label, score }) => {
     context.fillStyle = "#744552"; context.font = "700 25px system-ui, sans-serif"; context.fillText(label, 120, y);
     context.fillStyle = "#f7e6ed"; roundRect(context, 310, y - 24, 520, 18, 9); context.fill();
     const bar = context.createLinearGradient(310, 0, 830, 0); bar.addColorStop(0, "#ff78a7"); bar.addColorStop(1, "#f7b735");
     context.fillStyle = bar; roundRect(context, 310, y - 24, Math.max(18, 520 * score / 100), 18, 9); context.fill();
-    context.fillStyle = "#744552"; context.fillText(String(score), 865, y); y += 88;
+    context.fillStyle = "#744552"; context.fillText(String(score), 865, y); y += 78;
   });
 
-  context.fillStyle = "#fff8e8"; roundRect(context, 120, 1100, 840, 156, 30); context.fill();
-  context.fillStyle = "#56313d"; context.font = "800 28px system-ui, sans-serif"; context.fillText("今天先做这一件事", 155, 1144);
-  context.fillStyle = "#744552"; context.font = "500 22px system-ui, sans-serif"; wrappedText(context, result.todayAction.body, 155, 1184, 785, 30, 2);
-  context.fillStyle = "#9a7180"; context.font = "600 21px system-ui, sans-serif"; context.fillText("我助力你更好了解毛孩子，但无法替代兽医或行为专业评估", 120, 1335);
+  context.fillStyle = "#fff8e8"; roundRect(context, 120, 985, 840, 150, 30); context.fill();
+  context.fillStyle = "#56313d"; context.font = "800 28px system-ui, sans-serif"; context.fillText("今天先做这一件事", 155, 1028);
+  context.fillStyle = "#744552"; context.font = "500 22px system-ui, sans-serif"; wrappedText(context, result.todayAction.body, 155, 1068, 785, 30, 2);
+
+  context.fillStyle = "#fff0f6"; roundRect(context, 120, 1160, 840, 180, 30); context.fill();
+  context.fillStyle = "#56313d"; context.font = "900 29px system-ui, sans-serif"; context.fillText("扫码看看你家狗狗幸福吗？", 155, 1220);
+  context.fillStyle = "#744552"; context.font = "700 23px system-ui, sans-serif"; context.fillText("免费完成 10 题身心状态观察", 155, 1262);
+  context.fillStyle = "#ff78a7"; context.font = "800 22px system-ui, sans-serif"; context.fillText("dogcare.cc", 155, 1305);
+  const qrImage = await loadImage(await createEntryQrCode(160));
+  context.drawImage(qrImage, 775, 1170, 160, 160);
+
+  context.fillStyle = "#9a7180"; context.font = "600 19px system-ui, sans-serif"; context.fillText("我助力你更好了解毛孩子，但无法替代兽医或行为专业评估", 120, 1368);
 
   const blob = await new Promise<Blob>((resolve, reject) => canvas.toBlob((value) => value ? resolve(value) : reject(new Error("分享图生成失败。")), "image/png"));
   return new File([blob], `${assessment?.dogName?.trim() || "狗狗"}-幸福小档案.png`, { type: "image/png" });
@@ -147,8 +165,17 @@ export default function ShareCopyCard({ allowShare, shareCopy, result, assessmen
   const [copied, setCopied] = useState(false);
   const [busyPlatform, setBusyPlatform] = useState<SharePlatform | "download" | null>(null);
   const [status, setStatus] = useState("");
+  const [entryQrCode, setEntryQrCode] = useState("");
   const insufficient = result.status === "insufficient";
   const displayScore = (score: number | null) => score === null ? "--" : String(score);
+
+  useEffect(() => {
+    let active = true;
+    createEntryQrCode(160).then((value) => {
+      if (active) setEntryQrCode(value);
+    }).catch(() => undefined);
+    return () => { active = false; };
+  }, []);
 
   async function copyText() {
     try { await navigator.clipboard.writeText(shareCopy); }
@@ -234,7 +261,10 @@ export default function ShareCopyCard({ allowShare, shareCopy, result, assessmen
           </div>
           <div className="mt-5 rounded-3xl bg-white/85 p-4"><p className="text-xs font-black text-cocoa/60">幸福指数</p><p className="mt-1 text-5xl font-black text-rose">{displayScore(result.happinessScore)}{result.happinessScore === null ? null : <span className="ml-1 text-base text-cocoa/50">/ 100</span>}</p><p className="mt-2 text-xs font-bold text-cocoa/60">健康 {displayScore(result.healthScore)} · 精神 {displayScore(result.mentalWellbeingScore)}</p></div>
           <div className="mt-4 rounded-3xl bg-goldSoft/80 p-4"><p className="text-xs font-black text-gold">今日关注</p><p className="mt-1 font-black text-ink">{result.coreRisk.title}</p></div>
-          <p className="absolute bottom-4 pr-4 text-xs font-bold leading-5 text-cocoa/45">我助力你更好了解毛孩子，但无法替代兽医或行为专业评估</p>
+          <div className="absolute bottom-3 left-5 right-5 flex items-end justify-between gap-3">
+            <div><p className="text-xs font-black text-cocoa/70">扫码测测你家狗狗</p><p className="mt-1 text-[11px] font-bold text-rose">dogcare.cc</p></div>
+            {entryQrCode ? <img src={entryQrCode} alt="扫码进入 dogcare.cc 参与测试" className="h-14 w-14 rounded-lg bg-white p-1" /> : <div className="h-14 w-14 rounded-lg bg-white/80" aria-hidden="true" />}
+          </div>
         </div>
 
         <div>

@@ -30,7 +30,7 @@ export function getShareCopy(result: Omit<GeneratedResult, "shareCopy" | "dashbo
     `身体健康：${result.healthScore} 分；精神状态：${result.mentalWellbeingScore} 分。`,
     `目前最值得关注的是：${result.coreRisk.title}。`, "",
     "今天先从一件小事开始：", result.todayAction.body, "",
-    content.shareCopy.closing, "",
+    content.shareCopy.closing, content.shareCopy.entryCta, "",
     content.shareCopy.disclaimer, content.shareCopy.hashtags
   ].join("\n");
 }
