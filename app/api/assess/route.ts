@@ -29,12 +29,18 @@ const recentSignals = [
   "unstable_poop",
   "bad_breath",
   "paw_licking_or_scratching",
+  "persistent_cough",
+  "drinking_or_urination_change",
+  "unexplained_weight_change",
   "low_energy",
   "appetite_change",
   "vomiting",
   "diarrhea",
   "pain",
-  "mobility_issue"
+  "mobility_issue",
+  "breathing_difficulty",
+  "collapse_seizure_or_fainting",
+  "swollen_abdomen_or_unproductive_retching"
 ] as const;
 const homeEnvironments = [
   "aromatherapy",

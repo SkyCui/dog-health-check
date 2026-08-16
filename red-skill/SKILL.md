@@ -69,11 +69,34 @@ description: 引导狗狗家长通过可点击问卷或逐题对话完成“你�
 4. 每天 2～3 次，累计约 30 分钟 -> `two_to_three` / `around_30` / `normal`
 5. 出门且能慢慢闻，有较多探索 -> `two_plus` / `over_30` / `rich`
 
-### 问题 5/10｜最近一个月有没有这些信号？
+### 问题 5/10｜最近有没有这些健康信号？
 
-可多选：1 便便不稳定 `unstable_poop`；2 口臭 `bad_breath`；3 舔爪/抓痒 `paw_licking_or_scratching`；4 精神明显变差 `low_energy`；5 食欲明显变化 `appetite_change`；6 呕吐 `vomiting`；7 腹泻 `diarrhea`；8 明显疼痛 `pain`；9 行动异常 `mobility_issue`；10 最近都正常 `normal`。
+这一题仍一次作答，但必须分成两个小区块展示，并允许跨区块多选。
 
-`normal` 必须单独选择。
+**A. 最近一个月持续或反复出现**
+
+1. 便便持续或反复不稳定 -> `unstable_poop`
+2. 口臭 -> `bad_breath`
+3. 持续舔爪或抓痒 -> `paw_licking_or_scratching`
+4. 持续或反复咳嗽 -> `persistent_cough`
+5. 饮水或排尿明显变化 -> `drinking_or_urination_change`
+6. 无明显原因的体重变化 -> `unexplained_weight_change`
+7. 持续或明显食欲变化 -> `appetite_change`
+
+**B. 现在或近期出现的危险信号**
+
+8. 突然精神很差或反应迟钝 -> `low_energy`
+9. 短时间内反复呕吐 -> `vomiting`
+10. 严重或带血腹泻 -> `diarrhea`
+11. 明显或剧烈疼痛 -> `pain`
+12. 突然站不稳或无法行走 -> `mobility_issue`
+13. 安静时呼吸费力、张口呼吸或牙龈颜色异常 -> `breathing_difficulty`
+14. 晕倒、抽搐或意识异常 -> `collapse_seizure_or_fainting`
+15. 腹部突然胀大并反复干呕 -> `swollen_abdomen_or_unproductive_retching`
+
+16. 最近都没有 -> `normal`
+
+`normal` 必须单独选择。不要把普通咳嗽推断为呼吸困难，也不要根据模型判断替用户升级或降级信号；将用户确认的枚举原样交给 API。
 
 ### 问题 6/10｜家庭环境里常接触这些吗？
 

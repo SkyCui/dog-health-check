@@ -13,6 +13,8 @@ description: Collect the ten evidence-informed dog happiness Beta question group
 6. Present the API result using `agent/response-style.md`, cite only returned `evidenceRefs`, and show `knowledgeVersion`.
 7. Enforce `safety/safety-boundaries.md` without exceptions.
 
+Question 5 contains two visual groups but remains one API field. Collect persistent/recurrent observations separately from current or recent urgent warning signs, then submit their enum values together in `recentSignals`. Never collapse `persistent_cough` into `breathing_difficulty` or infer one from the other.
+
 Treat `unknown` as missing observation, not a medium score. Always present `assessmentConfidence` and `answeredCoverage`. If the API returns `status=insufficient`, do not state a happiness score and do not generate sharing content.
 
 Always call this a `循证轻量自查 Beta`. It is not a diagnosis or a clinically validated happiness scale.

@@ -84,6 +84,19 @@ rules.riskPriority.candidates.forEach((candidate) => {
 [...rules.safety.redVetRecentSignals, ...rules.safety.redVetMentalSignals, ...rules.safety.behaviorSupportSignals].forEach((signal) => {
   assert(rules.safety.signalLabels[signal], `safety signal ${signal} is missing a knowledge-base label`);
 });
+const recentQuestion = questionnaire.questions.find((question) => question.id === "recent");
+assert(recentQuestion?.options?.length > 0, "recent question must document option groups and labels");
+const recentOptionValues = new Set(recentQuestion.options.map((option) => option.value));
+assert(recentOptionValues.size === recentQuestion.fieldEnums.recentSignals.length, "recent question options and enum size differ");
+recentQuestion.fieldEnums.recentSignals.forEach((signal) => assert(recentOptionValues.has(signal), `recent question is missing option ${signal}`));
+const urgentRecent = recentQuestion.options.filter((option) => option.group === "urgent").map((option) => option.value);
+const observationRecent = recentQuestion.options.filter((option) => option.group === "observation").map((option) => option.value);
+urgentRecent.forEach((signal) => assert(rules.safety.redVetRecentSignals.includes(signal), `urgent recent signal ${signal} must trigger red_vet`));
+observationRecent.forEach((signal) => assert(!rules.safety.redVetRecentSignals.includes(signal), `observation signal ${signal} must not trigger red_vet by itself`));
+recentQuestion.fieldEnums.recentSignals.filter((signal) => signal !== "normal").forEach((signal) => {
+  assert(Object.hasOwn(rules.health.recent.signalDeductions, signal), `recent signal ${signal} is missing a product heuristic mapping`);
+});
+assert(rules.safety.evidenceRefs.some((ref) => sourcesFile.sources.find((source) => source.id === ref)?.level === "A1"), "safety rules require at least one A1 source");
 assert(!openapi.includes("./schemas/") && !openapi.includes(".schema.json"), "OpenAPI must not use external schemas");
 
 console.log(`Knowledge validation passed: ${sourcesFile.knowledgeVersion}`);

@@ -33,7 +33,10 @@ For option 2, explain briefly: this is an observation aid, not a diagnosis; urge
    - `3` -> `one_to_two / 10_20 / normal`
    - `4` -> `two_to_three / around_30 / normal`
    - `5` -> `two_plus / over_30 / rich`
-5. **最近状态**, multi-select: `1 unstable_poop`, `2 bad_breath`, `3 paw_licking_or_scratching`, `4 low_energy`, `5 appetite_change`, `6 vomiting`, `7 diarrhea`, `8 pain`, `9 mobility_issue`, `10 normal`. `normal` must be alone.
+5. **最近健康信号**, multi-select, shown as two subgroups in the same message:
+   - 最近一个月持续或反复出现：`1 unstable_poop`, `2 bad_breath`, `3 paw_licking_or_scratching`, `4 persistent_cough`, `5 drinking_or_urination_change`, `6 unexplained_weight_change`, `7 appetite_change`.
+   - 现在或近期的危险信号：`8 low_energy`, `9 vomiting`, `10 diarrhea`, `11 pain`, `12 mobility_issue`, `13 breathing_difficulty`, `14 collapse_seizure_or_fainting`, `15 swollen_abdomen_or_unproductive_retching`.
+   - `16 normal` means none of the listed signals and must be selected alone. Do not infer `breathing_difficulty` from coughing.
 6. **家庭环境**, multi-select: `1 aromatherapy`, `2 strong_cleaner`, `3 secondhand_smoke`, `4 plastic_bowl`, `5 pesticide`, `6 none`, `7 unknown`. `none` and `unknown` must each be alone.
 7. **积极参与**: `1 often`, `2 sometimes`, `3 rare`, `4 unknown`.
 8. **放松恢复**: `1 easy`, `2 sometimes_difficult`, `3 often_difficult`, `4 unknown`.

@@ -30,7 +30,7 @@ Collect the exact fields and enums from `knowledge/questionnaire.json`:
 2. Body condition.
 3. Food types and snack level.
 4. Outdoor frequency, daily minutes, and sniffing.
-5. Recent physical signals.
+5. Recent physical signals, separated into persistent observations and urgent warning signs.
 6. Home environment exposures.
 7. Positive engagement during the last two weeks compared with the dog's usual state.
 8. Relaxation and recovery after ordinary activity or stimuli.
@@ -51,7 +51,7 @@ Do not infer that quiet, independent, introverted, or less obedient dogs are unh
 
 ## Safety precedence
 
-1. Existing medical signals, `sudden_behavior_change`, or `self_injury` produce `red_vet`.
+1. Explicit urgent medical signals, `sudden_behavior_change`, or `self_injury` produce `red_vet`. Persistent cough, drinking/urination change, unexplained weight change, and sustained appetite change do not trigger `red_vet` by themselves.
 2. Persistent fear, separation distress, pacing/vocalizing, repetitive behavior, or aggression risk produce `behavior_support`.
 3. Low scores alone never produce a safety status.
 

@@ -1,5 +1,5 @@
 {
-  "knowledgeVersion": "dog-happiness-kb-2.1.0-beta",
+  "knowledgeVersion": "dog-happiness-kb-2.2.0-beta",
   "title": "你的狗狗幸福吗？",
   "recallPeriod": "精神状态题统一观察最近两周，并与这只狗平时的状态比较。",
   "questions": [
@@ -7,7 +7,31 @@
     { "id": "body", "number": 2, "field": "bodyCondition", "title": "它现在的身材更像哪一种？", "fieldEnums": { "bodyCondition": ["thin", "ideal", "slightly_fat", "obese", "unknown"] }, "evidenceRefs": ["wsava-welfare-2018"] },
     { "id": "diet", "number": 3, "field": "foodTypes/snackLevel", "title": "日常饮食和零食情况", "fieldEnums": { "foodTypes": ["kibble", "canned", "freeze_dried", "fresh", "homemade", "mixed"], "snackLevel": ["low", "medium", "high"] }, "evidenceRefs": ["wsava-welfare-2018"] },
     { "id": "movement", "number": 4, "field": "movement", "title": "运动与嗅闻", "fieldEnums": { "movement.outdoorFrequency": ["rare", "once_toilet_only", "one_to_two", "two_to_three", "two_plus"], "movement.dailyMinutes": ["unknown", "under_10", "10_20", "around_30", "over_30"], "movement.sniffing": ["none", "little", "normal", "rich", "unknown"] }, "evidenceRefs": ["wsava-welfare-2018", "five-domains-2020"] },
-    { "id": "recent", "number": 5, "field": "recentSignals", "title": "最近一个月有没有这些健康信号？", "fieldEnums": { "recentSignals": ["normal", "unstable_poop", "bad_breath", "paw_licking_or_scratching", "low_energy", "appetite_change", "vomiting", "diarrhea", "pain", "mobility_issue"] }, "evidenceRefs": ["wsava-welfare-2018", "aaha-behavior-2015"] },
+    {
+      "id": "recent", "number": 5, "field": "recentSignals", "title": "最近有没有这些健康信号？",
+      "observationPeriod": "普通观察信号回看最近一个月是否持续或反复出现；危险信号按现在或近期是否出现作答。",
+      "options": [
+        { "value": "unstable_poop", "group": "observation", "label": "便便持续或反复不稳定" },
+        { "value": "bad_breath", "group": "observation", "label": "口臭" },
+        { "value": "paw_licking_or_scratching", "group": "observation", "label": "持续舔爪或抓痒" },
+        { "value": "persistent_cough", "group": "observation", "label": "持续或反复咳嗽" },
+        { "value": "drinking_or_urination_change", "group": "observation", "label": "饮水或排尿明显变化" },
+        { "value": "unexplained_weight_change", "group": "observation", "label": "无明显原因的体重变化" },
+        { "value": "appetite_change", "group": "observation", "label": "持续或明显食欲变化" },
+        { "value": "low_energy", "group": "urgent", "label": "突然精神很差或反应迟钝" },
+        { "value": "vomiting", "group": "urgent", "label": "短时间内反复呕吐" },
+        { "value": "diarrhea", "group": "urgent", "label": "严重或带血腹泻" },
+        { "value": "pain", "group": "urgent", "label": "明显或剧烈疼痛" },
+        { "value": "mobility_issue", "group": "urgent", "label": "突然站不稳或无法行走" },
+        { "value": "breathing_difficulty", "group": "urgent", "label": "安静时呼吸费力、张口呼吸或牙龈颜色异常" },
+        { "value": "collapse_seizure_or_fainting", "group": "urgent", "label": "晕倒、抽搐或意识异常" },
+        { "value": "swollen_abdomen_or_unproductive_retching", "group": "urgent", "label": "腹部突然胀大并反复干呕" },
+        { "value": "normal", "group": "exclusive", "label": "最近都正常" }
+      ],
+      "fieldEnums": { "recentSignals": ["normal", "unstable_poop", "bad_breath", "paw_licking_or_scratching", "persistent_cough", "drinking_or_urination_change", "unexplained_weight_change", "low_energy", "appetite_change", "vomiting", "diarrhea", "pain", "mobility_issue", "breathing_difficulty", "collapse_seizure_or_fainting", "swollen_abdomen_or_unproductive_retching"] },
+      "exclusiveValues": ["normal"],
+      "evidenceRefs": ["wsava-welfare-2018", "aaha-senior-care-2023", "recover-cpr-2024", "merck-emergency-triage-2025"]
+    },
     { "id": "environment", "number": 6, "field": "homeEnvironment", "title": "家庭环境里常接触这些吗？", "fieldEnums": { "homeEnvironment": ["aromatherapy", "strong_cleaner", "secondhand_smoke", "plastic_bowl", "pesticide", "none", "unknown"] }, "evidenceRefs": ["wsava-welfare-2018"] },
     {
       "id": "positive_engagement", "number": 7, "field": "mentalState.positiveEngagement", "title": "最近两周，它还会主动投入自己喜欢的活动吗？",

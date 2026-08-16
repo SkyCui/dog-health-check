@@ -1,5 +1,5 @@
 {
-  "knowledgeVersion": "dog-happiness-kb-2.1.0-beta",
+  "knowledgeVersion": "dog-happiness-kb-2.2.0-beta",
   "evidenceLevels": {
     "A1": "国际或国家级兽医组织正式指南",
     "A2": "同行评审且经过信效度验证的犬只评估工具",
@@ -32,6 +32,45 @@
       "conflicts": "指南页面披露行业教育支持；安全边界采用指南原意，不采用产品营销内容。",
       "scope": "恐惧、焦虑、分离痛苦、重复行为、活动变化、攻击风险和非厌恶式管理。",
       "limitations": "不是幸福总分工具，不能单独证明本产品评分准确。"
+    },
+    {
+      "id": "aaha-senior-care-2023",
+      "level": "A1",
+      "title": "2023 AAHA Senior Care Guidelines for Dogs and Cats",
+      "organization": "American Animal Hospital Association",
+      "year": 2023,
+      "url": "https://www.aaha.org/resources/2023-aaha-senior-care-guidelines-for-dogs-and-cats/evaluating-the-unhealthy-senior-pet/",
+      "peerReviewed": true,
+      "validation": "AAHA 正式临床指南，归纳可由照护者报告的慢性疾病信号及按身体系统开展评估的方向。",
+      "conflicts": "指南披露了动物健康行业支持；本项目仅使用可观察信号与转介原则。",
+      "scope": "精神和食欲变化、饮水变化、体重下降、活动能力、神经及心肺异常等健康观察。",
+      "limitations": "主要面向老年犬猫临床照护；这些信号也可能有良性原因，不能仅凭勾选作出诊断或急症结论。"
+    },
+    {
+      "id": "recover-cpr-2024",
+      "level": "A1",
+      "title": "2024 RECOVER Guidelines: Updated treatment recommendations for CPR in dogs and cats",
+      "organization": "RECOVER Initiative / ACVECC / VECCS",
+      "year": 2024,
+      "url": "https://recoverinitiative.org/2024-guidelines/",
+      "peerReviewed": true,
+      "validation": "采用改良 GRADE 方法形成的国际兽医急救与复苏循证共识指南。",
+      "conflicts": "由兽医急诊与重症专业组织支持；本项目不复制临床处置步骤。",
+      "scope": "无反应、呼吸停止、心肺骤停及呼吸窘迫等危及生命状态的识别与专业处置。",
+      "limitations": "面向兽医团队的急救指南，不是家庭犬筛查量表，也不支持本产品的数字扣分。"
+    },
+    {
+      "id": "merck-emergency-triage-2025",
+      "level": "C",
+      "title": "Initial Triage and Resuscitation of Small Animal Emergency Patients",
+      "organization": "Merck Veterinary Manual",
+      "year": 2025,
+      "url": "https://www.merckvetmanual.com/emergency-medicine-and-critical-care/evaluation-and-initial-treatment-of-small-animal-emergency-patients/initial-triage-and-resuscitation-of-small-animal-emergency-patients",
+      "peerReviewed": true,
+      "validation": "经兽医专家审阅的专业临床参考，列出需要立即分流的常见主诉。",
+      "conflicts": "专业参考资料，不是独立验证量表。",
+      "scope": "呼吸困难、倒地或意识丧失、抽搐、剧烈疼痛、严重胃肠症状以及腹胀伴无效干呕。",
+      "limitations": "按本项目证据政策仅用于解释危险信号文案，不能独立决定评分或安全边界。"
     },
     {
       "id": "cbarq-upenn",

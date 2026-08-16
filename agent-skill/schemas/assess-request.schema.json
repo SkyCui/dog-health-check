@@ -83,7 +83,7 @@
       "type": "array",
       "minItems": 1,
       "uniqueItems": true,
-      "description": "normal 只能单独使用。安全边界信号包括 low_energy、appetite_change、vomiting、diarrhea、pain、mobility_issue。",
+      "description": "normal 只能单独使用。persistent_cough、饮水排尿、体重和持续食欲变化用于普通健康关注；明确危险信号由安全边界分流。",
       "items": {
         "type": "string",
         "enum": [
@@ -91,12 +91,18 @@
           "unstable_poop",
           "bad_breath",
           "paw_licking_or_scratching",
+          "persistent_cough",
+          "drinking_or_urination_change",
+          "unexplained_weight_change",
           "low_energy",
           "appetite_change",
           "vomiting",
           "diarrhea",
           "pain",
-          "mobility_issue"
+          "mobility_issue",
+          "breathing_difficulty",
+          "collapse_seizure_or_fainting",
+          "swollen_abdomen_or_unproductive_retching"
         ]
       }
     },

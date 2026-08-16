@@ -139,18 +139,28 @@ const movementOptions: {
   }
 ];
 
-const recentOptions: { value: RecentSignal; label: string; urgent?: boolean }[] = [
-  { value: "unstable_poop", label: "便便不稳定" },
+const recentObservationOptions: { value: RecentSignal; label: string }[] = [
+  { value: "unstable_poop", label: "便便持续或反复不稳定" },
   { value: "bad_breath", label: "口臭" },
-  { value: "paw_licking_or_scratching", label: "舔爪 / 抓痒" },
-  { value: "low_energy", label: "精神明显变差", urgent: true },
-  { value: "appetite_change", label: "食欲明显变化", urgent: true },
-  { value: "vomiting", label: "呕吐", urgent: true },
-  { value: "diarrhea", label: "腹泻", urgent: true },
-  { value: "pain", label: "明显疼痛", urgent: true },
-  { value: "mobility_issue", label: "行动异常", urgent: true },
-  { value: "normal", label: "最近都正常" }
+  { value: "paw_licking_or_scratching", label: "持续舔爪 / 抓痒" },
+  { value: "persistent_cough", label: "持续或反复咳嗽" },
+  { value: "drinking_or_urination_change", label: "饮水或排尿明显变化" },
+  { value: "unexplained_weight_change", label: "无明显原因的体重变化" },
+  { value: "appetite_change", label: "持续或明显食欲变化" }
 ];
+
+const recentUrgentOptions: { value: RecentSignal; label: string }[] = [
+  { value: "low_energy", label: "突然精神很差或反应迟钝" },
+  { value: "vomiting", label: "短时间内反复呕吐" },
+  { value: "diarrhea", label: "严重或带血腹泻" },
+  { value: "pain", label: "明显或剧烈疼痛" },
+  { value: "mobility_issue", label: "突然站不稳或无法行走" },
+  { value: "breathing_difficulty", label: "安静时呼吸费力或张口呼吸" },
+  { value: "collapse_seizure_or_fainting", label: "晕倒、抽搐或意识异常" },
+  { value: "swollen_abdomen_or_unproductive_retching", label: "腹部突然胀大并反复干呕" }
+];
+
+const recentNormalOption: { value: RecentSignal; label: string } = { value: "normal", label: "最近都正常" };
 
 const environmentOptions: { value: HomeEnvironment; label: string }[] = [
   { value: "aromatherapy", label: "香薰" },
@@ -477,13 +487,13 @@ export default function AssessmentForm() {
         </div>
       </QuestionShell>
 
-      <QuestionShell step="问题 5 / 10" title="最近一个月有没有这些信号？" icon={<ShieldAlert size={20} aria-hidden="true" />}>
-        <div className="grid gap-3 md:grid-cols-5">
-          {recentOptions.map((option) => (
+      <QuestionShell step="问题 5 / 10" title="最近有没有这些健康信号？" icon={<ShieldAlert size={20} aria-hidden="true" />}>
+        <p className="mb-3 text-sm font-semibold text-cocoa/70">最近一个月持续或反复出现</p>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {recentObservationOptions.map((option) => (
             <OptionButton
               key={option.value}
               selected={input.recentSignals.includes(option.value)}
-              tone={option.urgent ? "alert" : "default"}
               onClick={() =>
                 setInput({
                   ...input,
@@ -494,6 +504,32 @@ export default function AssessmentForm() {
               {option.label}
             </OptionButton>
           ))}
+        </div>
+        <p className="mb-3 mt-5 text-sm font-semibold text-rose">现在或近期出现的危险信号</p>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {recentUrgentOptions.map((option) => (
+            <OptionButton
+              key={option.value}
+              selected={input.recentSignals.includes(option.value)}
+              tone="alert"
+              onClick={() =>
+                setInput({
+                  ...input,
+                  recentSignals: toggleValue(input.recentSignals, option.value, ["normal"])
+                })
+              }
+            >
+              {option.label}
+            </OptionButton>
+          ))}
+        </div>
+        <div className="mt-3 grid sm:grid-cols-2 lg:grid-cols-4">
+          <OptionButton
+            selected={input.recentSignals.includes(recentNormalOption.value)}
+            onClick={() => setInput({ ...input, recentSignals: [recentNormalOption.value] })}
+          >
+            {recentNormalOption.label}
+          </OptionButton>
         </div>
       </QuestionShell>
 

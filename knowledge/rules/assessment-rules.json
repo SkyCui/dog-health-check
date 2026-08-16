@@ -1,8 +1,8 @@
 {
-  "knowledgeVersion": "dog-happiness-kb-2.1.0-beta",
+  "knowledgeVersion": "dog-happiness-kb-2.2.0-beta",
   "method": "product_heuristic",
   "health": {
-    "evidenceRefs": ["wsava-welfare-2018", "five-domains-2020"],
+    "evidenceRefs": ["wsava-welfare-2018", "five-domains-2020", "aaha-senior-care-2023"],
     "body": { "thin": 72, "ideal": 96, "slightly_fat": 68, "obese": 48, "unknown": null },
     "diet": {
       "base": 92,
@@ -18,7 +18,7 @@
     },
     "recent": {
       "base": 94, "normal": 96,
-      "signalDeductions": { "unstable_poop": 18, "bad_breath": 12, "paw_licking_or_scratching": 14, "low_energy": 45, "appetite_change": 45, "vomiting": 55, "diarrhea": 55, "pain": 60, "mobility_issue": 50 }
+      "signalDeductions": { "unstable_poop": 18, "bad_breath": 12, "paw_licking_or_scratching": 14, "persistent_cough": 22, "drinking_or_urination_change": 24, "unexplained_weight_change": 24, "low_energy": 45, "appetite_change": 28, "vomiting": 55, "diarrhea": 55, "pain": 60, "mobility_issue": 50, "breathing_difficulty": 60, "collapse_seizure_or_fainting": 60, "swollen_abdomen_or_unproductive_retching": 60 }
     },
     "environment": {
       "base": 94, "none": 96, "unknown": null,
@@ -57,17 +57,19 @@
     "insufficientBelow": 0.7
   },
   "safety": {
-    "evidenceRefs": ["wsava-welfare-2018", "aaha-behavior-2015", "cbarq-upenn"],
-    "redVetRecentSignals": ["low_energy", "appetite_change", "vomiting", "diarrhea", "pain", "mobility_issue"],
+    "evidenceRefs": ["wsava-welfare-2018", "aaha-behavior-2015", "aaha-senior-care-2023", "recover-cpr-2024", "merck-emergency-triage-2025", "cbarq-upenn"],
+    "redVetRecentSignals": ["low_energy", "vomiting", "diarrhea", "pain", "mobility_issue", "breathing_difficulty", "collapse_seizure_or_fainting", "swollen_abdomen_or_unproductive_retching"],
     "redVetMentalSignals": ["sudden_behavior_change", "self_injury"],
     "behaviorSupportSignals": ["frequent_fear_or_hiding", "separation_distress", "persistent_pacing_or_vocalizing", "repetitive_behavior", "aggression_safety_risk"],
     "signalLabels": {
-      "low_energy": "精神明显变差",
-      "appetite_change": "食欲明显变化",
-      "vomiting": "呕吐",
-      "diarrhea": "腹泻",
-      "pain": "明显疼痛",
-      "mobility_issue": "行动异常",
+      "low_energy": "突然精神很差或反应迟钝",
+      "vomiting": "短时间内反复呕吐",
+      "diarrhea": "严重或带血腹泻",
+      "pain": "明显或剧烈疼痛",
+      "mobility_issue": "突然站不稳或无法行走",
+      "breathing_difficulty": "安静时呼吸费力或张口呼吸",
+      "collapse_seizure_or_fainting": "晕倒、抽搐或意识异常",
+      "swollen_abdomen_or_unproductive_retching": "腹部突然胀大并反复干呕",
       "frequent_fear_or_hiding": "持续恐惧或躲藏",
       "separation_distress": "分离痛苦",
       "persistent_pacing_or_vocalizing": "持续踱步或叫",
@@ -78,7 +80,7 @@
     },
     "vetMessage": "这个情况已经超出日常自查范围，建议尽快联系兽医或宠物急诊。现在先不要只靠生活方式调整。",
     "behaviorMessage": "这些持续行为提示它可能正在承受明显压力。请先减少触发、避免强迫和惩罚，并联系兽医行为科或有资质的正向行为专业人士。",
-    "safeMessage": "目前没有看到需要立即转介的信号。若后续出现突发行为变化、自伤、持续恐惧或攻击风险，请及时联系兽医或行为专业人士。"
+    "safeMessage": "目前没有看到需要立即转介的信号。若后续出现呼吸困难、意识异常、突然无法行走、突发行为变化、自伤或攻击风险，请及时联系兽医或行为专业人士。"
   },
   "riskPriority": {
     "evidenceRefs": ["wsava-welfare-2018", "aaha-behavior-2015", "five-domains-2020"],
@@ -87,6 +89,10 @@
       { "title": "肠道状态不稳定", "domain": "health", "dimension": "recent", "priority": 2, "when": { "field": "recentSignals", "operator": "includes", "values": ["unstable_poop"] } },
       { "title": "口腔护理不足", "domain": "health", "dimension": "recent", "priority": 3, "when": { "field": "recentSignals", "operator": "includes", "values": ["bad_breath"] } },
       { "title": "皮肤 / 舔爪 / 抓痒信号", "domain": "health", "dimension": "recent", "priority": 4, "when": { "field": "recentSignals", "operator": "includes", "values": ["paw_licking_or_scratching"] } },
+      { "title": "持续咳嗽", "domain": "health", "dimension": "recent", "priority": 2, "when": { "field": "recentSignals", "operator": "includes", "values": ["persistent_cough"] } },
+      { "title": "饮水或排尿变化", "domain": "health", "dimension": "recent", "priority": 2, "when": { "field": "recentSignals", "operator": "includes", "values": ["drinking_or_urination_change"] } },
+      { "title": "无明显原因的体重变化", "domain": "health", "dimension": "recent", "priority": 2, "when": { "field": "recentSignals", "operator": "includes", "values": ["unexplained_weight_change"] } },
+      { "title": "食欲持续变化", "domain": "health", "dimension": "recent", "priority": 2, "when": { "field": "recentSignals", "operator": "includes", "values": ["appetite_change"] } },
       { "title": "运动与嗅闻不足", "domain": "health", "dimension": "movement", "priority": 5, "whenAny": [{ "field": "movement.outdoorFrequency", "operator": "in", "values": ["rare", "once_toilet_only"] }, { "field": "movement.sniffing", "operator": "in", "values": ["none", "little"] }] },
       { "title": "饮食单一或零食偏多", "domain": "health", "dimension": "diet", "priority": 6, "when": { "field": "snackLevel", "operator": "in", "values": ["high"] } },
       { "title": "家庭环境暴露", "domain": "health", "dimension": "environment", "priority": 7, "whenScoreBelow": 80 },

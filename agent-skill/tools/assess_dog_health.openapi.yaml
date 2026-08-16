@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Is Your Dog Happy? Evidence-Informed Beta API
-  version: 2.1.0-beta
+  version: 2.2.0-beta
   description: Generates a reproducible dog happiness self-check from the project knowledge base. Agents must never score or override safety results.
 servers:
   - url: https://dog-health-check.vercel.app
@@ -75,10 +75,10 @@ components:
           type: array
           minItems: 1
           uniqueItems: true
-          description: normal must be selected alone.
+          description: normal must be selected alone. Persistent observations and urgent warning signals use the same array; the API alone determines safety routing.
           items:
             type: string
-            enum: [normal, unstable_poop, bad_breath, paw_licking_or_scratching, low_energy, appetite_change, vomiting, diarrhea, pain, mobility_issue]
+            enum: [normal, unstable_poop, bad_breath, paw_licking_or_scratching, persistent_cough, drinking_or_urination_change, unexplained_weight_change, low_energy, appetite_change, vomiting, diarrhea, pain, mobility_issue, breathing_difficulty, collapse_seizure_or_fainting, swollen_abdomen_or_unproductive_retching]
         homeEnvironment:
           type: array
           minItems: 1

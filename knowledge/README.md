@@ -1,6 +1,6 @@
 # 你的狗狗幸福吗？知识库
 
-当前版本：`dog-happiness-kb-2.1.0-beta`
+当前版本：`dog-happiness-kb-2.2.0-beta`
 
 本目录是 Web、API 和 Agent Skill 的唯一评测依据。运行时代码只执行这里的结构化问卷和规则，不联网检索，也不允许 Agent 自行补充分数。
 

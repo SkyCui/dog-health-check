@@ -8,7 +8,10 @@ export type SniffingLevel = "none" | "little" | "normal" | "rich" | "unknown";
 
 export type RecentSignal =
   | "normal" | "unstable_poop" | "bad_breath" | "paw_licking_or_scratching"
-  | "low_energy" | "appetite_change" | "vomiting" | "diarrhea" | "pain" | "mobility_issue";
+  | "persistent_cough" | "drinking_or_urination_change" | "unexplained_weight_change"
+  | "low_energy" | "appetite_change" | "vomiting" | "diarrhea" | "pain" | "mobility_issue"
+  | "breathing_difficulty" | "collapse_seizure_or_fainting"
+  | "swollen_abdomen_or_unproductive_retching";
 
 export type HomeEnvironment =
   | "aromatherapy" | "strong_cleaner" | "secondhand_smoke" | "plastic_bowl"

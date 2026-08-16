@@ -22,12 +22,17 @@ const cases = [
   { name: "身体好但精神参与低", payload: variant({ mentalState: { positiveEngagement: "rare" } }), status: "good", risk: "积极参与不足", share: true, confidence: "high" },
   { name: "身体风险但精神稳定", payload: variant({ bodyCondition: "obese", snackLevel: "high" }), status: "good", risk: "体重管理", share: true, confidence: "high" },
   { name: "口臭但无急症", payload: variant({ recentSignals: ["bad_breath"] }), status: "excellent", risk: "口腔护理不足", share: true, confidence: "high" },
+  { name: "持续咳嗽但没有呼吸困难", payload: variant({ recentSignals: ["persistent_cough"] }), status: "good", risk: "持续咳嗽", share: true, confidence: "high" },
+  { name: "持续食欲变化但没有急症限定", payload: variant({ recentSignals: ["appetite_change"] }), status: "good", risk: "食欲持续变化", share: true, confidence: "high" },
   { name: "部分未知仍可评分", payload: variant({ homeEnvironment: ["unknown"], mentalState: { distressSignals: ["unknown"] } }), status: "excellent", risk: "继续保持", share: true, confidence: "medium", coverage: 0.8, score: 96 },
   { name: "持续恐惧", payload: variant({ mentalState: { distressSignals: ["frequent_fear_or_hiding"] } }), status: "behavior_support", risk: "需要行为专业支持", share: false, confidence: "high" },
   { name: "分离痛苦", payload: variant({ mentalState: { distressSignals: ["separation_distress"] } }), status: "behavior_support", risk: "需要行为专业支持", share: false, confidence: "high" },
   { name: "攻击风险", payload: variant({ mentalState: { distressSignals: ["aggression_safety_risk"] } }), status: "behavior_support", risk: "需要行为专业支持", share: false, confidence: "high" },
   { name: "突然行为变化", payload: variant({ mentalState: { distressSignals: ["sudden_behavior_change"] } }), status: "red_vet", risk: "需要咨询兽医的异常信号", share: false, confidence: "high" },
   { name: "自伤", payload: variant({ mentalState: { distressSignals: ["self_injury"] } }), status: "red_vet", risk: "需要咨询兽医的异常信号", share: false, confidence: "high" },
+  { name: "呼吸困难", payload: variant({ recentSignals: ["breathing_difficulty"] }), status: "red_vet", risk: "需要咨询兽医的异常信号", share: false, confidence: "high" },
+  { name: "晕倒或抽搐", payload: variant({ recentSignals: ["collapse_seizure_or_fainting"] }), status: "red_vet", risk: "需要咨询兽医的异常信号", share: false, confidence: "high" },
+  { name: "腹胀伴反复干呕", payload: variant({ recentSignals: ["swollen_abdomen_or_unproductive_retching"] }), status: "red_vet", risk: "需要咨询兽医的异常信号", share: false, confidence: "high" },
   { name: "信息不足", payload: variant({ size: "unknown", bodyCondition: "unknown", movement: { dailyMinutes: "unknown", sniffing: "unknown" }, homeEnvironment: ["unknown"], mentalState: { positiveEngagement: "unknown", relaxation: "unknown", socialConnection: "unknown", distressSignals: ["unknown"] } }), status: "insufficient", risk: "信息不足", share: false, confidence: "insufficient", coverage: 0.26, score: null }
 ];
 
@@ -91,6 +96,11 @@ try {
   const invalidResponse = await request(baseUrl, invalid);
   equal(invalidResponse.code, 400, "非法组合 HTTP");
   console.log("✓ 非法组合");
+
+  const invalidRecent = variant({ recentSignals: ["normal", "persistent_cough"] });
+  const invalidRecentResponse = await request(baseUrl, invalidRecent);
+  equal(invalidRecentResponse.code, 400, "健康信号非法组合 HTTP");
+  console.log("✓ 健康信号非法组合");
 } finally {
   if (server) server.kill("SIGTERM");
 }

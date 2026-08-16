@@ -12,7 +12,7 @@
     "dailyMinutes": "10_20",
     "sniffing": "normal"
   },
-  "recentSignals": ["low_energy", "appetite_change"],
+  "recentSignals": ["breathing_difficulty"],
   "homeEnvironment": ["unknown"],
   "mentalState": { "positiveEngagement": "rare", "relaxation": "often_difficult", "socialConnection": "withdrawn", "distressSignals": ["sudden_behavior_change"] }
 }
