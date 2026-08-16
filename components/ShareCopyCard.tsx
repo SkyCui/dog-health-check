@@ -246,11 +246,11 @@ export default function ShareCopyCard({ allowShare, shareCopy, result, assessmen
   return (
     <section className="candy-card overflow-hidden rounded-[2.2rem] p-5 sm:p-7">
       <div className="grid gap-6 lg:grid-cols-[.86fr_1.14fr] lg:items-center">
-        <div className="relative mx-auto aspect-[3/4] w-full max-w-[330px] overflow-hidden rounded-[2rem] border-4 border-white bg-gradient-to-br from-roseSoft via-white to-goldSoft p-5 shadow-candy">
+        <div className="relative mx-auto flex aspect-[3/4] w-full max-w-[330px] flex-col overflow-hidden rounded-[2rem] border-4 border-white bg-gradient-to-br from-roseSoft via-white to-goldSoft p-4 shadow-candy sm:p-5">
           <span className="absolute right-4 top-3 text-3xl">✨</span>
           <p className="text-xs font-black text-rose">毛孩子幸福小档案</p>
-          <div className="mt-4 flex items-center gap-3">
-            <div className="h-20 w-20 shrink-0 overflow-hidden rounded-[1.5rem] border-4 border-white bg-roseSoft shadow-panel">
+          <div className="mt-3 flex items-center gap-3">
+            <div className="h-16 w-16 shrink-0 overflow-hidden rounded-[1.25rem] border-4 border-white bg-roseSoft shadow-panel sm:h-20 sm:w-20 sm:rounded-[1.5rem]">
               <img
                 src={assessment?.dogPhoto || DEFAULT_DOG_PHOTO}
                 alt={assessment?.dogPhoto ? "狗狗头像" : "白色雪纳瑞默认头像"}
@@ -259,11 +259,11 @@ export default function ShareCopyCard({ allowShare, shareCopy, result, assessmen
             </div>
             <div><p className="font-black text-ink">{assessment?.dogName?.trim() || "我家狗狗"}</p><p className="mt-1 text-sm font-bold text-cocoa/65">{assessment?.breed || "可爱小狗"} · {formatDogAge(assessment?.age)}</p></div>
           </div>
-          <div className="mt-5 rounded-3xl bg-white/85 p-4"><p className="text-xs font-black text-cocoa/60">幸福指数</p><p className="mt-1 text-5xl font-black text-rose">{displayScore(result.happinessScore)}{result.happinessScore === null ? null : <span className="ml-1 text-base text-cocoa/50">/ 100</span>}</p><p className="mt-2 text-xs font-bold text-cocoa/60">健康 {displayScore(result.healthScore)} · 精神 {displayScore(result.mentalWellbeingScore)}</p></div>
-          <div className="mt-4 rounded-3xl bg-goldSoft/80 p-4"><p className="text-xs font-black text-gold">今日关注</p><p className="mt-1 font-black text-ink">{result.coreRisk.title}</p></div>
-          <div className="absolute bottom-3 left-5 right-5 flex items-end justify-between gap-3">
-            <div><p className="text-xs font-black text-cocoa/70">扫码测测你家狗狗</p><p className="mt-1 text-[11px] font-bold text-rose">dogcare.cc</p></div>
-            {entryQrCode ? <img src={entryQrCode} alt="扫码进入 dogcare.cc 参与测试" className="h-14 w-14 rounded-lg bg-white p-1" /> : <div className="h-14 w-14 rounded-lg bg-white/80" aria-hidden="true" />}
+          <div className="mt-3 rounded-3xl bg-white/85 p-3 sm:mt-4 sm:p-4"><p className="text-xs font-black text-cocoa/60">幸福指数</p><p className="mt-1 text-4xl font-black leading-none text-rose sm:text-5xl">{displayScore(result.happinessScore)}{result.happinessScore === null ? null : <span className="ml-1 text-sm text-cocoa/50 sm:text-base">/ 100</span>}</p><p className="mt-2 text-xs font-bold text-cocoa/60">健康 {displayScore(result.healthScore)} · 精神 {displayScore(result.mentalWellbeingScore)}</p></div>
+          <div className="mt-3 rounded-3xl bg-goldSoft/80 p-3 sm:p-4"><p className="text-xs font-black text-gold">今日关注</p><p className="mt-1 line-clamp-2 text-sm font-black leading-5 text-ink sm:text-base">{result.coreRisk.title}</p></div>
+          <div className="mt-auto flex min-h-14 items-end justify-between gap-3 pt-3">
+            <div className="min-w-0"><p className="truncate text-xs font-black text-cocoa/70">扫码测测你家狗狗</p><p className="mt-1 text-[11px] font-bold text-rose">dogcare.cc</p></div>
+            {entryQrCode ? <img src={entryQrCode} alt="扫码进入 dogcare.cc 参与测试" className="h-12 w-12 shrink-0 rounded-lg bg-white p-1 sm:h-14 sm:w-14" /> : <div className="h-12 w-12 shrink-0 rounded-lg bg-white/80 sm:h-14 sm:w-14" aria-hidden="true" />}
           </div>
         </div>
 
