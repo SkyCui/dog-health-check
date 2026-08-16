@@ -28,14 +28,16 @@ function matches(input: AssessmentInput, condition: Condition) {
   return typeof value === "string" && condition.values.includes(value);
 }
 
-export function getCoreRisk(input: AssessmentInput, health: HealthDimensionScores, mental: MentalDimensionScores, safety: SafetyBoundaryResult) {
+export function getCoreRisk(input: AssessmentInput, health: HealthDimensionScores, mental: MentalDimensionScores, safety: SafetyBoundaryResult, insufficient = false) {
   if (safety.statusOverride === "red_vet") return { title: "需要咨询兽医的异常信号", reason: `你选择了 ${safety.reason}。${reasons["需要咨询兽医的异常信号"]}`, domain: "safety" as const };
   if (safety.statusOverride === "behavior_support") return { title: "需要行为专业支持", reason: `你选择了 ${safety.reason}。${reasons["需要行为专业支持"]}`, domain: "safety" as const };
+  if (insufficient) return { title: "信息不足", reason: reasons["信息不足"], domain: "information" as const };
 
   const candidates = (rules.riskPriority.candidates as CandidateRule[]).flatMap((rule) => {
     const score = rule.domain === "health"
       ? health[rule.dimension as HealthDimensionKey]
       : mental[rule.dimension as MentalDimensionKey];
+    if (score === null) return [];
     const selected = rule.whenScoreBelow !== undefined
       ? score < rule.whenScoreBelow
       : rule.whenAny

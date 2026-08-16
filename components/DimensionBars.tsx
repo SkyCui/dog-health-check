@@ -8,7 +8,8 @@ const dimensionLabels: Record<HealthDimensionKey, string> = {
   environment: "家庭环境"
 };
 
-function getBarColor(score: number) {
+function getBarColor(score: number | null) {
+  if (score === null) return "bg-slate-300";
   if (score >= 85) return "bg-[#c94f82]";
   if (score >= 70) return "bg-amber-500";
   if (score >= 55) return "bg-coral";
@@ -24,10 +25,10 @@ export default function DimensionBars({ scores }: { scores: HealthDimensionScore
           <div key={key}>
             <div className="mb-2 flex items-center justify-between gap-4 text-sm">
               <span className="font-medium text-ink">{dimensionLabels[key]}</span>
-              <span className="tabular-nums text-slate-600">{score} / 100</span>
+              <span className="tabular-nums text-slate-600">{score === null ? "未观察" : `${score} / 100`}</span>
             </div>
             <div className="h-2.5 overflow-hidden rounded-full bg-slate-100">
-              <div className={`h-full rounded-full ${getBarColor(score)}`} style={{ width: `${score}%` }} />
+              <div className={`h-full rounded-full ${getBarColor(score)}`} style={{ width: `${score ?? 0}%` }} />
             </div>
           </div>
         );

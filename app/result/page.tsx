@@ -66,6 +66,8 @@ export default function ResultPage() {
 
   const urgent = result.status === "red_vet";
   const needsSupport = result.supportRoute !== "none";
+  const confidenceLabel = result.assessmentConfidence === "high" ? "高可信" : result.assessmentConfidence === "medium" ? "中可信" : "信息不足";
+  const formatPillarScore = (score: number | null) => score === null ? "未生成" : `${score} 分`;
 
   return (
     <main className="relative min-h-screen px-4 py-8 sm:px-6 lg:px-8">
@@ -92,19 +94,24 @@ export default function ResultPage() {
               <h1 className="mt-4 text-4xl font-black tracking-[-0.03em] text-ink">{result.statusText}</h1>
               <p className="mt-3 max-w-3xl text-lg leading-8 text-cocoa/75">{result.coreConclusion}</p>
             </div>
-            <ScoreRing score={result.happinessScore} />
+            <div className="flex flex-col items-center gap-2">
+              <ScoreRing score={result.happinessScore} />
+              <p className="rounded-full bg-white/85 px-3 py-1 text-xs font-bold text-cocoa/70">
+                覆盖率 {Math.round(result.answeredCoverage * 100)}% · {confidenceLabel}
+              </p>
+            </div>
           </div>
         </section>
 
         <div className="mt-5 grid gap-5 lg:grid-cols-[1fr_0.95fr]">
-          <DashboardCard title="健康五维" eyebrow={`身体健康习惯 ${result.healthScore} 分`}>
+          <DashboardCard title="健康五维" eyebrow={`身体健康习惯 ${formatPillarScore(result.healthScore)}`}>
             <DimensionBars scores={result.healthDimensionScores} />
             <p className="mt-4 text-sm leading-6 text-slate-500">
               健康维度来自生活习惯观察，不是疾病评分、寿命预测或医疗诊断。
             </p>
           </DashboardCard>
 
-          <DashboardCard title="精神四维" eyebrow={`精神福祉 ${result.mentalWellbeingScore} 分`}>
+          <DashboardCard title="精神四维" eyebrow={`精神福祉 ${formatPillarScore(result.mentalWellbeingScore)}`}>
             <MentalDimensionBars scores={result.mentalDimensionScores} />
             <p className="mt-4 text-sm leading-6 text-slate-500">请结合最近两周与它自身平时状态的变化理解，不以活泼或服从程度判断幸福。</p>
           </DashboardCard>

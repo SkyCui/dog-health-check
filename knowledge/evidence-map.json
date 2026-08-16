@@ -1,5 +1,5 @@
 {
-  "knowledgeVersion": "dog-happiness-kb-2.0.0-beta",
+  "knowledgeVersion": "dog-happiness-kb-2.1.0-beta",
   "mappings": [
     { "id": "health_dimensions", "evidenceRefs": ["wsava-welfare-2018", "five-domains-2020"], "use": "健康五维的问题方向与福利关联" },
     { "id": "positive_engagement", "evidenceRefs": ["dog-qol-2022", "five-domains-2020"], "use": "积极参与和兴趣" },

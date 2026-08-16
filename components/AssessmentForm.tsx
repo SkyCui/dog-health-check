@@ -431,6 +431,10 @@ export default function AssessmentForm() {
             </OptionButton>
           ))}
         </div>
+        <details className="mt-4 rounded-2xl bg-white/75 px-4 py-3 text-sm text-cocoa/75">
+          <summary className="cursor-pointer font-bold text-rose">看不准？查看体况判断提示</summary>
+          <p className="mt-2 leading-6">从上方看腰部是否收窄，从侧面看腹线是否上提，再轻摸肋骨。能摸到肋骨但不明显外露、腰线清楚，通常更接近“刚刚好”；不要只凭体重或毛量判断。</p>
+        </details>
       </QuestionShell>
 
       <QuestionShell step="问题 3 / 10" title="日常饮食和零食情况" icon={<Apple size={20} aria-hidden="true" />}>

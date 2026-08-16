@@ -1,5 +1,5 @@
 {
-  "knowledgeVersion": "dog-happiness-kb-2.0.0-beta",
+  "knowledgeVersion": "dog-happiness-kb-2.1.0-beta",
   "evidenceLevels": {
     "A1": "国际或国家级兽医组织正式指南",
     "A2": "同行评审且经过信效度验证的犬只评估工具",

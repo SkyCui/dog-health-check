@@ -1,9 +1,9 @@
 {
-  "knowledgeVersion": "dog-happiness-kb-2.0.0-beta",
+  "knowledgeVersion": "dog-happiness-kb-2.1.0-beta",
   "method": "product_heuristic",
   "health": {
     "evidenceRefs": ["wsava-welfare-2018", "five-domains-2020"],
-    "body": { "thin": 72, "ideal": 96, "slightly_fat": 68, "obese": 48, "unknown": 76 },
+    "body": { "thin": 72, "ideal": 96, "slightly_fat": 68, "obese": 48, "unknown": null },
     "diet": {
       "base": 92,
       "foodTypeAdjustments": { "kibble": -4, "canned": 0, "freeze_dried": 1, "fresh": 4, "homemade": -6, "mixed": 5 },
@@ -12,26 +12,27 @@
     },
     "movement": {
       "outdoorFrequency": { "rare": 45, "once_toilet_only": 58, "one_to_two": 74, "two_to_three": 88, "two_plus": 92 },
-      "dailyMinutes": { "unknown": 70, "under_10": 55, "10_20": 74, "around_30": 88, "over_30": 94 },
-      "sniffing": { "none": 50, "little": 66, "normal": 84, "rich": 96, "unknown": 72 }
+      "dailyMinutes": { "unknown": null, "under_10": 55, "10_20": 74, "around_30": 88, "over_30": 94 },
+      "sniffing": { "none": 50, "little": 66, "normal": 84, "rich": 96, "unknown": null },
+      "weights": { "outdoorFrequency": 0.4, "dailyMinutes": 0.3, "sniffing": 0.3 }
     },
     "recent": {
       "base": 94, "normal": 96,
       "signalDeductions": { "unstable_poop": 18, "bad_breath": 12, "paw_licking_or_scratching": 14, "low_energy": 45, "appetite_change": 45, "vomiting": 55, "diarrhea": 55, "pain": 60, "mobility_issue": 50 }
     },
     "environment": {
-      "base": 94, "none": 96, "unknown": 88,
+      "base": 94, "none": 96, "unknown": null,
       "exposureDeductions": { "aromatherapy": 10, "strong_cleaner": 12, "secondhand_smoke": 20, "plastic_bowl": 6, "pesticide": 18 }
     },
     "weights": { "body": 0.22, "diet": 0.2, "movement": 0.2, "recent": 0.23, "environment": 0.15 }
   },
   "mental": {
     "evidenceRefs": ["dog-qol-2022", "five-domains-2020", "aaha-behavior-2015", "cbarq-upenn"],
-    "positiveEngagement": { "often": 96, "sometimes": 80, "rare": 50, "unknown": 72 },
-    "relaxation": { "easy": 96, "sometimes_difficult": 75, "often_difficult": 48, "unknown": 72 },
-    "socialConnection": { "secure": 94, "variable": 78, "withdrawn": 48, "unknown": 72 },
+    "positiveEngagement": { "often": 96, "sometimes": 80, "rare": 50, "unknown": null },
+    "relaxation": { "easy": 96, "sometimes_difficult": 75, "often_difficult": 48, "unknown": null },
+    "socialConnection": { "secure": 94, "variable": 78, "withdrawn": 48, "unknown": null },
     "distress": {
-      "base": 96, "none": 96, "unknown": 72,
+      "base": 96, "none": 96, "unknown": null,
       "deductions": { "frequent_fear_or_hiding": 25, "separation_distress": 25, "persistent_pacing_or_vocalizing": 25, "repetitive_behavior": 30, "sudden_behavior_change": 50, "aggression_safety_risk": 35, "self_injury": 60 }
     },
     "weights": { "positiveEngagement": 0.3, "relaxation": 0.25, "socialConnection": 0.2, "distress": 0.25 }
@@ -47,6 +48,13 @@
       { "status": "adjust", "min": 55, "max": 69, "label": "需要尽快改善生活体验" },
       { "status": "risk_confirm", "min": 0, "max": 54, "label": "建议优先确认健康或行为风险" }
     ]
+  },
+  "confidence": {
+    "evidenceRefs": ["five-domains-critique-2023"],
+    "method": "product_heuristic",
+    "highMin": 0.9,
+    "mediumMin": 0.7,
+    "insufficientBelow": 0.7
   },
   "safety": {
     "evidenceRefs": ["wsava-welfare-2018", "aaha-behavior-2015", "cbarq-upenn"],
@@ -92,6 +100,6 @@
   "share": {
     "evidenceRefs": ["wsava-welfare-2018"],
     "allowStatuses": ["excellent", "good", "watch", "adjust", "risk_confirm"],
-    "blockStatuses": ["red_vet", "behavior_support"]
+    "blockStatuses": ["red_vet", "behavior_support", "insufficient"]
   }
 }

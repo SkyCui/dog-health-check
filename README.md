@@ -7,6 +7,8 @@
 - 本地结构化知识库与确定性规则，不接数据库或真实 RAG
 - Web 与 Agent API 共用 `lib/generateResult.ts`
 - 权重属于 `product_heuristic`，不是临床验证公式
+- `unknown` 作为缺失观察处理，不加分也不扣分；API 返回覆盖率与可信度
+- 加权覆盖率低于 70% 时返回 `status=insufficient`，不生成总分或分享内容
 - `red_vet` 与 `behavior_support` 由安全信号触发，低分本身不会触发
 - 我助力你更好了解毛孩子，但无法替代兽医或行为专业评估
 

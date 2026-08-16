@@ -43,6 +43,10 @@ for (const command of ["上一步", "继续", "退出自查"]) {
 for (const safetyStatus of ["red_vet", "behavior_support", "allowShare", "shareCopy"]) {
   assert(skill.includes(`\`${safetyStatus}\``), `safety rule ${safetyStatus} is missing`);
 }
+for (const confidenceField of ["assessmentConfidence", "answeredCoverage", "insufficient", "happinessScore=null"]) {
+  assert(skill.includes(`\`${confidenceField}\``), `confidence rule ${confidenceField} is missing`);
+}
+assert(skill.includes("不代表正常或中等"), "unknown must be documented as missing observation");
 
 assert(!/(?:¥|￥|1\.99|9\.99|无限次|永久会员)/.test(skill), "phase-one Red Skill must not advertise paid features");
 

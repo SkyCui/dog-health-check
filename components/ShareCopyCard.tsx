@@ -72,6 +72,9 @@ function drawCover(context: CanvasRenderingContext2D, image: HTMLImageElement, x
 }
 
 async function createShareImageFile(result: GeneratedResult, assessment: AssessmentInput | null) {
+  if (result.happinessScore === null || result.healthScore === null || result.mentalWellbeingScore === null) {
+    throw new Error("信息不足，暂不生成分享图。");
+  }
   const canvas = document.createElement("canvas");
   canvas.width = 1080;
   canvas.height = 1440;
@@ -144,6 +147,8 @@ export default function ShareCopyCard({ allowShare, shareCopy, result, assessmen
   const [copied, setCopied] = useState(false);
   const [busyPlatform, setBusyPlatform] = useState<SharePlatform | "download" | null>(null);
   const [status, setStatus] = useState("");
+  const insufficient = result.status === "insufficient";
+  const displayScore = (score: number | null) => score === null ? "--" : String(score);
 
   async function copyText() {
     try { await navigator.clipboard.writeText(shareCopy); }
@@ -227,7 +232,7 @@ export default function ShareCopyCard({ allowShare, shareCopy, result, assessmen
             </div>
             <div><p className="font-black text-ink">{assessment?.dogName?.trim() || "我家狗狗"}</p><p className="mt-1 text-sm font-bold text-cocoa/65">{assessment?.breed || "可爱小狗"} · {formatDogAge(assessment?.age)}</p></div>
           </div>
-          <div className="mt-5 rounded-3xl bg-white/85 p-4"><p className="text-xs font-black text-cocoa/60">幸福指数</p><p className="mt-1 text-5xl font-black text-rose">{result.happinessScore}<span className="ml-1 text-base text-cocoa/50">/ 100</span></p><p className="mt-2 text-xs font-bold text-cocoa/60">健康 {result.healthScore} · 精神 {result.mentalWellbeingScore}</p></div>
+          <div className="mt-5 rounded-3xl bg-white/85 p-4"><p className="text-xs font-black text-cocoa/60">幸福指数</p><p className="mt-1 text-5xl font-black text-rose">{displayScore(result.happinessScore)}{result.happinessScore === null ? null : <span className="ml-1 text-base text-cocoa/50">/ 100</span>}</p><p className="mt-2 text-xs font-bold text-cocoa/60">健康 {displayScore(result.healthScore)} · 精神 {displayScore(result.mentalWellbeingScore)}</p></div>
           <div className="mt-4 rounded-3xl bg-goldSoft/80 p-4"><p className="text-xs font-black text-gold">今日关注</p><p className="mt-1 font-black text-ink">{result.coreRisk.title}</p></div>
           <p className="absolute bottom-4 pr-4 text-xs font-bold leading-5 text-cocoa/45">我助力你更好了解毛孩子，但无法替代兽医或行为专业评估</p>
         </div>
@@ -235,8 +240,8 @@ export default function ShareCopyCard({ allowShare, shareCopy, result, assessmen
         <div>
           <p className="inline-flex items-center gap-2 rounded-full bg-goldSoft px-4 py-2 text-sm font-black text-gold"><Sparkles size={17} /> 分享这张可爱幸福卡</p>
           <h2 className="mt-4 text-3xl font-black text-ink">保存图片，记录毛孩子的今日状态</h2>
-          <p className="mt-3 leading-7 text-cocoa/70">{allowShare ? "照片、昵称和测评结果会一起生成竖版图片。照片读取失败时会自动换成小狗头像，不影响保存。" : "检测到需要优先确认的健康或行为信号，这次不建议分享，请先获得专业支持。"}</p>
-          {allowShare ? <div className="mt-4 max-h-44 overflow-auto whitespace-pre-wrap rounded-3xl bg-white/75 p-4 text-sm leading-6 text-cocoa/75">{shareCopy}</div> : <div className="mt-4 rounded-3xl bg-red-50 p-4 text-sm leading-6 text-red-800">先处理健康确认，分享按钮已暂时关闭。</div>}
+          <p className="mt-3 leading-7 text-cocoa/70">{allowShare ? "照片、昵称和测评结果会一起生成竖版图片。照片读取失败时会自动换成小狗头像，不影响保存。" : insufficient ? "关键观察还不够完整，这次不生成或分享分数；补充观察后再测会更可靠。" : "检测到需要优先确认的健康或行为信号，这次不建议分享，请先获得专业支持。"}</p>
+          {allowShare ? <div className="mt-4 max-h-44 overflow-auto whitespace-pre-wrap rounded-3xl bg-white/75 p-4 text-sm leading-6 text-cocoa/75">{shareCopy}</div> : <div className={`mt-4 rounded-3xl p-4 text-sm leading-6 ${insufficient ? "bg-amber-50 text-amber-900" : "bg-red-50 text-red-800"}`}>{insufficient ? "信息不足，分享按钮已暂时关闭。" : "先处理健康确认，分享按钮已暂时关闭。"}</div>}
           <div className="mt-5 flex flex-wrap gap-3">
             {allowShare ? <>
               <button disabled={busyPlatform !== null} onClick={() => shareToPlatform("wechat")} className="inline-flex items-center gap-2 rounded-full bg-[#1aad19] px-5 py-3 text-sm font-black text-white shadow-panel disabled:opacity-60"><MessageCircle size={18} />{busyPlatform === "wechat" ? "准备中…" : "朋友圈"}</button>

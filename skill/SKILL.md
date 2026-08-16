@@ -43,9 +43,11 @@ Do not infer that quiet, independent, introverted, or less obedient dogs are unh
 
 1. Read the questionnaire and collect missing observations neutrally.
 2. Submit the exact request schema to `/api/assess`.
-3. Display `happinessScore`, `healthScore`, `mentalWellbeingScore`, both dimension sets, one priority risk, and one action.
-4. Cite only the returned `evidenceRefs`; do not add unsupported reasons.
-5. Display `knowledgeVersion` and the Beta disclaimer.
+3. Display `assessmentConfidence` and `answeredCoverage` before scores. An `unknown` answer is missing observation, never a medium score.
+4. If `status=insufficient`, do not invent or display a total score; explain what to observe before retesting.
+5. Otherwise display `happinessScore`, `healthScore`, `mentalWellbeingScore`, both dimension sets, one priority risk, and one action.
+6. Cite only the returned `evidenceRefs`; do not add unsupported reasons.
+7. Display `knowledgeVersion` and the Beta disclaimer.
 
 ## Safety precedence
 
@@ -54,6 +56,8 @@ Do not infer that quiet, independent, introverted, or less obedient dogs are unh
 3. Low scores alone never produce a safety status.
 
 For both safety statuses, accept the API output exactly: `allowShare=false` and `shareCopy=""`. Do not provide ordinary lifestyle or enrichment suggestions. Follow `supportRoute` and `supportReminder`.
+
+When `status=insufficient`, accept `happinessScore=null`, `allowShare=false`, and `shareCopy=""`. Ask for more observation; never replace unknown values with guessed answers.
 
 ## Key files
 

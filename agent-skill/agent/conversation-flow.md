@@ -40,6 +40,8 @@ For option 2, explain briefly: this is an observation aid, not a diagnosis; urge
 9. **社交安全与选择感**: `1 secure`, `2 variable`, `3 withdrawn`, `4 unknown`.
 10. **持续压力与异常行为**, multi-select: `1 frequent_fear_or_hiding`, `2 separation_distress`, `3 persistent_pacing_or_vocalizing`, `4 repetitive_behavior`, `5 sudden_behavior_change`, `6 aggression_safety_risk`, `7 self_injury`, `8 none`, `9 unknown`. `none` and `unknown` must each be alone.
 
+`unknown` means there was not enough opportunity to observe. Never translate it into a neutral, normal, or medium answer and never guess on the user's behalf.
+
 For groups 7-10, say: `请回看最近两周，并与它平时的状态相比。`
 
 After all fields are present, summarize the saved answers once, allow corrections, then call `assessDogHappiness` exactly once. Never score in the conversation.

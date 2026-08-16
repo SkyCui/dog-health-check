@@ -18,16 +18,17 @@ function variant(changes) {
 }
 
 const cases = [
-  { name: "双高幸福", payload: healthy, status: "excellent", risk: "继续保持", share: true },
-  { name: "身体好但精神参与低", payload: variant({ mentalState: { positiveEngagement: "rare" } }), status: "good", risk: "积极参与不足", share: true },
-  { name: "身体风险但精神稳定", payload: variant({ bodyCondition: "obese", snackLevel: "high" }), status: "good", risk: "体重管理", share: true },
-  { name: "口臭但无急症", payload: variant({ recentSignals: ["bad_breath"] }), status: "excellent", risk: "口腔护理不足", share: true },
-  { name: "持续恐惧", payload: variant({ mentalState: { distressSignals: ["frequent_fear_or_hiding"] } }), status: "behavior_support", risk: "需要行为专业支持", share: false },
-  { name: "分离痛苦", payload: variant({ mentalState: { distressSignals: ["separation_distress"] } }), status: "behavior_support", risk: "需要行为专业支持", share: false },
-  { name: "攻击风险", payload: variant({ mentalState: { distressSignals: ["aggression_safety_risk"] } }), status: "behavior_support", risk: "需要行为专业支持", share: false },
-  { name: "突然行为变化", payload: variant({ mentalState: { distressSignals: ["sudden_behavior_change"] } }), status: "red_vet", risk: "需要咨询兽医的异常信号", share: false },
-  { name: "自伤", payload: variant({ mentalState: { distressSignals: ["self_injury"] } }), status: "red_vet", risk: "需要咨询兽医的异常信号", share: false },
-  { name: "信息不足", payload: variant({ size: "unknown", bodyCondition: "unknown", movement: { dailyMinutes: "unknown", sniffing: "unknown" }, homeEnvironment: ["unknown"], mentalState: { positiveEngagement: "unknown", relaxation: "unknown", socialConnection: "unknown", distressSignals: ["unknown"] } }), status: "watch", risk: "继续保持", share: true }
+  { name: "双高幸福", payload: healthy, status: "excellent", risk: "继续保持", share: true, confidence: "high", coverage: 1, score: 96 },
+  { name: "身体好但精神参与低", payload: variant({ mentalState: { positiveEngagement: "rare" } }), status: "good", risk: "积极参与不足", share: true, confidence: "high" },
+  { name: "身体风险但精神稳定", payload: variant({ bodyCondition: "obese", snackLevel: "high" }), status: "good", risk: "体重管理", share: true, confidence: "high" },
+  { name: "口臭但无急症", payload: variant({ recentSignals: ["bad_breath"] }), status: "excellent", risk: "口腔护理不足", share: true, confidence: "high" },
+  { name: "部分未知仍可评分", payload: variant({ homeEnvironment: ["unknown"], mentalState: { distressSignals: ["unknown"] } }), status: "excellent", risk: "继续保持", share: true, confidence: "medium", coverage: 0.8, score: 96 },
+  { name: "持续恐惧", payload: variant({ mentalState: { distressSignals: ["frequent_fear_or_hiding"] } }), status: "behavior_support", risk: "需要行为专业支持", share: false, confidence: "high" },
+  { name: "分离痛苦", payload: variant({ mentalState: { distressSignals: ["separation_distress"] } }), status: "behavior_support", risk: "需要行为专业支持", share: false, confidence: "high" },
+  { name: "攻击风险", payload: variant({ mentalState: { distressSignals: ["aggression_safety_risk"] } }), status: "behavior_support", risk: "需要行为专业支持", share: false, confidence: "high" },
+  { name: "突然行为变化", payload: variant({ mentalState: { distressSignals: ["sudden_behavior_change"] } }), status: "red_vet", risk: "需要咨询兽医的异常信号", share: false, confidence: "high" },
+  { name: "自伤", payload: variant({ mentalState: { distressSignals: ["self_injury"] } }), status: "red_vet", risk: "需要咨询兽医的异常信号", share: false, confidence: "high" },
+  { name: "信息不足", payload: variant({ size: "unknown", bodyCondition: "unknown", movement: { dailyMinutes: "unknown", sniffing: "unknown" }, homeEnvironment: ["unknown"], mentalState: { positiveEngagement: "unknown", relaxation: "unknown", socialConnection: "unknown", distressSignals: ["unknown"] } }), status: "insufficient", risk: "信息不足", share: false, confidence: "insufficient", coverage: 0.26, score: null }
 ];
 
 function equal(actual, expected, label) {
@@ -62,11 +63,26 @@ try {
     equal(body.status, item.status, `${item.name} status`);
     equal(body.coreRisk?.title, item.risk, `${item.name} coreRisk`);
     equal(body.allowShare, item.share, `${item.name} allowShare`);
+    equal(body.assessmentConfidence, item.confidence, `${item.name} assessmentConfidence`);
+    if (typeof body.answeredCoverage !== "number" || body.answeredCoverage < 0 || body.answeredCoverage > 1) throw new Error(`${item.name}: invalid answeredCoverage`);
+    if (item.coverage !== undefined) equal(body.answeredCoverage, item.coverage, `${item.name} answeredCoverage`);
+    if ("score" in item) equal(body.happinessScore, item.score, `${item.name} happinessScore`);
     if (!body.knowledgeVersion || !Array.isArray(body.evidenceRefs) || body.evidenceRefs.length === 0) throw new Error(`${item.name}: missing evidence metadata`);
     if (item.status === "red_vet" || item.status === "behavior_support") {
       equal(body.shareCopy, "", `${item.name} shareCopy`);
       if (!body.todayAction?.body?.includes("不输出普通")) throw new Error(`${item.name}: ordinary lifestyle advice was not suppressed`);
       equal(body.shareGuide.actions.every((action) => action.enabled === false), true, `${item.name} share actions`);
+    }
+    if (item.status === "insufficient") {
+      equal(body.happinessScore, null, `${item.name} happinessScore`);
+      equal(body.shareCopy, "", `${item.name} shareCopy`);
+      equal(body.healthDimensionScores.body, null, `${item.name} body score`);
+      equal(body.mentalDimensionScores.positiveEngagement, null, `${item.name} engagement score`);
+      equal(body.shareGuide.actions.every((action) => action.enabled === false), true, `${item.name} share actions`);
+    }
+    if (item.name === "部分未知仍可评分") {
+      equal(body.healthDimensionScores.environment, null, `${item.name} environment score`);
+      equal(body.mentalDimensionScores.distress, null, `${item.name} distress score`);
     }
     console.log(`✓ ${item.name}`);
   }

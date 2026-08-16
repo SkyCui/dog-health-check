@@ -14,10 +14,10 @@ export default function MentalDimensionBars({ scores }: { scores: MentalDimensio
         <div key={key}>
           <div className="mb-2 flex items-center justify-between gap-4 text-sm">
             <span className="font-medium text-ink">{labels[key]}</span>
-            <span className="tabular-nums text-slate-600">{scores[key]} / 100</span>
+            <span className="tabular-nums text-slate-600">{scores[key] === null ? "未观察" : `${scores[key]} / 100`}</span>
           </div>
           <div className="h-2.5 overflow-hidden rounded-full bg-slate-100">
-            <div className="h-full rounded-full bg-[#c94f82]" style={{ width: `${scores[key]}%` }} />
+            <div className={`h-full rounded-full ${scores[key] === null ? "bg-slate-300" : "bg-[#c94f82]"}`} style={{ width: `${scores[key] ?? 0}%` }} />
           </div>
         </div>
       ))}

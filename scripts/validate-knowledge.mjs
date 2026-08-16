@@ -10,6 +10,8 @@ const rules = readJson("knowledge/rules/assessment-rules.json");
 const contentRules = readJson("knowledge/rules/content-rules.json");
 const requestSchema = readJson("schemas/assess-request.schema.json");
 const agentRequestSchema = readJson("agent-skill/schemas/assess-request.schema.json");
+const responseSchema = readJson("schemas/assess-response.schema.json");
+const agentResponseSchema = readJson("agent-skill/schemas/assess-response.schema.json");
 const openapi = fs.readFileSync(path.join(root, "agent-skill/tools/assess_dog_health.openapi.yaml"), "utf8");
 const routeSource = fs.readFileSync(path.join(root, "app/api/assess/route.ts"), "utf8");
 const formSource = fs.readFileSync(path.join(root, "components/AssessmentForm.tsx"), "utf8");
@@ -62,6 +64,15 @@ for (const [section, value] of Object.entries(rules)) {
   if (value && typeof value === "object" && "evidenceRefs" in value) validateRefs(`rules:${section}`, value.evidenceRefs);
 }
 assert(rules.method === "product_heuristic", "numeric rules must declare product_heuristic");
+assert(rules.confidence.method === "product_heuristic", "confidence thresholds must declare product_heuristic");
+assert(rules.confidence.highMin > rules.confidence.mediumMin, "confidence thresholds must be ordered");
+assert(rules.confidence.mediumMin === rules.confidence.insufficientBelow, "confidence cutoff must be continuous");
+assert(JSON.stringify(responseSchema) === JSON.stringify(agentResponseSchema), "Web and Agent response schemas must match");
+assert(responseSchema.properties.status.enum.includes("insufficient"), "response schema must include insufficient status");
+assert(responseSchema.required.includes("assessmentConfidence") && responseSchema.required.includes("answeredCoverage"), "response schema must require confidence metadata");
+assert(openapi.includes("assessmentConfidence") && openapi.includes("answeredCoverage") && openapi.includes("insufficient"), "OpenAPI is missing confidence fields");
+assert(rules.health.body.unknown === null && rules.health.environment.unknown === null, "unknown health observations must not receive scores");
+assert(rules.mental.positiveEngagement.unknown === null && rules.mental.distress.unknown === null, "unknown mental observations must not receive scores");
 assert(questionnaire.knowledgeVersion === sourcesFile.knowledgeVersion, "questionnaire knowledge version mismatch");
 assert(rules.knowledgeVersion === sourcesFile.knowledgeVersion, "rules knowledge version mismatch");
 assert(contentRules.knowledgeVersion === sourcesFile.knowledgeVersion, "content rules knowledge version mismatch");

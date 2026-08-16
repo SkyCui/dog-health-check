@@ -8,6 +8,7 @@ Phase-one UX:
 - Fall back to one numbered question group per turn only when the API action is available.
 - Preserve progress and support back, resume, and exit commands.
 - Keep the experience free; no quota or payment copy is released in phase one.
+- Treat unknown observations as missing data. Present coverage and confidence, and suppress the total score and sharing when status is `insufficient`.
 
 - `SKILL.md`: operating contract
 - `agent/`: collection and response instructions

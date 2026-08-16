@@ -32,7 +32,7 @@ npm run test:api
 4. Import that single YAML file into GPT Builder Actions. It contains no external schema references.
 5. Add `agent/system-prompt.md` to the Agent instructions and keep tool output authoritative.
 
-The Agent must send `mentalState`, must not calculate scores, and must not override `red_vet`, `behavior_support`, `allowShare`, or `shareCopy`.
+The Agent must send `mentalState`, must not calculate scores or replace `unknown`, and must not override `insufficient`, `red_vet`, `behavior_support`, `allowShare`, or `shareCopy`. Read `assessmentConfidence` and `answeredCoverage` before presenting any score; `happinessScore` is null when coverage is insufficient.
 
 ## Red Skill phase one
 

@@ -10,10 +10,10 @@ export function getStrengths(input: AssessmentInput, health: HealthDimensionScor
   if (input.bodyCondition === "ideal") values.push(strengthCopy.idealBody);
   if (["two_to_three", "two_plus"].includes(input.movement.outdoorFrequency) || ["normal", "rich"].includes(input.movement.sniffing)) values.push(strengthCopy.movement);
   if (input.recentSignals.length === 1 && input.recentSignals[0] === "normal") values.push(strengthCopy.recentNormal);
-  if (health.environment >= 88) values.push(strengthCopy.environment);
-  if (mental.positiveEngagement >= 90) values.push(strengthCopy.engagement);
-  if (mental.relaxation >= 90) values.push(strengthCopy.relaxation);
-  if (mental.socialConnection >= 90) values.push(strengthCopy.social);
+  if (health.environment !== null && health.environment >= 88) values.push(strengthCopy.environment);
+  if (mental.positiveEngagement !== null && mental.positiveEngagement >= 90) values.push(strengthCopy.engagement);
+  if (mental.relaxation !== null && mental.relaxation >= 90) values.push(strengthCopy.relaxation);
+  if (mental.socialConnection !== null && mental.socialConnection >= 90) values.push(strengthCopy.social);
   if (!values.length) values.push(strengthCopy.fallback);
   return values.slice(0, 2);
 }

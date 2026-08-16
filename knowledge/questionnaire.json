@@ -1,5 +1,5 @@
 {
-  "knowledgeVersion": "dog-happiness-kb-2.0.0-beta",
+  "knowledgeVersion": "dog-happiness-kb-2.1.0-beta",
   "title": "你的狗狗幸福吗？",
   "recallPeriod": "精神状态题统一观察最近两周，并与这只狗平时的状态比较。",
   "questions": [

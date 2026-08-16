@@ -22,7 +22,8 @@ export type DistressSignal =
   | "repetitive_behavior" | "sudden_behavior_change" | "aggression_safety_risk"
   | "self_injury" | "none" | "unknown";
 
-export type StatusKey = "excellent" | "good" | "watch" | "adjust" | "risk_confirm" | "red_vet" | "behavior_support";
+export type StatusKey = "excellent" | "good" | "watch" | "adjust" | "risk_confirm" | "insufficient" | "red_vet" | "behavior_support";
+export type AssessmentConfidence = "high" | "medium" | "insufficient";
 export type SupportRoute = "none" | "vet" | "veterinary_behavior";
 export type HealthDimensionKey = "body" | "diet" | "movement" | "recent" | "environment";
 export type MentalDimensionKey = "positiveEngagement" | "relaxation" | "socialConnection" | "distress";
@@ -48,8 +49,8 @@ export type AssessmentInput = {
   };
 };
 
-export type HealthDimensionScores = Record<HealthDimensionKey, number>;
-export type MentalDimensionScores = Record<MentalDimensionKey, number>;
+export type HealthDimensionScores = Record<HealthDimensionKey, number | null>;
+export type MentalDimensionScores = Record<MentalDimensionKey, number | null>;
 
 export type SafetyBoundaryResult = {
   statusOverride: "red_vet" | "behavior_support" | null;
@@ -68,13 +69,15 @@ export type GeneratedResult = {
   status: StatusKey;
   statusText: string;
   coreConclusion: string;
-  happinessScore: number;
-  healthScore: number;
-  mentalWellbeingScore: number;
+  happinessScore: number | null;
+  healthScore: number | null;
+  mentalWellbeingScore: number | null;
+  assessmentConfidence: AssessmentConfidence;
+  answeredCoverage: number;
   healthDimensionScores: HealthDimensionScores;
   mentalDimensionScores: MentalDimensionScores;
   strengths: string[];
-  coreRisk: { title: string; reason: string; domain: "health" | "mental" | "safety" };
+  coreRisk: { title: string; reason: string; domain: "health" | "mental" | "safety" | "information" };
   todayAction: { title: string; body: string };
   supportRoute: SupportRoute;
   supportReminder: string;
