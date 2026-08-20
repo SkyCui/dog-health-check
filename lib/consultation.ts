@@ -78,16 +78,16 @@ function contextualDefault(input: AssessmentInput): ConsultationTopic {
 }
 
 function selectEntry(input: AssessmentInput, message: string): GuidanceEntry {
-  let best: GuidanceEntry | undefined;
-  let bestScore = 0;
-  for (const entry of guidanceFile.entries) {
-    const score = entry.keywords.reduce((total, keyword) => total + (message.toLowerCase().includes(keyword.toLowerCase()) ? 1 : 0), 0);
-    if (score > bestScore) {
-      best = entry;
-      bestScore = score;
-    }
-  }
-  if (best) return best;
+  const matches = guidanceFile.entries.map((entry) => ({
+    entry,
+    score: entry.keywords.reduce((total, keyword) => total + (message.toLowerCase().includes(keyword.toLowerCase()) ? 1 : 0), 0)
+  }));
+  const specificMatch = matches
+    .filter(({ entry, score }) => entry.topic !== "daily_feeding" && score > 0)
+    .sort((left, right) => right.score - left.score)[0];
+  if (specificMatch) return specificMatch.entry;
+  const dailyMatch = matches.find(({ entry, score }) => entry.topic === "daily_feeding" && score > 0);
+  if (dailyMatch) return dailyMatch.entry;
   const topic = contextualDefault(input);
   return guidanceFile.entries.find((entry) => entry.topic === topic) ?? guidanceFile.entries[0];
 }

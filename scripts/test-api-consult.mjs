@@ -19,7 +19,7 @@ function variant(changes) {
 
 const cases = [
   { name: "健康犬日常计划", assessment: healthy, message: "帮我做一周日常喂养计划", mode: "guidance", topic: "daily_feeding", route: "none", hasPlan: true },
-  { name: "偏胖体重管理", assessment: variant({ bodyCondition: "obese", snackLevel: "high" }), message: "它有点胖，怎么管理体重", mode: "guidance", topic: "weight_management", route: "none", hasPlan: true },
+  { name: "偏胖体重管理", assessment: variant({ bodyCondition: "obese", snackLevel: "high" }), message: "它有点胖，零食也比较多，帮我安排一周容易坚持的喂养计划", mode: "guidance", topic: "weight_management", route: "none", hasPlan: true },
   { name: "零食预算", assessment: variant({ snackLevel: "high" }), message: "零食和磨牙棒应该怎么控制", mode: "guidance", topic: "treats", route: "none", hasPlan: true },
   { name: "评测医疗边界", assessment: variant({ recentSignals: ["breathing_difficulty"] }), message: "该怎么换粮", mode: "safety", topic: "safety", route: "vet", hasPlan: false },
   { name: "评测行为边界", assessment: variant({ mentalState: { distressSignals: ["separation_distress"] } }), message: "怎样用零食训练", mode: "safety", topic: "safety", route: "veterinary_behavior", hasPlan: false },
