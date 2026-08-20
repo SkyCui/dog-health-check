@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "test:api": "node scripts/test-api-assess.mjs",
+    "test:consult": "node scripts/test-api-consult.mjs",
     "test:knowledge": "node scripts/validate-knowledge.mjs",
     "test:red-skill": "node scripts/validate-red-skill.mjs"
   },

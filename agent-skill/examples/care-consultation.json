@@ -1,0 +1,17 @@
+{
+  "assessment": {
+    "dogName": "百万",
+    "age": "3 岁",
+    "breed": "柯基",
+    "weight": "12kg",
+    "size": "medium",
+    "bodyCondition": "slightly_fat",
+    "foodTypes": ["kibble", "canned"],
+    "snackLevel": "high",
+    "movement": { "outdoorFrequency": "one_to_two", "dailyMinutes": "10_20", "sniffing": "normal" },
+    "recentSignals": ["normal"],
+    "homeEnvironment": ["none"],
+    "mentalState": { "positiveEngagement": "often", "relaxation": "easy", "socialConnection": "secure", "distressSignals": ["none"] }
+  },
+  "message": "它有点胖，零食也比较多，帮我安排一周容易坚持的喂养计划。"
+}

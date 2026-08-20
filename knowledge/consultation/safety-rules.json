@@ -1,0 +1,9 @@
+{
+  "knowledgeVersion": "dog-care-consult-kb-1.0.0-beta",
+  "method": "evidence_bounded_safety_routing",
+  "evidenceRefs": ["recover-cpr-2024", "aaha-senior-care-2023", "aaha-behavior-2015", "aaha-nutrition-2021"],
+  "urgentKeywords": ["呼吸困难", "喘不上气", "晕倒", "抽搐", "无反应", "腹胀干呕", "反复干呕", "剧烈疼痛", "大量吐血", "大量便血", "误食毒物", "中毒", "自伤"],
+  "medicalReviewKeywords": ["反复呕吐", "持续呕吐", "持续腹泻", "拒绝饮水", "明显食欲变化", "突然不吃", "突然行为变化", "体重快速下降"],
+  "behaviorSupportKeywords": ["攻击人", "咬人", "严重攻击", "持续害怕", "长期躲藏", "分离痛苦", "反复踱步", "重复行为"],
+  "prohibitedOutputs": ["疾病诊断", "药物剂量", "补充剂治疗剂量", "处方粮替代建议", "声称完整均衡的通用自制食谱", "替代兽医或行为专业评估"]
+}

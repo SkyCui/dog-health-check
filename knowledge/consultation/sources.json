@@ -1,0 +1,70 @@
+{
+  "knowledgeVersion": "dog-care-consult-kb-1.0.0-beta",
+  "sources": [
+    {
+      "id": "wsava-global-nutrition",
+      "level": "A1",
+      "title": "WSAVA Global Nutrition Guidelines and Toolkit",
+      "organization": "World Small Animal Veterinary Association",
+      "year": 2026,
+      "url": "https://wsava.org/global-guidelines/global-nutrition-guidelines/",
+      "peerReviewed": true,
+      "validation": "国际小动物兽医组织发布的营养评估指南及工具包，提供体况、肌肉状态、饮食史、热量和选粮评估框架。",
+      "conflicts": "部分资源由宠物食品行业教育支持；本知识库仅采用可跨品牌复核的评估原则。",
+      "scope": "全生命阶段营养筛查、体况监测、饮食史、零食与选粮信息。",
+      "limitations": "面向兽医团队和照护者的指南，不提供适用于每只犬的自动处方或精确喂食克数。"
+    },
+    {
+      "id": "aaha-nutrition-2021",
+      "level": "A1",
+      "title": "2021 AAHA Nutrition and Weight Management Guidelines for Dogs and Cats",
+      "organization": "American Animal Hospital Association",
+      "year": 2021,
+      "url": "https://www.aaha.org/resources/2021-aaha-nutrition-and-weight-management-guidelines/home/",
+      "peerReviewed": true,
+      "validation": "由营养专家工作组制定并经过正式同行评审，涵盖营养筛查、体重管理、完整均衡饮食、换粮和家庭自制饮食。",
+      "conflicts": "指南披露 Hill's、Purina Pro Plan Veterinary Diets 和 Royal Canin 的教育资助；使用时不推荐具体品牌。",
+      "scope": "健康犬喂养计划、零食比例、体况监测、体重管理、换粮、生命阶段和营养风险。",
+      "limitations": "指南同时包含证据与专家共识；个体热量和疾病饮食仍需兽医结合检查制定。"
+    },
+    {
+      "id": "aaha-home-prepared-2021",
+      "level": "A1",
+      "title": "AAHA Home-prepared Diets Guidance",
+      "organization": "American Animal Hospital Association",
+      "year": 2021,
+      "url": "https://www.aaha.org/resources/2021-aaha-nutrition-and-weight-management-guidelines/home-prepared-diets/",
+      "peerReviewed": true,
+      "validation": "AAHA 营养指南组成部分，引用对公开犬猫自制食谱营养完整性的研究。",
+      "conflicts": "沿用 AAHA 营养指南的行业教育资助披露。",
+      "scope": "家庭自制饮食的营养完整性、配方遵从和专业营养评估。",
+      "limitations": "不提供通用自制配方；真正完整均衡的个体配方应由有资质的兽医营养专业人士制定并复核。"
+    },
+    {
+      "id": "aaha-raw-protein-position",
+      "level": "A1",
+      "title": "AAHA Raw Protein Diet Position Statement",
+      "organization": "American Animal Hospital Association",
+      "year": 2026,
+      "url": "https://www.aaha.org/raw-protein-diet/",
+      "peerReviewed": true,
+      "validation": "AAHA 基于微生物污染、人畜共患和营养风险证据发布的正式立场。",
+      "conflicts": "机构立场文件，不是随机对照试验。",
+      "scope": "未经灭菌的生肉、生食和动物源生零食的宠物及家庭公共卫生风险。",
+      "limitations": "不评判每一种商业加工工艺；具体产品仍应核查营养充足性、杀菌工艺和召回记录。"
+    },
+    {
+      "id": "avsab-humane-training-2021",
+      "level": "A1",
+      "title": "Humane Dog Training Position Statement",
+      "organization": "American Veterinary Society of Animal Behavior",
+      "year": 2021,
+      "url": "https://avsab.org/resources/position-statements/",
+      "peerReviewed": true,
+      "validation": "兽医行为专业组织基于训练方式、动物福利和人犬关系研究形成的正式立场。",
+      "conflicts": "专业协会立场，不是单一临床试验。",
+      "scope": "奖励式训练、避免厌恶和惩罚、环境管理与行为安全。",
+      "limitations": "不替代个体行为诊断，也不证明某一种食物玩具适合所有犬。"
+    }
+  ]
+}

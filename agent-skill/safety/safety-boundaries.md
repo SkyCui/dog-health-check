@@ -7,3 +7,5 @@
 - Both safety statuses require `allowShare=false` and `shareCopy=""`.
 - `insufficient` is not a safety diagnosis, but it also requires `allowShare=false`, `shareCopy=""`, and no total happiness score.
 - Never weaken, reinterpret, or conceal the API safety result.
+
+For `/api/consult`, the original assessment is scored again before any knowledge entry is selected. A returned `mode=safety` must have an empty `plan`. Do not add feeding, diet transition, enrichment, training, therapeutic diet, medicine, or supplement instructions around that response. Consultation text can also trigger `vet` or `veterinary_behavior` routing even when the prior assessment was normal.

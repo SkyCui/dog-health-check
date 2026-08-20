@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Dog Care Consultation Response",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["mode", "topic", "title", "answer", "plan", "watchFor", "citations", "followUpPrompts", "safetyRoute", "knowledgeVersion", "disclaimer"],
+  "properties": {
+    "mode": { "type": "string", "enum": ["guidance", "safety"] },
+    "topic": { "type": "string", "enum": ["daily_feeding", "weight_management", "treats", "diet_transition", "home_prepared", "raw_food", "feeding_enrichment", "life_stage", "safety"] },
+    "title": { "type": "string" },
+    "answer": { "type": "string" },
+    "plan": { "type": "array", "items": { "type": "object", "required": ["day", "action"], "properties": { "day": { "type": "string" }, "action": { "type": "string" } } } },
+    "watchFor": { "type": "array", "items": { "type": "string" } },
+    "citations": { "type": "array", "minItems": 1, "items": { "type": "object", "required": ["id", "title", "organization", "level", "url"], "properties": { "id": { "type": "string" }, "title": { "type": "string" }, "organization": { "type": "string" }, "level": { "type": "string", "enum": ["A1", "A2", "B", "C"] }, "url": { "type": "string", "format": "uri" } } } },
+    "followUpPrompts": { "type": "array", "items": { "type": "string" } },
+    "safetyRoute": { "type": "string", "enum": ["none", "vet", "veterinary_behavior"] },
+    "knowledgeVersion": { "type": "string" },
+    "disclaimer": { "type": "string" }
+  }
+}

@@ -8,14 +8,18 @@ const questionnaire = readJson("knowledge/questionnaire.json");
 const evidenceMap = readJson("knowledge/evidence-map.json");
 const rules = readJson("knowledge/rules/assessment-rules.json");
 const contentRules = readJson("knowledge/rules/content-rules.json");
+const consultationSources = readJson("knowledge/consultation/sources.json");
+const consultationGuidance = readJson("knowledge/consultation/guidance.json");
+const consultationSafety = readJson("knowledge/consultation/safety-rules.json");
 const requestSchema = readJson("schemas/assess-request.schema.json");
 const agentRequestSchema = readJson("agent-skill/schemas/assess-request.schema.json");
 const responseSchema = readJson("schemas/assess-response.schema.json");
 const agentResponseSchema = readJson("agent-skill/schemas/assess-response.schema.json");
 const openapi = fs.readFileSync(path.join(root, "agent-skill/tools/assess_dog_health.openapi.yaml"), "utf8");
 const routeSource = fs.readFileSync(path.join(root, "app/api/assess/route.ts"), "utf8");
+const protocolSource = fs.readFileSync(path.join(root, "lib/assessmentProtocol.ts"), "utf8");
 const formSource = fs.readFileSync(path.join(root, "components/AssessmentForm.tsx"), "utf8");
-const sourceIds = new Set(sourcesFile.sources.map((source) => source.id));
+const sourceIds = new Set([...sourcesFile.sources, ...consultationSources.sources].map((source) => source.id));
 const allowedLevels = new Set(["A1", "A2", "B", "C"]);
 
 function assert(condition, message) {
@@ -40,7 +44,7 @@ function schemaEnum(schema, field) {
 
 assert(questionnaire.questions.length === 10, "questionnaire must contain exactly 10 question groups");
 assert(new Set(questionnaire.questions.map((item) => item.number)).size === 10, "question numbers must be unique");
-sourcesFile.sources.forEach((source) => {
+[...sourcesFile.sources, ...consultationSources.sources].forEach((source) => {
   assert(allowedLevels.has(source.level), `invalid evidence level for ${source.id}`);
   for (const field of ["title", "organization", "url", "validation", "scope", "limitations", "conflicts"]) {
     assert(typeof source[field] === "string" && source[field].length > 0, `${source.id}.${field} is required`);
@@ -54,7 +58,7 @@ questionnaire.questions.forEach((question) => {
     assert(JSON.stringify(schemaEnum(agentRequestSchema, field)) === JSON.stringify(values), `${field} differs between questionnaire and Agent schema`);
     values.forEach((value) => {
       assert(openapi.includes(value), `OpenAPI is missing ${field} value ${value}`);
-      assert(routeSource.includes(`"${value}"`), `API route is missing ${field} value ${value}`);
+      assert(`${routeSource}${protocolSource}`.includes(`"${value}"`), `API protocol is missing ${field} value ${value}`);
       assert(formSource.includes(`"${value}"`), `Web form is missing ${field} value ${value}`);
     });
   }
@@ -98,5 +102,19 @@ recentQuestion.fieldEnums.recentSignals.filter((signal) => signal !== "normal").
 });
 assert(rules.safety.evidenceRefs.some((ref) => sourcesFile.sources.find((source) => source.id === ref)?.level === "A1"), "safety rules require at least one A1 source");
 assert(!openapi.includes("./schemas/") && !openapi.includes(".schema.json"), "OpenAPI must not use external schemas");
+for (const marker of ["/api/consult", "ConsultRequest", "ConsultResponse", "consultDogCareKnowledge", "citations", "safetyRoute"]) {
+  assert(openapi.includes(marker), `OpenAPI is missing consultation marker ${marker}`);
+}
+
+assert(consultationSources.knowledgeVersion === consultationGuidance.knowledgeVersion, "consultation knowledge version mismatch");
+assert(consultationSources.knowledgeVersion === consultationSafety.knowledgeVersion, "consultation safety version mismatch");
+consultationGuidance.entries.forEach((entry) => {
+  assert(entry.method !== "model_memory", `${entry.id} cannot use model memory`);
+  validateRefs(`consultation:${entry.id}`, entry.evidenceRefs);
+  assert(Array.isArray(entry.actions) && entry.actions.length >= 3, `${entry.id} needs actionable plan steps`);
+  assert(Array.isArray(entry.watchFor) && entry.watchFor.length > 0, `${entry.id} needs limits or watch points`);
+});
+validateRefs("consultation-safety", consultationSafety.evidenceRefs);
+assert(Array.isArray(consultationSafety.prohibitedOutputs) && consultationSafety.prohibitedOutputs.length > 0, "consultation safety must prohibit clinical outputs");
 
 console.log(`Knowledge validation passed: ${sourcesFile.knowledgeVersion}`);

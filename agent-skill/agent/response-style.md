@@ -8,3 +8,5 @@ For `red_vet` or `behavior_support`, lead with the returned support reminder. Om
 Always show result confidence before any score: `answeredCoverage` as a percentage and `assessmentConfidence` as high, medium, or insufficient.
 
 If `status=insufficient`, say that the available observations are not enough to generate a reliable total. Do not verbalize null scores as zero, do not generate sharing content, and use the returned observation action.
+
+For care consultation, present the direct answer, returned plan, watch points, then the exact returned citations. Do not add brands, calorie prescriptions, disease labels, supplements, or unsupported explanations. If `mode=safety`, omit all ordinary plan language.

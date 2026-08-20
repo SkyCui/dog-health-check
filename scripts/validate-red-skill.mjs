@@ -48,6 +48,9 @@ for (const confidenceField of ["assessmentConfidence", "answeredCoverage", "insu
 }
 assert(skill.includes("不代表正常或中等"), "unknown must be documented as missing observation");
 
-assert(!/(?:¥|￥|1\.99|9\.99|无限次|永久会员)/.test(skill), "phase-one Red Skill must not advertise paid features");
+for (const consultationMarker of ["https://dogcare.cc/consult", "consultDogCareKnowledge", "9.99", "Plus", "citations", "mode=safety"]) {
+  assert(skill.includes(consultationMarker), `Red Skill is missing consultation marker ${consultationMarker}`);
+}
+assert(skill.includes("不包含真人兽医或营养师咨询"), "Red Skill must state the Plus service boundary");
 
-console.log("Red Skill validation passed: phase-one free flow");
+console.log("Red Skill validation passed: assessment and consultation flow");

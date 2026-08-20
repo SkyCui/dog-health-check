@@ -1,8 +1,8 @@
 openapi: 3.1.0
 info:
-  title: Is Your Dog Happy? Evidence-Informed Beta API
-  version: 2.2.0-beta
-  description: Generates a reproducible dog happiness self-check from the project knowledge base. Agents must never score or override safety results.
+  title: Dog Happiness Assessment and Care Consultation API
+  version: 2.3.0-beta
+  description: Generates a reproducible dog happiness self-check and evidence-bounded feeding consultation. Agents must never score, add advice from memory, or override safety results.
 servers:
   - url: https://dog-health-check.vercel.app
     description: Production Vercel server
@@ -26,6 +26,30 @@ paths:
                 $ref: '#/components/schemas/AssessResponse'
         '400':
           description: Invalid or incomplete input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/consult:
+    post:
+      operationId: consultDogCareKnowledge
+      summary: Get evidence-bounded dog feeding and wellbeing guidance after assessment
+      description: Re-runs the assessment safety rules, retrieves only local knowledge-base guidance, and returns the sources actually used. Safety responses never include an ordinary feeding plan.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConsultRequest'
+      responses:
+        '200':
+          description: Cited guidance or a safety-first professional support route
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultResponse'
+        '400':
+          description: Invalid assessment or consultation question
           content:
             application/json:
               schema:
@@ -225,6 +249,65 @@ components:
                   label: { type: string }
                   description: { type: string }
                   enabled: { type: boolean }
+    ConsultRequest:
+      type: object
+      additionalProperties: false
+      required: [assessment, message]
+      properties:
+        assessment:
+          $ref: '#/components/schemas/AssessRequest'
+        message:
+          type: string
+          minLength: 1
+          maxLength: 1000
+    ConsultResponse:
+      type: object
+      additionalProperties: false
+      required: [mode, topic, title, answer, plan, watchFor, citations, followUpPrompts, safetyRoute, knowledgeVersion, disclaimer]
+      properties:
+        mode:
+          type: string
+          enum: [guidance, safety]
+        topic:
+          type: string
+          enum: [daily_feeding, weight_management, treats, diet_transition, home_prepared, raw_food, feeding_enrichment, life_stage, safety]
+        title: { type: string }
+        answer: { type: string }
+        plan:
+          type: array
+          items:
+            type: object
+            additionalProperties: false
+            required: [day, action]
+            properties:
+              day: { type: string }
+              action: { type: string }
+        watchFor:
+          type: array
+          items: { type: string }
+        citations:
+          type: array
+          minItems: 1
+          items:
+            type: object
+            additionalProperties: false
+            required: [id, title, organization, level, url]
+            properties:
+              id: { type: string }
+              title: { type: string }
+              organization: { type: string }
+              level:
+                type: string
+                enum: [A1, A2, B, C]
+              url: { type: string, format: uri }
+        followUpPrompts:
+          type: array
+          items: { type: string }
+        safetyRoute:
+          type: string
+          enum: [none, vet, veterinary_behavior]
+        knowledgeVersion: { type: string }
+        disclaimer: { type: string }
     ErrorResponse:
       type: object
       additionalProperties: false

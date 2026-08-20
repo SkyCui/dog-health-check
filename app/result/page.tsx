@@ -9,7 +9,7 @@ import TodayActionCard from "@/components/TodayActionCard";
 import VetReminderCard from "@/components/VetReminderCard";
 import { generateResult } from "@/lib/generateResult";
 import type { AssessmentInput, GeneratedResult } from "@/lib/types";
-import { ArrowLeft, ClipboardList, ShieldCheck, Sparkles } from "lucide-react";
+import { ArrowLeft, BookOpen, ClipboardList, ShieldCheck, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -139,6 +139,19 @@ export default function ResultPage() {
         </div>
 
         {needsSupport ? <div className="mt-5"><VetReminderCard reminder={result.supportReminder} urgent={urgent} title={urgent ? "就医提醒" : "行为专业支持提醒"} /></div> : null}
+
+        <section className="candy-card mt-5 rounded-[2rem] p-5 sm:p-7">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="inline-flex items-center gap-2 text-sm font-black text-rose"><BookOpen size={18} /> 测试后的下一步</p>
+              <h2 className="mt-2 text-2xl font-black text-ink">问问身心喂养知识库顾问</h2>
+              <p className="mt-2 max-w-2xl leading-7 text-cocoa/70">结合这份自测，获得带权威出处的日常喂养建议与一周行动计划。首个咨询会话免费，可连续追问 5 轮。</p>
+            </div>
+            <Link href="/consult" className="candy-button inline-flex shrink-0 items-center justify-center gap-2 rounded-full px-5 py-3 font-black text-white">
+              <Sparkles size={18} /> 开始免费咨询
+            </Link>
+          </div>
+        </section>
 
         <div className="mt-5">
           <ShareCopyCard allowShare={result.allowShare} shareCopy={result.shareCopy} result={result} assessment={assessment} />

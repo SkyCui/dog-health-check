@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Dog Care Consultation Request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["assessment", "message"],
+  "properties": {
+    "assessment": { "$ref": "./assess-request.schema.json" },
+    "message": { "type": "string", "minLength": 1, "maxLength": 1000 }
+  }
+}

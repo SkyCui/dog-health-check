@@ -1,6 +1,6 @@
 ---
 name: assess-dog-happiness
-description: Run the evidence-informed "你的狗狗幸福吗？" Beta self-check from ten owner-observed health and mental-wellbeing question groups. Use when collecting dog wellbeing observations, calling /api/assess, explaining its returned evidence, or routing medical and behavior safety signals. Never score independently.
+description: Run the evidence-informed dog happiness Beta self-check and post-assessment care consultation. Use when collecting observations, calling /api/assess, calling /api/consult for cited feeding or wellbeing guidance, or routing safety signals. Never score or advise from model memory.
 ---
 
 # 你的狗狗幸福吗？循证轻量自查 Beta
@@ -48,6 +48,15 @@ Do not infer that quiet, independent, introverted, or less obedient dogs are unh
 5. Otherwise display `happinessScore`, `healthScore`, `mentalWellbeingScore`, both dimension sets, one priority risk, and one action.
 6. Cite only the returned `evidenceRefs`; do not add unsupported reasons.
 7. Display `knowledgeVersion` and the Beta disclaimer.
+
+## Post-assessment consultation
+
+- Only call `POST /api/consult` after a complete assessment is available; send the original `AssessmentInput`, not a model-written summary.
+- Treat `knowledge/consultation/` as the only feeding and wellbeing consultation authority.
+- Repeat the returned answer, plan, watch points, citations, and safety route without adding claims from memory.
+- Do not diagnose disease, choose therapeutic diets, give drug or supplement doses, or generate a generic home-prepared recipe claimed to be complete and balanced.
+- When `mode=safety`, keep the returned plan empty and prioritize professional support.
+- The Web MVP includes one free consultation session with up to five turns, then presents the ¥9.99 Plus lifetime plan. Payment enforcement still requires login, server-side entitlements, orders, and verified callbacks.
 
 ## Safety precedence
 
