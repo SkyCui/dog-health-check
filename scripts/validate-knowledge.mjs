@@ -11,6 +11,7 @@ const contentRules = readJson("knowledge/rules/content-rules.json");
 const consultationSources = readJson("knowledge/consultation/sources.json");
 const consultationGuidance = readJson("knowledge/consultation/guidance.json");
 const consultationSafety = readJson("knowledge/consultation/safety-rules.json");
+const agentPolicy = readJson("knowledge/consultation/agent-policy.json");
 const requestSchema = readJson("schemas/assess-request.schema.json");
 const agentRequestSchema = readJson("agent-skill/schemas/assess-request.schema.json");
 const responseSchema = readJson("schemas/assess-response.schema.json");
@@ -121,6 +122,8 @@ assert(openapi.includes("BYOK") && openapi.includes("Platform-paid models are pe
 
 assert(consultationSources.knowledgeVersion === consultationGuidance.knowledgeVersion, "consultation knowledge version mismatch");
 assert(consultationSources.knowledgeVersion === consultationSafety.knowledgeVersion, "consultation safety version mismatch");
+validateRefs("care-agent-policy", agentPolicy.evidenceRefs);
+assert(agentPolicy.method === "product_heuristic" && agentPolicy.limitations.length > 10, "Agent policy must state its unvalidated product-rule limits");
 consultationGuidance.entries.forEach((entry) => {
   assert(entry.method !== "model_memory", `${entry.id} cannot use model memory`);
   validateRefs(`consultation:${entry.id}`, entry.evidenceRefs);

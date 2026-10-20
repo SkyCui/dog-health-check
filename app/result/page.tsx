@@ -148,6 +148,7 @@ export default function ResultPage() {
         <div className="mt-5">
           <ShareCopyCard allowShare={result.allowShare} shareCopy={result.shareCopy} result={result} assessment={assessment} />
         </div>
+        <section className="section-band"><div><p className="eyebrow">从一张幸福卡，到每一天的陪伴</p><h2 className="mt-2">把今天记下来，下次更懂它</h2><p className="mt-3 text-sm leading-7 text-cocoa/70">记录日常变化，设置一周后复盘提醒。仅保存在本机，可导出备份。</p></div><Link href="/companion" className="primary-link"><ClipboardList size={18}/>开始陪伴记录</Link></section>
       </div>
     </main>
   );

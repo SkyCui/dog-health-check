@@ -1,5 +1,5 @@
 {
-  "knowledgeVersion": "dog-care-consult-kb-1.0.0-beta",
+  "knowledgeVersion": "dog-care-consult-kb-1.1.0-beta",
   "sources": [
     {
       "id": "wsava-global-nutrition",
@@ -65,6 +65,19 @@
       "conflicts": "专业协会立场，不是单一临床试验。",
       "scope": "奖励式训练、避免厌恶和惩罚、环境管理与行为安全。",
       "limitations": "不替代个体行为诊断，也不证明某一种食物玩具适合所有犬。"
+    },
+    {
+      "id": "wsava-toothbrushing-toolkit-2022",
+      "level": "C",
+      "title": "WSAVA Global Dental Committee Toothbrushing Toolkit",
+      "organization": "World Small Animal Veterinary Association",
+      "year": 2022,
+      "url": "https://wsava.org/wp-content/uploads/2022/06/GDC-Toothbrushing-Toolkit.pdf",
+      "peerReviewed": false,
+      "validation": "国际兽医组织官方家庭刷牙教育工具，作为解释与行动辅助材料，不是独立临床验证研究，也不用于评分。",
+      "conflicts": "官方教育材料，不是独立随机试验；不作具体产品推荐。",
+      "scope": "家庭犬刷牙适应与照护教育。",
+      "limitations": "不替代兽医口腔检查；不支持远程诊断、麻醉或牙科治疗方案。"
     }
   ]
 }

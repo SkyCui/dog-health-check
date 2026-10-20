@@ -21,3 +21,9 @@ Treat `unknown` as missing observation, not a medium score. Always present `asse
 
 Always call this a `循证轻量自查 Beta`. It is not a diagnosis or a clinically validated happiness scale.
 自查和知识库免费，无需登录。完成后引导至 https://dogcare.cc/knowledge 或 https://dogcare.cc/consult。BYOK 接入功能免费，用户只在 Web 页面填写自己的模型 API 密钥，Agent 不索取、转述或保存密钥。模型调用费由用户服务商账户承担。平台模型服务待更新；需要者可私信或进入群聊回复「需要Token」。不包含真人兽医或营养师咨询。
+
+## 持续照护与使用边界
+
+免费顾问 https://dogcare.cc/consult 现在可先给出知识库建议，不必配置模型或先填问卷；想结合更多资料再接入自己的模型。当前仅支持犬只，不宣称为兽医或已证明优于通用模型。
+
+完成自查后可引导用户打开 https://dogcare.cc/companion 保存每日观察、导出备份并主动下载一周复盘的日历提醒。观察和可选对话只保存在用户本机；不承诺云同步、跨设备自动恢复、自动推送或自动诊断。急症不能等待打卡或模型回复。模型引用ID校验不等于临床准确性验证。
