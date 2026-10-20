@@ -57,6 +57,18 @@ button:disabled { cursor: not-allowed; opacity: .5; }
 .knowledge-note { margin-top:20px; padding:12px 0 12px 14px; border-left:3px solid #6d9a89; font-size:13px; line-height:1.8; color:#667b73; }
 .section-band { padding:32px 0; margin-top:30px; border-top:1px solid #eddee5; display:flex; justify-content:space-between; gap:20px; align-items:center; }
 .section-band h2 { font-size:21px; font-weight:700; }
+.knowledge-assistant-copy { min-width:0; max-width:680px; }
+.knowledge-assistant-copy h2 { margin-top:10px; line-height:1.6; text-wrap:balance; }
+.knowledge-assistant-button { flex-shrink:0; justify-content:center; text-align:center; line-height:1.6; }
+@media(max-width:900px) {
+  .knowledge-assistant-cta { flex-direction:column; align-items:stretch; gap:22px; }
+  .knowledge-assistant-button { align-self:flex-start; }
+}
+@media(max-width:700px) {
+  .section-band.knowledge-assistant-cta { align-items:stretch; }
+  .knowledge-assistant-copy h2 { font-size:20px; }
+  .knowledge-assistant-button { width:100%; align-self:stretch; min-height:50px; }
+}
 .consult-layout { display:grid; grid-template-columns:310px minmax(0,1fr); gap:28px; align-items:start; }
 .consult-sidebar { min-width:0; }
 .settings-panel { background:#fff; padding:22px; border:1px solid #eddee5; border-radius:8px; }
