@@ -1,6 +1,6 @@
 ---
 name: assess-dog-happiness
-description: Run the evidence-informed dog happiness Beta self-check and post-assessment care consultation. Use when collecting observations, calling /api/assess, calling /api/consult for cited feeding or wellbeing guidance, or routing safety signals. Never score or advise from model memory.
+description: Run the evidence-informed dog happiness Beta self-check and route users to free knowledge and BYOK consultation. Never score, collect API keys, or bypass safety signals.
 ---
 
 # 你的狗狗幸福吗？循证轻量自查 Beta
@@ -26,7 +26,7 @@ Read full source metadata and limitations from `knowledge/sources.json` and `kno
 
 Collect the exact fields and enums from `knowledge/questionnaire.json`:
 
-1. Basic information: age, breed, optional weight, and size.
+1. Basic information: age, breed, optional positive numeric current weight in kg, and the owner's description of expected adult build. Never derive or overwrite `size` from current weight. A clearly unusual combination may produce `inputWarnings`; this is a confirmation prompt only and never blocks or changes scoring.
 2. Body condition.
 3. Food types and snack level.
 4. Outdoor frequency, daily minutes, and sniffing.
@@ -45,18 +45,16 @@ Do not infer that quiet, independent, introverted, or less obedient dogs are unh
 2. Submit the exact request schema to `/api/assess`.
 3. Display `assessmentConfidence` and `answeredCoverage` before scores. An `unknown` answer is missing observation, never a medium score.
 4. If `status=insufficient`, do not invent or display a total score; explain what to observe before retesting.
-5. Otherwise display `happinessScore`, `healthScore`, `mentalWellbeingScore`, both dimension sets, one priority risk, and one action.
+5. Present any `inputWarnings` as neutral confirmation notices, not health risks. Otherwise display `happinessScore`, `healthScore`, `mentalWellbeingScore`, both dimension sets, one priority risk, and one action.
 6. Cite only the returned `evidenceRefs`; do not add unsupported reasons.
 7. Display `knowledgeVersion` and the Beta disclaimer.
 
 ## Post-assessment consultation
 
-- Only call `POST /api/consult` after a complete assessment is available; send the original `AssessmentInput`, not a model-written summary.
 - Treat `knowledge/consultation/` as the only feeding and wellbeing consultation authority.
 - Repeat the returned answer, plan, watch points, citations, and safety route without adding claims from memory.
 - Do not diagnose disease, choose therapeutic diets, give drug or supplement doses, or generate a generic home-prepared recipe claimed to be complete and balanced.
 - When `mode=safety`, keep the returned plan empty and prioritize professional support.
-- The Web MVP includes one free consultation session with up to five turns, then presents the ¥9.99 Plus lifetime plan. Payment enforcement still requires login, server-side entitlements, orders, and verified callbacks.
 
 ## Safety precedence
 
@@ -76,3 +74,5 @@ When `status=insufficient`, accept `happinessScore=null`, `allowShare=false`, an
 - Method limits: `knowledge/methodology.md`
 - Runtime rules: `knowledge/rules/*.json`
 - API contract: `schemas/*.json`
+
+自查和知识库免费，无需登录。完成后引导至 https://dogcare.cc/knowledge 或 https://dogcare.cc/consult。BYOK 接入功能免费，用户只在 Web 页面填写自己的模型 API 密钥，Agent 不索取、转述或保存密钥。模型调用费由用户服务商账户承担。平台模型服务待更新；需要者可私信或进入群聊回复「需要Token」。不包含真人兽医或营养师咨询。

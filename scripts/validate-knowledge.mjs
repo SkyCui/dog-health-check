@@ -68,13 +68,24 @@ for (const [section, value] of Object.entries(rules)) {
   if (value && typeof value === "object" && "evidenceRefs" in value) validateRefs(`rules:${section}`, value.evidenceRefs);
 }
 assert(rules.method === "product_heuristic", "numeric rules must declare product_heuristic");
+assert(rules.inputReview.method === "product_heuristic", "size/weight review must declare product_heuristic");
+validateRefs("rules:inputReview", rules.inputReview.evidenceRefs);
+assert(rules.inputReview.action === "soft_confirmation_only", "size/weight review must never block assessment");
+assert(rules.inputReview.limitation.includes("不得自动改写体型、阻断评测或影响分数"), "input review must state its non-scoring limitation");
+assert(protocolSource.includes("getSizeWeightReview") && formSource.includes("getSizeWeightReview"), "API and Web must share soft input review logic");
+assert(!protocolSource.includes("deriveProductSize") && !formSource.includes("deriveProductSize"), "weight must not auto-derive size");
+assert(!protocolSource.includes("size conflicts with"), "size/weight differences must not become API validation errors");
 assert(rules.confidence.method === "product_heuristic", "confidence thresholds must declare product_heuristic");
 assert(rules.confidence.highMin > rules.confidence.mediumMin, "confidence thresholds must be ordered");
 assert(rules.confidence.mediumMin === rules.confidence.insufficientBelow, "confidence cutoff must be continuous");
 assert(JSON.stringify(responseSchema) === JSON.stringify(agentResponseSchema), "Web and Agent response schemas must match");
 assert(responseSchema.properties.status.enum.includes("insufficient"), "response schema must include insufficient status");
 assert(responseSchema.required.includes("assessmentConfidence") && responseSchema.required.includes("answeredCoverage"), "response schema must require confidence metadata");
-assert(openapi.includes("assessmentConfidence") && openapi.includes("answeredCoverage") && openapi.includes("insufficient"), "OpenAPI is missing confidence fields");
+assert(responseSchema.required.includes("inputWarnings"), "response schema must require non-blocking input warnings");
+assert(openapi.includes("assessmentConfidence") && openapi.includes("answeredCoverage") && openapi.includes("inputWarnings") && openapi.includes("insufficient"), "OpenAPI is missing confidence or warning fields");
+for (const sourceId of ["wsava-bcs-dog", "aaha-nutrition-2021", "salt-growth-2017"]) assert(sourceIds.has(sourceId), `knowledge base is missing ${sourceId}`);
+const bodyQuestion = questionnaire.questions.find((question) => question.id === "body");
+assert(bodyQuestion.evidenceRefs.includes("wsava-bcs-dog") && bodyQuestion.evidenceRefs.includes("aaha-nutrition-2021"), "body condition must cite WSAVA BCS and AAHA nutrition guidance");
 assert(rules.health.body.unknown === null && rules.health.environment.unknown === null, "unknown health observations must not receive scores");
 assert(rules.mental.positiveEngagement.unknown === null && rules.mental.distress.unknown === null, "unknown mental observations must not receive scores");
 assert(questionnaire.knowledgeVersion === sourcesFile.knowledgeVersion, "questionnaire knowledge version mismatch");
@@ -102,9 +113,11 @@ recentQuestion.fieldEnums.recentSignals.filter((signal) => signal !== "normal").
 });
 assert(rules.safety.evidenceRefs.some((ref) => sourcesFile.sources.find((source) => source.id === ref)?.level === "A1"), "safety rules require at least one A1 source");
 assert(!openapi.includes("./schemas/") && !openapi.includes(".schema.json"), "OpenAPI must not use external schemas");
-for (const marker of ["/api/consult", "ConsultRequest", "ConsultResponse", "consultDogCareKnowledge", "citations", "safetyRoute"]) {
-  assert(openapi.includes(marker), `OpenAPI is missing consultation marker ${marker}`);
+assert(openapi.includes("/api/assess") && openapi.includes("assessDogHappiness"), "OpenAPI must expose the assessment action");
+for (const marker of ["/api/consult", "ConsultRequest", "ConsultResponse", "consultDogCareKnowledge"]) {
+  assert(!openapi.includes(marker), `paid consultation must not be exposed to external Agents: ${marker}`);
 }
+assert(openapi.includes("BYOK") && openapi.includes("Platform-paid models are pending") && openapi.includes("collect API keys"), "OpenAPI must document the free BYOK and key boundary");
 
 assert(consultationSources.knowledgeVersion === consultationGuidance.knowledgeVersion, "consultation knowledge version mismatch");
 assert(consultationSources.knowledgeVersion === consultationSafety.knowledgeVersion, "consultation safety version mismatch");

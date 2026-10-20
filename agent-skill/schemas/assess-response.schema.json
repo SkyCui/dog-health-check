@@ -4,7 +4,7 @@
   "title": "DogHappinessAssessResponse",
   "type": "object",
   "additionalProperties": false,
-  "required": ["status", "statusText", "coreConclusion", "happinessScore", "healthScore", "mentalWellbeingScore", "assessmentConfidence", "answeredCoverage", "healthDimensionScores", "mentalDimensionScores", "strengths", "coreRisk", "todayAction", "supportRoute", "supportReminder", "allowShare", "shareCopy", "knowledgeVersion", "evidenceRefs", "dashboardReport", "shareGuide"],
+  "required": ["status", "statusText", "coreConclusion", "happinessScore", "healthScore", "mentalWellbeingScore", "assessmentConfidence", "answeredCoverage", "inputWarnings", "healthDimensionScores", "mentalDimensionScores", "strengths", "coreRisk", "todayAction", "supportRoute", "supportReminder", "allowShare", "shareCopy", "knowledgeVersion", "evidenceRefs", "dashboardReport", "shareGuide"],
   "properties": {
     "status": { "type": "string", "enum": ["excellent", "good", "watch", "adjust", "risk_confirm", "insufficient", "behavior_support", "red_vet"] },
     "statusText": { "type": "string" },
@@ -14,6 +14,7 @@
     "mentalWellbeingScore": { "$ref": "#/$defs/nullableScore" },
     "assessmentConfidence": { "type": "string", "enum": ["high", "medium", "insufficient"] },
     "answeredCoverage": { "type": "number", "minimum": 0, "maximum": 1 },
+    "inputWarnings": { "type": "array", "items": { "type": "string" }, "description": "不阻断评测且不影响分数的输入确认提醒。" },
     "healthDimensionScores": { "$ref": "#/$defs/healthDimensions" },
     "mentalDimensionScores": { "$ref": "#/$defs/mentalDimensions" },
     "strengths": { "type": "array", "items": { "type": "string" }, "minItems": 1 },

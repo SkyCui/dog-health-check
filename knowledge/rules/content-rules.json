@@ -1,5 +1,5 @@
 {
-  "knowledgeVersion": "dog-happiness-kb-2.2.0-beta",
+  "knowledgeVersion": "dog-happiness-kb-2.4.0-beta",
   "evidenceRefs": ["wsava-welfare-2018", "aaha-behavior-2015", "aaha-senior-care-2023", "recover-cpr-2024", "merck-emergency-triage-2025", "five-domains-2020", "dog-qol-2022"],
   "riskReasons": {
     "体重管理": "当前体况提示体重管理值得优先关注。这里不做诊断，先从稳定、可持续的小调整开始。",

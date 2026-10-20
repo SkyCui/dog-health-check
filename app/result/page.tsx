@@ -9,7 +9,7 @@ import TodayActionCard from "@/components/TodayActionCard";
 import VetReminderCard from "@/components/VetReminderCard";
 import { generateResult } from "@/lib/generateResult";
 import type { AssessmentInput, GeneratedResult } from "@/lib/types";
-import { ArrowLeft, BookOpen, ClipboardList, ShieldCheck, Sparkles } from "lucide-react";
+import { ArrowLeft, BookOpen, ClipboardList, KeyRound, ShieldCheck, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -41,7 +41,7 @@ export default function ResultPage() {
   if (!loaded) {
     return (
       <main className="grid min-h-screen place-items-center px-4">
-        <p className="text-slate-600">正在生成幸福自查 Dashboard...</p>
+        <p className="text-slate-600">正在整理毛孩子的幸福档案…</p>
       </main>
     );
   }
@@ -51,7 +51,7 @@ export default function ResultPage() {
       <main className="grid min-h-screen place-items-center px-4">
         <section className="max-w-md rounded-lg border border-slate-200 bg-white p-6 text-center shadow-panel">
           <h1 className="text-2xl font-bold text-ink">还没有自测结果</h1>
-          <p className="mt-3 leading-7 text-slate-600">先完成 10 个轻量题组，就能生成 Dashboard。</p>
+          <p className="mt-3 leading-7 text-slate-600">先完成 10 个轻量题组，就能生成幸福档案。</p>
           <Link
             href="/assessment"
             className="mt-5 inline-flex items-center gap-2 rounded-lg bg-leaf px-5 py-3 font-semibold text-white transition hover:bg-leaf/90"
@@ -140,17 +140,9 @@ export default function ResultPage() {
 
         {needsSupport ? <div className="mt-5"><VetReminderCard reminder={result.supportReminder} urgent={urgent} title={urgent ? "就医提醒" : "行为专业支持提醒"} /></div> : null}
 
-        <section className="candy-card mt-5 rounded-[2rem] p-5 sm:p-7">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <p className="inline-flex items-center gap-2 text-sm font-black text-rose"><BookOpen size={18} /> 测试后的下一步</p>
-              <h2 className="mt-2 text-2xl font-black text-ink">问问身心喂养知识库顾问</h2>
-              <p className="mt-2 max-w-2xl leading-7 text-cocoa/70">结合这份自测，获得带权威出处的日常喂养建议与一周行动计划。首个咨询会话免费，可连续追问 5 轮。</p>
-            </div>
-            <Link href="/consult" className="candy-button inline-flex shrink-0 items-center justify-center gap-2 rounded-full px-5 py-3 font-black text-white">
-              <Sparkles size={18} /> 开始免费咨询
-            </Link>
-          </div>
+        <section className="section-band">
+          <div><p className="eyebrow">把了解变成陪伴</p><h2 className="mt-2">{needsSupport ? "先按提醒寻求专业支持" : "今天先做一件事，明天再多懂它一点"}</h2><p className="mt-3 max-w-2xl leading-7 text-cocoa/70">{needsSupport ? "当前信号需要专业评估，请优先联系兽医或行为专业人士。" : "免费知识库帮你理解日常照护；接入自己的模型，可以结合这份档案继续聊。"}</p></div>
+          <div className="flex shrink-0 flex-col gap-3"><Link href="/knowledge" className="primary-link"><BookOpen size={18}/>浏览免费知识库</Link>{!needsSupport ? <Link href="/consult" className="inline-flex items-center justify-center gap-2 px-4 py-3 font-bold text-rose"><KeyRound size={18}/>免费接入自己的模型</Link> : null}</div>
         </section>
 
         <div className="mt-5">

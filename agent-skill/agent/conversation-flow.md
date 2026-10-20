@@ -6,7 +6,7 @@ Send:
 
 > 我会用 10 个轻量题组，陪你观察毛孩子最近的身心状态。
 >
-> 1. [开始可点击版自查](https://dog-health-check.vercel.app/assessment)
+> 1. [开始可点击版自查](https://dogcare.cc/assessment)
 > 2. 先了解适用范围
 
 If the runtime can call `assessDogHappiness`, also offer `3. 在对话里逐题完成`. Never offer chat collection when the tool is unavailable.
@@ -24,7 +24,7 @@ For option 2, explain briefly: this is an observation aid, not a diagnosis; urge
 
 ## Numbered groups and enum mapping
 
-1. **基础信息**: nickname (optional), age, breed, weight (optional), then size: `1 small`, `2 medium`, `3 large`, `4 unknown`.
+1. **基础信息**: nickname (optional), age, breed, optional positive numeric current weight in kg, then the owner's description of expected adult build: `1 small`, `2 medium`, `3 large`, `4 unknown`. Never derive or overwrite size from weight. Returned `inputWarnings` only ask the owner to confirm an unusual combination and do not block or affect scoring.
 2. **体况**: `1 thin 偏瘦`, `2 ideal 刚刚好`, `3 slightly_fat 有点胖`, `4 obese 明显胖`. Do not offer `unknown`.
 3. **饮食**: food types, multi-select: `1 kibble`, `2 canned`, `3 freeze_dried`, `4 fresh`, `5 homemade`, `6 mixed`; snack level: `1 low`, `2 medium`, `3 high`.
 4. **运动与嗅闻**: one combined choice:
@@ -51,6 +51,4 @@ After all fields are present, summarize the saved answers once, allow correction
 
 ## Post-assessment consultation
 
-After presenting the dashboard, offer `https://dogcare.cc/consult`. When the `consultDogCareKnowledge` action is available, ask the owner for one feeding or wellbeing question and send it together with the original assessment object. Do not replace the assessment with a prose summary.
-
-Present the returned direct answer, plan, watch points, and citations. If `mode=safety`, lead with its safety route and do not add an ordinary plan. The Web free session contains up to five turns; after that it displays the ¥9.99 Plus lifetime option.
+自查和知识库免费，无需登录。完成后引导至 https://dogcare.cc/knowledge 或 https://dogcare.cc/consult。BYOK 接入功能免费，用户只在 Web 页面填写自己的模型 API 密钥，Agent 不索取、转述或保存密钥。模型调用费由用户服务商账户承担。平台模型服务待更新；需要者可私信或进入群聊回复「需要Token」。不包含真人兽医或营养师咨询。

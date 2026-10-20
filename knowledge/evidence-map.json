@@ -1,6 +1,8 @@
 {
-  "knowledgeVersion": "dog-happiness-kb-2.2.0-beta",
+  "knowledgeVersion": "dog-happiness-kb-2.4.0-beta",
   "mappings": [
+    { "id": "size_weight_input_review", "evidenceRefs": ["salt-growth-2017", "aaha-nutrition-2021"], "use": "体重与自述体型差异较大时只提醒确认，不自动分类、不阻断、不影响评分" },
+    { "id": "body_condition", "evidenceRefs": ["wsava-bcs-dog", "aaha-nutrition-2021"], "use": "依据肋骨触感、腰线和腹线上提观察体况，不凭体重或犬型判断胖瘦" },
     { "id": "health_dimensions", "evidenceRefs": ["wsava-welfare-2018", "five-domains-2020"], "use": "健康五维的问题方向与福利关联" },
     { "id": "positive_engagement", "evidenceRefs": ["dog-qol-2022", "five-domains-2020"], "use": "积极参与和兴趣" },
     { "id": "relaxation", "evidenceRefs": ["dog-qol-2022", "aaha-behavior-2015"], "use": "放松恢复与压力表现" },

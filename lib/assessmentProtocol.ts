@@ -1,3 +1,4 @@
+import rules from "@/knowledge/rules/assessment-rules.json";
 import type {
   AssessmentInput,
   BodyCondition,
@@ -43,6 +44,29 @@ export function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
+export function parseWeightKg(value: string) {
+  const match = value.trim().match(/^(\d+(?:\.\d+)?)\s*(?:kg|公斤|千克)?$/i);
+  if (!match) return null;
+  const weightKg = Number(match[1]);
+  const limits = rules.inputReview.weightKg;
+  return Number.isFinite(weightKg) && weightKg > limits.minExclusive && weightKg <= limits.maxInclusive ? weightKg : null;
+}
+
+export function getSizeWeightReview(weightKg: number, size: Size) {
+  if (size === "unknown") return null;
+  const band = rules.inputReview.softReviewBands[size];
+  const below = "warnBelow" in band && weightKg < band.warnBelow;
+  const above = "warnAtOrAbove" in band && weightKg >= band.warnAtOrAbove;
+  if (!below && !above) return null;
+  return `当前体重 ${weightKg}kg 与所选体型的常见成年体重聚类差异较大，请确认 kg 单位和体型描述是否填写正确。幼犬、混血犬或个体差异可保留原答案继续评测；该提醒不影响分数。`;
+}
+
+export function getAssessmentInputWarnings(input: Pick<AssessmentInput, "weight" | "size">) {
+  const weightKg = input.weight ? parseWeightKg(input.weight) : null;
+  const review = weightKg === null ? null : getSizeWeightReview(weightKg, input.size);
+  return review ? [review] : [];
+}
+
 function isEnumValue<T extends readonly string[]>(value: unknown, options: T): value is T[number] {
   return typeof value === "string" && (options as readonly string[]).includes(value);
 }
@@ -80,6 +104,10 @@ export function parseAssessmentInput(payload: unknown): { input?: AssessmentInpu
   if (!isEnumArray(payload.foodTypes, assessmentEnums.foodTypes)) errors.push("foodTypes must be a non-empty array of unique valid values.");
   if (!isEnumValue(payload.snackLevel, assessmentEnums.snackLevels)) errors.push("snackLevel is invalid.");
 
+  const weightKg = weight ? parseWeightKg(weight) : null;
+  if (weight && weightKg === null) errors.push("weight must be a positive number in kg no greater than 200, for example 6.5kg.");
+  const submittedSize = payload.size as Size;
+
   const movement = payload.movement;
   if (!isRecord(movement)) errors.push("movement is required and must be an object.");
   else {
@@ -112,8 +140,8 @@ export function parseAssessmentInput(payload: unknown): { input?: AssessmentInpu
   return {
     errors,
     input: {
-      dogName, age, breed, weight,
-      size: payload.size as Size,
+      dogName, age, breed, weight: weightKg === null ? weight : `${weightKg}kg`,
+      size: submittedSize,
       bodyCondition: payload.bodyCondition as BodyCondition,
       foodTypes: payload.foodTypes as FoodType[],
       snackLevel: payload.snackLevel as SnackLevel,

@@ -3,3 +3,7 @@ node_modules
 .vercel
 .DS_Store
 *.tsbuildinfo
+.data
+.env
+.env.local
+.env.*.local

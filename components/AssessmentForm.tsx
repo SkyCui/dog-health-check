@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMemo, useRef, useState } from "react";
+import { getSizeWeightReview, parseWeightKg } from "@/lib/assessmentProtocol";
 import type {
   AssessmentInput,
   BodyCondition,
@@ -225,12 +226,14 @@ function OptionButton({
   selected,
   children,
   onClick,
-  tone = "default"
+  tone = "default",
+  disabled = false
 }: {
   selected: boolean;
   children: React.ReactNode;
   onClick: () => void;
   tone?: "default" | "alert";
+  disabled?: boolean;
 }) {
   const selectedClass = tone === "alert" ? "border-coral bg-red-50 text-ink" : "border-leaf bg-mint text-ink";
 
@@ -238,9 +241,10 @@ function OptionButton({
     <button
       type="button"
       onClick={onClick}
+      disabled={disabled}
       className={`min-h-12 rounded-2xl border px-4 py-3 text-left text-sm font-medium transition hover:-translate-y-0.5 hover:border-rose ${
         selected ? selectedClass : "border-rose/15 bg-white/90 text-cocoa"
-      }`}
+      } disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:translate-y-0`}
     >
       {children}
     </button>
@@ -297,6 +301,10 @@ export default function AssessmentForm() {
   const canSubmit = useMemo(() => {
     return input.age.trim() && input.breed.trim() && input.foodTypes.length > 0;
   }, [input]);
+  const sizeWeightReview = useMemo(() => {
+    const weightKg = input.weight?.trim() ? parseWeightKg(input.weight) : null;
+    return weightKg === null ? null : getSizeWeightReview(weightKg, input.size);
+  }, [input.size, input.weight]);
 
   function submitAssessment(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -406,12 +414,13 @@ export default function AssessmentForm() {
             />
           </label>
           <label>
-            <span className="mb-2 block text-sm font-medium text-slate-700">体重，可选</span>
+            <span className="mb-2 block text-sm font-medium text-slate-700">体重，可选（kg）</span>
             <input
               value={input.weight}
               onChange={(event) => setInput({ ...input, weight: event.target.value })}
               className="h-12 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm"
-              placeholder="10kg"
+              inputMode="decimal"
+              placeholder="例如 6.5"
             />
           </label>
         </div>
@@ -426,6 +435,8 @@ export default function AssessmentForm() {
             </OptionButton>
           ))}
         </div>
+        <p className="mt-3 text-xs leading-5 text-cocoa/55">体型是家长对成年体格的描述，不由当前体重自动决定，也不参与评分。胖瘦请根据下一题的肋骨、腰线和腹线上提判断。</p>
+        {sizeWeightReview ? <div role="status" className="mt-3 flex items-start gap-2 rounded-xl border border-gold/30 bg-goldSoft/75 px-3 py-2 text-sm font-bold leading-6 text-cocoa"><ShieldAlert className="mt-0.5 shrink-0 text-gold" size={17} aria-hidden="true" /><span>{sizeWeightReview}</span></div> : null}
       </QuestionShell>
 
       <QuestionShell step="问题 2 / 10" title="它现在的身材更像哪一种？" icon={<Bone size={20} aria-hidden="true" />}>

@@ -4,6 +4,7 @@ import { getAllowShare, getShareCopy, getStrengths, getTodayAction } from "./rec
 import { getCoreRisk } from "./riskPriority";
 import { getAssessmentConfidence, getAssessmentCoverage, getHappinessScore, getHealthDimensionScores, getHealthScore, getMentalDimensionScores, getMentalWellbeingScore, getStatus, getStatusText } from "./scoring";
 import { checkSafetyBoundary } from "./vetBoundary";
+import { getAssessmentInputWarnings } from "./assessmentProtocol";
 import type { AssessmentInput, EvidenceReference, GeneratedResult, HealthDimensionKey, MentalDimensionKey, ShareGuide } from "./types";
 
 const healthLabels: Record<HealthDimensionKey, string> = { body: "体况", diet: "饮食", movement: "运动嗅闻", recent: "近期健康", environment: "家庭环境" };
@@ -42,7 +43,7 @@ export function generateResult(input: AssessmentInput): GeneratedResult {
     coreConclusion: safety.statusOverride
       ? content.coreConclusions[status as "red_vet" | "behavior_support"]
       : status === "insufficient" ? content.coreConclusions.insufficient : content.coreConclusions.normalTemplate.replace("{riskTitle}", coreRisk.title),
-    happinessScore, healthScore, mentalWellbeingScore, assessmentConfidence, answeredCoverage, healthDimensionScores, mentalDimensionScores,
+    happinessScore, healthScore, mentalWellbeingScore, assessmentConfidence, answeredCoverage, inputWarnings: getAssessmentInputWarnings(input), healthDimensionScores, mentalDimensionScores,
     strengths: safety.statusOverride ? [content.coreConclusions.safetyStrength] : getStrengths(input, healthDimensionScores, mentalDimensionScores),
     coreRisk, todayAction: getTodayAction(coreRisk.title), supportRoute: safety.supportRoute,
     supportReminder: safety.reminder, allowShare,

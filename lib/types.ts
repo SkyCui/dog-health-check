@@ -77,6 +77,7 @@ export type GeneratedResult = {
   mentalWellbeingScore: number | null;
   assessmentConfidence: AssessmentConfidence;
   answeredCoverage: number;
+  inputWarnings: string[];
   healthDimensionScores: HealthDimensionScores;
   mentalDimensionScores: MentalDimensionScores;
   strengths: string[];

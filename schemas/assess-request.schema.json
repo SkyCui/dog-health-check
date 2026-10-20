@@ -36,11 +36,12 @@
     },
     "weight": {
       "type": "string",
-      "description": "体重，可选，例如 '10kg'。",
+      "description": "当前体重，可选，必须使用正数 kg，例如 '6.5kg'。只作记录和填写确认，不自动确定 size，也不直接参与体况评分。",
       "maxLength": 80
     },
     "size": {
       "type": "string",
+      "description": "家长对成年体格的自我描述。不会由当前体重自动改写，也不参与评分。",
       "enum": ["small", "medium", "large", "unknown"]
     },
     "bodyCondition": {

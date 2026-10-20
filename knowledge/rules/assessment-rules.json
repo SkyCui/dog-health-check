@@ -1,8 +1,20 @@
 {
-  "knowledgeVersion": "dog-happiness-kb-2.2.0-beta",
+  "knowledgeVersion": "dog-happiness-kb-2.4.0-beta",
   "method": "product_heuristic",
+  "inputReview": {
+    "method": "product_heuristic",
+    "evidenceRefs": ["salt-growth-2017"],
+    "weightKg": { "minExclusive": 0, "maxInclusive": 200 },
+    "softReviewBands": {
+      "small": { "warnAtOrAbove": 15 },
+      "medium": { "warnBelow": 6.5, "warnAtOrAbove": 30 },
+      "large": { "warnBelow": 15 }
+    },
+    "action": "soft_confirmation_only",
+    "limitation": "提醒阈值来自大型犬只生长研究中成年品种体重聚类的宽区间，只用于发现可能的单位或填写错误；不是统一犬型定义、理想体重、体况评分或诊断标准。不得自动改写体型、阻断评测或影响分数，幼犬、混血犬及个体差异可确认后继续。"
+  },
   "health": {
-    "evidenceRefs": ["wsava-welfare-2018", "five-domains-2020", "aaha-senior-care-2023"],
+    "evidenceRefs": ["wsava-welfare-2018", "wsava-bcs-dog", "aaha-nutrition-2021", "five-domains-2020", "aaha-senior-care-2023"],
     "body": { "thin": 72, "ideal": 96, "slightly_fat": 68, "obese": 48, "unknown": null },
     "diet": {
       "base": 92,

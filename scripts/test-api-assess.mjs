@@ -101,6 +101,19 @@ try {
   const invalidRecentResponse = await request(baseUrl, invalidRecent);
   equal(invalidRecentResponse.code, 400, "健康信号非法组合 HTTP");
   console.log("✓ 健康信号非法组合");
+
+  const inconsistentSize = variant({ weight: "20kg", size: "small", bodyCondition: "thin" });
+  const inconsistentResponse = await request(baseUrl, inconsistentSize);
+  equal(inconsistentResponse.code, 200, "体重与自述体型差异 HTTP");
+  equal(inconsistentResponse.body.healthDimensionScores.body, 72, "体重与自述体型差异不改变体况分");
+  if (!inconsistentResponse.body.inputWarnings?.some((detail) => detail.includes("不影响分数"))) throw new Error("体重与自述体型差异缺少非阻断确认提醒");
+  console.log("✓ 体重与自述体型差异只提醒确认，不阻断或改分");
+
+  const thinResponse = await request(baseUrl, variant({ weight: "20kg", size: "medium", bodyCondition: "thin" }));
+  equal(thinResponse.code, 200, "偏瘦体况 HTTP");
+  equal(thinResponse.body.healthDimensionScores.body, 72, "偏瘦体况分");
+  equal(thinResponse.body.inputWarnings.length, 0, "常见组合不应出现确认提醒");
+  console.log("✓ 体重记录不替代偏瘦体况观察");
 } finally {
   if (server) server.kill("SIGTERM");
 }

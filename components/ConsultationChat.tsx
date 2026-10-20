@@ -1,162 +1,97 @@
 "use client";
 
-import type { ConsultationResponse } from "@/lib/consultation";
-import type { AssessmentInput } from "@/lib/types";
-import { ArrowLeft, BookOpen, Crown, ExternalLink, LockKeyhole, Send, ShieldAlert, Sparkles } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { BookOpen, KeyRound, Loader2, Send, Settings2, Square, Trash2 } from "lucide-react";
+import { askOwnModel, completionUrl, type ModelSettings, type ModelTurn } from "@/lib/byok";
+import { parseAssessmentInput } from "@/lib/assessmentProtocol";
+import type { AssessmentInput, EvidenceReference } from "@/lib/types";
 
-const ASSESSMENT_KEY = "dogHealthAssessment";
-const ACCESS_KEY = "dogCareConsultAccessV1";
-const FREE_TURNS = 5;
+type Message = ModelTurn & { citations?: EvidenceReference[] };
+const blank: ModelSettings = { baseUrl: "", model: "", apiKey: "" };
 
-type ChatItem = { id: string; role: "user"; text: string } | { id: string; role: "assistant"; response: ConsultationResponse };
-type AccessState = { sessionId: string; turns: number; plus: boolean };
-
-const prompts = [
-  "根据测评，帮我安排一周喂养节奏",
-  "零食怎么控制更容易坚持？",
-  "怎样用吃饭增加嗅闻和快乐？",
-  "自制或鲜食适合长期当主食吗？"
-];
-
-function loadAccess(): AccessState {
-  try {
-    const saved = JSON.parse(localStorage.getItem(ACCESS_KEY) || "null") as AccessState | null;
-    if (saved && typeof saved.turns === "number") return saved;
-  } catch {}
-  return { sessionId: crypto.randomUUID(), turns: 0, plus: false };
-}
-
-export default function ConsultationChat({ checkoutUrl }: { checkoutUrl: string }) {
+export default function ConsultationChat() {
   const [assessment, setAssessment] = useState<AssessmentInput | null>(null);
-  const [access, setAccess] = useState<AccessState | null>(null);
-  const [items, setItems] = useState<ChatItem[]>([]);
-  const [message, setMessage] = useState("");
+  const [ready, setReady] = useState(false);
+  const [settings, setSettings] = useState<ModelSettings>(blank);
+  const [configured, setConfigured] = useState(false);
+  const [showSettings, setShowSettings] = useState(true);
+  const [remember, setRemember] = useState(false);
+  const [consent, setConsent] = useState(false);
+  const [items, setItems] = useState<Message[]>([]);
+  const [question, setQuestion] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const controller = useRef<AbortController | null>(null);
+  const end = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     try {
-      const raw = localStorage.getItem(ASSESSMENT_KEY);
-      if (raw) setAssessment(JSON.parse(raw) as AssessmentInput);
-    } catch {
-      localStorage.removeItem(ASSESSMENT_KEY);
-    }
-    setAccess(loadAccess());
+      const raw = localStorage.getItem("dogHealthAssessment");
+      if (raw) setAssessment(parseAssessmentInput(JSON.parse(raw)).input ?? null);
+      const saved = localStorage.getItem("dogcareModelPreferences");
+      if (saved) { const value = JSON.parse(saved); setSettings({ baseUrl: typeof value.baseUrl === "string" ? value.baseUrl : "", model: typeof value.model === "string" ? value.model : "", apiKey: "" }); setRemember(true); }
+    } catch { /* Invalid local drafts can be replaced by a new assessment. */ }
+    setReady(true);
+    return () => controller.current?.abort();
   }, []);
+  useEffect(() => { end.current?.scrollIntoView({ behavior: "smooth", block: "nearest" }); }, [items, busy]);
 
-  const locked = useMemo(() => Boolean(access && !access.plus && access.turns >= FREE_TURNS), [access]);
-  const remaining = access ? Math.max(0, FREE_TURNS - access.turns) : FREE_TURNS;
+  function saveSettings() {
+    try {
+      completionUrl(settings.baseUrl);
+      if (!settings.model.trim() || !settings.apiKey.trim()) throw new Error("请填写模型名称与 API 密钥。");
+      if (!consent) throw new Error("请先确认向所选服务商发送问题与测评文字资料。");
+      if (remember) localStorage.setItem("dogcareModelPreferences", JSON.stringify({ baseUrl: settings.baseUrl, model: settings.model }));
+      else localStorage.removeItem("dogcareModelPreferences");
+      setConfigured(true); setShowSettings(false); setError("");
+    } catch (reason) { setError(reason instanceof Error ? reason.message : "配置未完成。"); }
+  }
+
+  function clearSettings() {
+    controller.current?.abort(); setSettings(blank); setConfigured(false); setConsent(false); setShowSettings(true); setItems([]); localStorage.removeItem("dogcareModelPreferences");
+  }
 
   async function submit(text: string) {
-    const clean = text.trim();
-    if (!clean || !assessment || !access || locked || busy) return;
-    setBusy(true);
-    setError("");
-    setMessage("");
-    setItems((current) => [...current, { id: crypto.randomUUID(), role: "user", text: clean }]);
+    if (!assessment || busy || !text.trim()) return;
+    if (!configured) { setShowSettings(true); setError("先接入自己的模型，再开始对话。也可以直接浏览免费知识库。"); return; }
+    const clean = text.trim().slice(0, 1000);
+    setBusy(true); setError(""); setQuestion("");
+    setItems(current => [...current, { role: "user", content: clean }]);
+    const abort = new AbortController(); controller.current = abort;
+    const timeout = setTimeout(() => abort.abort(), 60000);
     try {
-      const response = await fetch("/api/consult", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ assessment, message: clean })
-      });
-      const body = await response.json();
-      if (!response.ok) throw new Error(body?.error?.message || "咨询暂时不可用");
-      setItems((current) => [...current, { id: crypto.randomUUID(), role: "assistant", response: body as ConsultationResponse }]);
-      const next = { ...access, turns: access.turns + 1 };
-      setAccess(next);
-      localStorage.setItem(ACCESS_KEY, JSON.stringify(next));
+      const result = await askOwnModel(settings, assessment, clean, items, abort.signal);
+      setItems(current => [...current, { role: "assistant", content: result.text, citations: result.evidence.citations }]);
     } catch (reason) {
-      setError(reason instanceof Error ? reason.message : "咨询暂时不可用，请稍后重试。" );
-    } finally {
-      setBusy(false);
-    }
+      setError(abort.signal.aborted ? "请求已停止，可重新发送。服务商可能已计算请求费用。" : reason instanceof TypeError ? "连接失败：请检查网络、API 地址及服务商的浏览器跨域权限。本版本不经过平台转发。" : reason instanceof Error ? reason.message : "请求失败，请重试。");
+      setQuestion(clean); setItems(current => current.slice(0, -1));
+    } finally { clearTimeout(timeout); controller.current = null; setBusy(false); }
   }
 
-  if (!assessment || !access) {
-    return (
-      <main className="grid min-h-screen place-items-center px-4">
-        <section className="sticker-card max-w-md rounded-2xl p-6 text-center">
-          <h1 className="text-2xl font-black text-ink">先完成幸福自测</h1>
-          <p className="mt-3 leading-7 text-cocoa/70">咨询会结合毛孩子的 10 题观察结果，不能脱离信息直接给计划。</p>
-          <Link href="/assessment" className="candy-button mt-5 inline-flex rounded-full px-5 py-3 font-black text-white">去完成自测</Link>
-        </section>
-      </main>
-    );
-  }
-
-  return (
-    <main className="min-h-screen px-3 py-4 sm:px-6 sm:py-8">
-      <div className="mx-auto max-w-5xl">
-        <header className="flex flex-wrap items-center justify-between gap-3">
-          <Link href="/result" className="inline-flex items-center gap-2 rounded-full bg-white/85 px-4 py-2 text-sm font-black text-cocoa shadow-panel">
-            <ArrowLeft size={17} /> 返回档案
-          </Link>
-          <p className="rounded-full bg-white/80 px-4 py-2 text-xs font-bold text-cocoa/65 sm:text-sm">首个咨询会话免费 · 还可追问 {remaining} 轮</p>
-        </header>
-
-        <section className="candy-card mt-4 overflow-hidden rounded-[1.75rem] sm:mt-6 sm:rounded-[2.2rem]">
-          <div className="border-b border-rose/15 bg-white/55 px-4 py-5 sm:px-7">
-            <p className="inline-flex items-center gap-2 text-sm font-black text-rose"><Sparkles size={17} /> 身心喂养知识库顾问</p>
-            <h1 className="mt-2 text-2xl font-black text-ink sm:text-3xl">为{assessment.dogName?.trim() || "毛孩子"}制定容易坚持的一步</h1>
-            <p className="mt-2 text-sm leading-6 text-cocoa/70 sm:text-base">结合刚才的健康与精神观察，只引用知识库中的兽医指南和同行评审依据。</p>
-          </div>
-
-          <div className="min-h-[360px] space-y-5 px-4 py-5 sm:min-h-[440px] sm:px-7">
-            {items.length === 0 ? (
-              <div className="mx-auto max-w-2xl py-4 text-center sm:py-10">
-                <BookOpen className="mx-auto text-rose" size={34} />
-                <h2 className="mt-3 text-xl font-black text-ink">今天最想先解决哪件事？</h2>
-                <p className="mt-2 text-sm leading-6 text-cocoa/65">我会给出短期行动、需要观察的变化和原始出处，不推荐具体品牌。</p>
-                <div className="mt-5 grid gap-2 sm:grid-cols-2">
-                  {prompts.map((prompt) => <button key={prompt} onClick={() => submit(prompt)} className="rounded-2xl border border-rose/20 bg-white/85 px-4 py-3 text-left text-sm font-bold leading-6 text-cocoa transition hover:border-rose hover:bg-white">{prompt}</button>)}
-                </div>
-              </div>
-            ) : null}
-
-            {items.map((item) => item.role === "user" ? (
-              <div key={item.id} className="ml-auto max-w-[88%] rounded-2xl rounded-br-md bg-ink px-4 py-3 text-sm leading-6 text-white sm:max-w-[72%]">{item.text}</div>
-            ) : (
-              <article key={item.id} className={`max-w-3xl rounded-2xl border p-4 sm:p-5 ${item.response.mode === "safety" ? "border-red-200 bg-red-50" : "border-rose/15 bg-white/90"}`}>
-                <div className="flex items-start gap-3">
-                  {item.response.mode === "safety" ? <ShieldAlert className="mt-1 shrink-0 text-red-600" size={21} /> : <Sparkles className="mt-1 shrink-0 text-rose" size={21} />}
-                  <div className="min-w-0">
-                    <h2 className="text-lg font-black text-ink">{item.response.title}</h2>
-                    <p className="mt-2 whitespace-pre-line text-sm leading-7 text-cocoa/80 sm:text-base">{item.response.answer}</p>
-                  </div>
-                </div>
-                {item.response.plan.length ? <div className="mt-4 grid gap-2 sm:grid-cols-3">{item.response.plan.map((step) => <div key={step.day} className="rounded-xl bg-roseSoft/65 p-3"><p className="text-xs font-black text-rose">{step.day}</p><p className="mt-1 text-sm leading-6 text-cocoa">{step.action}</p></div>)}</div> : null}
-                {item.response.watchFor.length ? <div className="mt-4 rounded-xl bg-goldSoft/65 p-3"><p className="text-xs font-black text-gold">需要留意</p>{item.response.watchFor.map((text) => <p key={text} className="mt-1 text-sm leading-6 text-cocoa/80">{text}</p>)}</div> : null}
-                <div className="mt-4 border-t border-slate-100 pt-3">
-                  <p className="text-xs font-black text-cocoa/55">本次依据</p>
-                  <div className="mt-2 flex flex-wrap gap-2">{item.response.citations.map((citation) => <a key={citation.id} href={citation.url} target="_blank" rel="noreferrer" className="inline-flex max-w-full items-center gap-1 rounded-full bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-200"><span className="truncate">{citation.level} · {citation.organization}</span><ExternalLink size={12} /></a>)}</div>
-                  <p className="mt-3 text-xs leading-5 text-cocoa/55">{item.response.disclaimer}</p>
-                </div>
-              </article>
-            ))}
-
-            {locked ? (
-              <section className="mx-auto max-w-2xl rounded-2xl border border-gold/25 bg-goldSoft/55 p-5 text-center sm:p-7">
-                <Crown className="mx-auto text-gold" size={34} />
-                <h2 className="mt-3 text-2xl font-black text-ink">继续咨询，升级 Plus 永久会员</h2>
-                <p className="mt-2 leading-7 text-cocoa/70">¥9.99 一次购买，解锁不限次知识库咨询、个性化身心喂养计划和可核验出处。</p>
-                {checkoutUrl ? <a href={checkoutUrl} className="candy-button mt-5 inline-flex items-center gap-2 rounded-full px-6 py-3 font-black text-white"><Crown size={18} /> ¥9.99 永久解锁</a> : <button disabled className="mt-5 inline-flex cursor-not-allowed items-center gap-2 rounded-full bg-slate-200 px-6 py-3 font-black text-slate-500"><LockKeyhole size={18} /> 支付接入准备中</button>}
-                <p className="mt-3 text-xs leading-5 text-cocoa/55">Plus 提供个性化知识建议，不包含真人兽医或营养师咨询。</p>
-              </section>
-            ) : null}
-          </div>
-
-          <div className="border-t border-rose/15 bg-white/70 p-3 sm:p-5">
-            <form onSubmit={(event) => { event.preventDefault(); submit(message); }} className="mx-auto flex max-w-3xl items-end gap-2">
-              <textarea value={message} onChange={(event) => setMessage(event.target.value)} disabled={locked || busy} rows={2} maxLength={1000} placeholder={locked ? "升级 Plus 后可以继续咨询" : "描述你最想改善的喂养或身心状态问题…"} className="min-h-[52px] flex-1 resize-none rounded-2xl border border-rose/20 bg-white px-4 py-3 text-sm leading-6 text-ink outline-none disabled:bg-slate-100" />
-              <button type="submit" disabled={!message.trim() || locked || busy} title="发送" className="candy-button grid h-12 w-12 shrink-0 place-items-center rounded-full text-white disabled:cursor-not-allowed disabled:opacity-45"><Send size={19} /></button>
-            </form>
-            {error ? <p className="mx-auto mt-2 max-w-3xl text-sm font-bold text-red-600">{error}</p> : null}
-          </div>
-        </section>
-      </div>
-    </main>
-  );
+  const update = (field: keyof ModelSettings, value: string) => { setSettings(current => ({ ...current, [field]: value })); setConfigured(false); };
+  return <main className="page-wrap">
+    <div className="page-heading"><p className="eyebrow">你选模型，我们提供知识依据</p><h1>更懂你家毛孩子的养狗顾问</h1><p>免费接入自己的模型 API，结合幸福自查聊聊下一步。模型费用由你的服务商账户承担。</p></div>
+    <div className="consult-layout"><aside className="consult-sidebar">
+      <section className="settings-panel"><div className="flex items-center justify-between gap-2"><h2 className="font-bold"><KeyRound size={18} className="mr-2 inline"/>我的模型</h2><button title="修改模型配置" onClick={() => setShowSettings(!showSettings)} disabled={busy} className="icon-button"><Settings2 size={18}/></button></div><p className="mt-2 break-words text-sm text-cocoa/65">{configured ? settings.model : "尚未连接"}</p>
+      {showSettings ? <div className="mt-5 space-y-4">
+        <label className="field-label">API 基础地址<input type="url" value={settings.baseUrl} disabled={busy} onChange={e => update("baseUrl", e.target.value)} placeholder="https://你的服务商/v1" /></label>
+        <label className="field-label">模型名称<input value={settings.model} disabled={busy} onChange={e => update("model", e.target.value)} placeholder="服务商提供的模型 ID" /></label>
+        <label className="field-label">API 密钥<input type="password" autoComplete="off" value={settings.apiKey} disabled={busy} onChange={e => update("apiKey", e.target.value)} placeholder="仅当前页面使用" /></label>
+        <p className="text-xs leading-5 text-cocoa/60">支持允许浏览器跨域访问的 Chat Completions 兼容接口。密钥只发送给所填服务商，不在本工具保存。请使用低额度、可撤销的专用密钥。</p>
+        <label className="check-label"><input type="checkbox" checked={remember} onChange={e => setRemember(e.target.checked)}/>记住地址与模型名称，不保存密钥</label>
+        <label className="check-label"><input type="checkbox" checked={consent} onChange={e => { setConsent(e.target.checked); setConfigured(false); }}/>我同意将问题、最近对话及测评文字资料发送至上述服务商；照片不会发送。</label>
+        <button disabled={busy} onClick={saveSettings} className="primary-link w-full justify-center">使用此配置</button>
+      </div> : null}
+      <button onClick={clearSettings} disabled={busy} className="mt-4 inline-flex items-center gap-2 text-sm text-cocoa/60"><Trash2 size={15}/>清除配置与对话</button></section>
+      <section className="py-6"><p className="eyebrow">平台模型 · 待更新</p><h2 className="mt-2 font-bold">暂时没有 API 密钥？</h2><p className="mt-2 text-sm leading-6 text-cocoa/70">可以私信或进入群聊，回复「需要Token」，了解后续接入方式。平台付费服务暂未开放。</p></section>
+      <Link href="/knowledge" className="inline-flex items-center gap-2 font-bold text-rose"><BookOpen size={18}/>先逛免费知识库</Link>
+    </aside><section className="chat-workspace" aria-label="养狗顾问对话">
+      <div className="chat-heading"><span className="status-dot"/>{configured ? "已配置 · 发送后连接模型" : "接入模型后开始对话"}</div>
+      <div className="chat-messages" aria-live="polite">{!ready ? <p>正在读取本机资料…</p> : !assessment ? <div className="chat-empty"><h2>先认识一下你的狗狗</h2><p>完成自查后，顾问就能结合它的身体习惯与近期行为回答。</p><Link className="primary-link" href="/assessment">免费完成幸福自查</Link></div> : !items.length ? <div className="chat-empty"><img src="/images/default-dog-avatar.png" alt="白色雪纳瑞"/><h2>今天最想改善哪件小事？</h2><p>已准备好{assessment.dogName || "毛孩子"}的测评资料。先配置模型，再选一个问题聊聊。</p><div className="prompt-grid">{["零食怎么控制更容易坚持？", "帮我安排一周喂养节奏", "怎样增加嗅闻和快乐？", "自制鲜食要注意什么？"].map(text => <button key={text} onClick={() => submit(text)}>{text}</button>)}</div></div> : items.map((item, index) => <article key={index} className={"chat-message " + item.role}><p className="whitespace-pre-wrap break-words leading-7">{item.content}</p>{item.citations ? <details className="mt-4 text-xs"><summary className="cursor-pointer">本次知识依据 · 模型生成内容请结合原文核对</summary>{item.citations.map(source => <a key={source.id} href={source.url} target="_blank" rel="noreferrer" className="mt-2 block text-rose">{source.organization} · {source.title}</a>)}</details> : null}</article>)}{busy ? <p className="flex items-center gap-2 text-sm text-cocoa/60"><Loader2 size={17} className="animate-spin"/>模型正在整理建议…</p> : null}<div ref={end}/></div>
+      <form className="chat-composer" onSubmit={e => { e.preventDefault(); submit(question); }}><textarea aria-label="咨询问题" value={question} onChange={e => setQuestion(e.target.value)} maxLength={1000} rows={2} disabled={busy || !assessment} placeholder="描述你最想改善的一件事…"/>{busy ? <button type="button" className="icon-button" title="停止生成" onClick={() => controller.current?.abort()}><Square size={19}/></button> : <button className="icon-button send-button" title="发送问题" disabled={!assessment || !question.trim()}><Send size={19}/></button>}</form>
+      {error ? <p role="alert" className="px-5 pb-4 text-sm leading-6 text-red-700">{error}</p> : null}
+      <p className="px-5 pb-4 text-xs leading-5 text-cocoa/55">我助力你更好了解毛孩子，但无法替代兽医或行为专业评估。</p>
+    </section></div>
+  </main>;
 }

@@ -1,48 +1,24 @@
 # 你的狗狗幸福吗？
+免费、开源的狗狗身心观察工具。Next.js + TypeScript + Tailwind CSS。
 
-一个 Next.js + TypeScript + Tailwind CSS 的循证轻量自查与身心喂养咨询 Beta。用户完成 10 个题组后，获得幸福观察 Dashboard，并可进入带出处的个性化知识库咨询。
+## 当前体验
+- /assessment：十题幸福自查，无需登录，浏览器运行固定规则。
+- /result：身心指标、优先关注点、今日行动与本地分享卡。
+- /knowledge：免费知识条目搜索，附原始依据与限制。
+- /consult：免费自带模型 API（BYOK），支持允许浏览器跨域访问的 Chat Completions 兼容接口。
 
-## 产品边界
+密钥仅保存在当前页面内存中，刷新或关闭后清除。可选择记住地址与模型名称，但不保存密钥。问题、最近对话和测评文字资料直接发送到用户指定服务商，照片不发送。模型费用由用户自己的服务商账户承担，本工具不提供公共转发服务；服务商不允许浏览器跨域时无法直接连接。建议使用低额度可撤销密钥。
 
-- 本地结构化知识库与确定性规则，不接数据库或真实 RAG
-- Web 与 Agent API 共用 `lib/generateResult.ts`
-- 咨询使用本地确定性检索，不需要 OpenAI API Key，不从模型记忆生成医学或营养结论
-- 首个咨询会话免费（最多 5 轮），之后展示 ¥9.99 Plus 永久会员
-- Plus 仅提供个性化知识建议和计划，不包含真人兽医或营养师咨询
-- 权重属于 `product_heuristic`，不是临床验证公式
-- `unknown` 作为缺失观察处理，不加分也不扣分；API 返回覆盖率与可信度
-- 加权覆盖率低于 70% 时返回 `status=insufficient`，不生成总分或分享内容
-- `red_vet` 与 `behavior_support` 由安全信号触发，低分本身不会触发
-- 分享幸福卡会在浏览器本地生成指向 `https://dogcare.cc/` 的参与二维码
-- 我助力你更好了解毛孩子，但无法替代兽医或行为专业评估
+平台模型付费服务待更新，需要者可私信或进入群聊回复「需要Token」。当前没有配置公开联系方式，因此页面仅展示此引导，不提供虚构群链接。
 
-## 启动与验证
+## 开发
+运行 npm install，再运行 npm run dev。npm run build 验证生产构建。
+npm run test:api 检查测评与安全规则；npm run test:byok 检查模型请求、安全分流与照片排除；npm run test:knowledge 和 npm run test:red-skill 验证知识库与发布包。
 
-```bash
-npm install
-npm run dev
-npm run test:knowledge
-npm run test:api
-npm run test:consult
-npm run build
-```
+## 知识与边界
+knowledge/ 保存结构化知识和产品规则，数值权重属于 product_heuristic，尚未临床验证。AI 只接收匹配条目，输出仍需用户结合来源核对；提示词不能保证模型绝不出错。
+我助力你更好了解毛孩子，但无法替代兽医或行为专业评估。
 
-知识与运行规则位于 `knowledge/`；请求和响应协议位于 `schemas/`；Agent 文件包位于 `agent-skill/`；小红书单文件上传包位于 `red-skill/SKILL.md`。
-
-Red Skill 优先打开可点击 Web 问卷；只有运行环境能够调用 API 时，才使用逐题问答或知识库咨询。支付尚未接入时，`NEXT_PUBLIC_PLUS_CHECKOUT_URL` 留空，页面会显示“支付接入准备中”。正式收费前必须补齐登录、服务端权益、订单和已签名支付回调。
-
-本地 API 示例：
-
-```bash
-curl -X POST http://localhost:3000/api/assess \
-  -H 'Content-Type: application/json' \
-  --data @agent-skill/examples/healthy-dog.json
-```
-
-咨询 API 示例：
-
-```bash
-curl -X POST http://localhost:3000/api/consult \
-  -H 'Content-Type: application/json' \
-  --data '{"assessment": {"dogName":"百万","age":"3 岁","breed":"柯基","weight":"12kg","size":"medium","bodyCondition":"ideal","foodTypes":["kibble"],"snackLevel":"low","movement":{"outdoorFrequency":"two_plus","dailyMinutes":"over_30","sniffing":"rich"},"recentSignals":["normal"],"homeEnvironment":["none"],"mentalState":{"positiveEngagement":"often","relaxation":"easy","socialConnection":"secure","distressSignals":["none"]}},"message":"帮我做一周日常喂养计划"}'
-```
+## 发布
+当前修改在本地验收，部署前将 API、Agent Skill、Red Skill 与 Web 同步发布。原付费和账号页面跳转 /consult，下单及平台咨询接口返回 410。历史商业实现保留在 lib/server 中，不是当前免费版运行依赖。
+代码采用 MIT License，知识条目为原创整理与链接，第三方文献、商标、图片等遵循各自授权，不随代码许可证重新授权。

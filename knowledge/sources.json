@@ -1,5 +1,5 @@
 {
-  "knowledgeVersion": "dog-happiness-kb-2.2.0-beta",
+  "knowledgeVersion": "dog-happiness-kb-2.4.0-beta",
   "evidenceLevels": {
     "A1": "国际或国家级兽医组织正式指南",
     "A2": "同行评审且经过信效度验证的犬只评估工具",
@@ -19,6 +19,46 @@
       "conflicts": "指南可能包含机构合作与行业支持；使用时以福利框架和安全原则为限。",
       "scope": "身体、心理、社会与环境福利；Five Domains/Five Welfare Needs。",
       "limitations": "不是犬只幸福量表，不提供本产品分值或权重。"
+    },
+    {
+      "id": "wsava-bcs-dog",
+      "level": "A1",
+      "title": "WSAVA Canine Body Condition Score",
+      "organization": "World Small Animal Veterinary Association",
+      "year": 2020,
+      "url": "https://wsava.org/wp-content/uploads/2020/01/Body-Condition-Score-Dog.pdf",
+      "peerReviewed": true,
+      "validation": "WSAVA 官方 9 点犬体况观察工具，依据肋骨触感、腰线与腹线上提判断脂肪覆盖和体况。",
+      "conflicts": "WSAVA 工具用于临床营养评估；本项目仅做面向家长的简化观察，不复制临床诊断流程。",
+      "scope": "犬只偏瘦、理想、超重和肥胖体况的外观与触诊观察方向。",
+      "limitations": "不能仅凭体重或犬型确定体况；简化成四个选项后不继承完整 9 点量表的精度，也不能替代兽医触诊。"
+    },
+    {
+      "id": "aaha-nutrition-2021",
+      "level": "A1",
+      "title": "2021 AAHA Nutrition and Weight Management Guidelines for Dogs and Cats",
+      "organization": "American Animal Hospital Association",
+      "year": 2021,
+      "url": "https://www.aaha.org/resources/2021-aaha-nutrition-and-weight-management-guidelines/home/",
+      "peerReviewed": true,
+      "validation": "AAHA 专家组制定并经正式同行评审的营养与体重管理指南，要求结合品种、体重、BCS、MCS 和完整体检开展个体化评估。",
+      "conflicts": "指南披露动物健康行业支持；本项目只采用评估方法和个体化原则，不采用品牌或营销内容。",
+      "scope": "营养筛查、体重记录、体况评分、肌肉评分及个体化体重管理。",
+      "limitations": "不提供统一的小中大型犬体重边界，也不支持仅凭当前体重自动判断体况或理想体重。"
+    },
+    {
+      "id": "salt-growth-2017",
+      "level": "B",
+      "title": "Growth standard charts for monitoring bodyweight in dogs of different sizes",
+      "organization": "PLOS ONE / University of Liverpool / WALTHAM Centre for Pet Nutrition",
+      "year": 2017,
+      "url": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0182064",
+      "peerReviewed": true,
+      "sampleSize": "基于超过 600 万只幼犬的电子病历建立生长标准；仅纳入指定纯种犬并筛选理想体况记录。",
+      "validation": "使用成年品种平均体重和分层模型形成多个生长体重类别，用于研究幼犬生长曲线。",
+      "conflicts": "多位作者来自或获得 WALTHAM/Mars Petcare 支持；论文披露资助方未参与研究设计、分析或发表决定。",
+      "scope": "幼犬生长监测中的成年品种体重聚类，以及不同体格犬只生长曲线。",
+      "limitations": "不是通用犬型定义或体况工具，排除了混血犬和非理想体况犬；作者指出仍需进一步验证。这里只用于触发不阻断的填写确认提醒，不参与评分。"
     },
     {
       "id": "aaha-behavior-2015",

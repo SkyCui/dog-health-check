@@ -12,8 +12,8 @@ function assert(condition, message) {
 assert(skill.startsWith("---\n"), "Red Skill must start with YAML frontmatter");
 assert(/^name: assess-dog-happiness$/m.test(skill), "Red Skill name is missing or invalid");
 assert(/^description: .+$/m.test(skill), "Red Skill description is required");
-assert(skill.includes("https://dog-health-check.vercel.app/assessment"), "production assessment URL is missing");
-assert(skill.includes("https://dog-health-check.vercel.app/api/assess"), "production API URL is missing");
+assert(skill.includes("https://dogcare.cc/assessment"), "production assessment URL is missing");
+assert(skill.includes("https://dogcare.cc/api/assess"), "production API URL is missing");
 
 for (let question = 1; question <= 10; question += 1) {
   assert(skill.includes(`问题 ${question}/10`), `question ${question}/10 is missing`);
@@ -48,9 +48,8 @@ for (const confidenceField of ["assessmentConfidence", "answeredCoverage", "insu
 }
 assert(skill.includes("不代表正常或中等"), "unknown must be documented as missing observation");
 
-for (const consultationMarker of ["https://dogcare.cc/consult", "consultDogCareKnowledge", "9.99", "Plus", "citations", "mode=safety"]) {
-  assert(skill.includes(consultationMarker), `Red Skill is missing consultation marker ${consultationMarker}`);
-}
-assert(skill.includes("不包含真人兽医或营养师咨询"), "Red Skill must state the Plus service boundary");
+for (const marker of ["https://dogcare.cc/knowledge", "https://dogcare.cc/consult", "BYOK", "需要Token", "待更新", "无需登录"]) assert(skill.includes(marker), "Missing free/BYOK flow: " + marker);
+assert(!skill.includes("dogcare.cc/pay?"), "Paid entries must not be published");
+assert(skill.includes("不包含真人兽医或营养师咨询"), "Red Skill must state the consultation service boundary");
 
 console.log("Red Skill validation passed: assessment and consultation flow");

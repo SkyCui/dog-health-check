@@ -1,10 +1,10 @@
 {
-  "knowledgeVersion": "dog-happiness-kb-2.2.0-beta",
+  "knowledgeVersion": "dog-happiness-kb-2.4.0-beta",
   "title": "你的狗狗幸福吗？",
   "recallPeriod": "精神状态题统一观察最近两周，并与这只狗平时的状态比较。",
   "questions": [
-    { "id": "basic", "number": 1, "field": "basic", "title": "基础信息", "fieldEnums": { "size": ["small", "medium", "large", "unknown"] }, "evidenceRefs": ["wsava-welfare-2018"] },
-    { "id": "body", "number": 2, "field": "bodyCondition", "title": "它现在的身材更像哪一种？", "fieldEnums": { "bodyCondition": ["thin", "ideal", "slightly_fat", "obese", "unknown"] }, "evidenceRefs": ["wsava-welfare-2018"] },
+    { "id": "basic", "number": 1, "field": "basic", "title": "基础信息", "fieldEnums": { "size": ["small", "medium", "large", "unknown"] }, "evidenceRefs": ["aaha-nutrition-2021", "salt-growth-2017"] },
+    { "id": "body", "number": 2, "field": "bodyCondition", "title": "它现在的身材更像哪一种？", "fieldEnums": { "bodyCondition": ["thin", "ideal", "slightly_fat", "obese", "unknown"] }, "evidenceRefs": ["wsava-bcs-dog", "aaha-nutrition-2021"] },
     { "id": "diet", "number": 3, "field": "foodTypes/snackLevel", "title": "日常饮食和零食情况", "fieldEnums": { "foodTypes": ["kibble", "canned", "freeze_dried", "fresh", "homemade", "mixed"], "snackLevel": ["low", "medium", "high"] }, "evidenceRefs": ["wsava-welfare-2018"] },
     { "id": "movement", "number": 4, "field": "movement", "title": "运动与嗅闻", "fieldEnums": { "movement.outdoorFrequency": ["rare", "once_toilet_only", "one_to_two", "two_to_three", "two_plus"], "movement.dailyMinutes": ["unknown", "under_10", "10_20", "around_30", "over_30"], "movement.sniffing": ["none", "little", "normal", "rich", "unknown"] }, "evidenceRefs": ["wsava-welfare-2018", "five-domains-2020"] },
     {
