@@ -1,0 +1,44 @@
+{
+  "version": "owner-routines-1.0",
+  "book": {
+    "id": "forever-dog-zh-2023",
+    "title": "永远的爱犬",
+    "authors": ["罗德尼·哈比卜", "卡伦·肖·贝克尔"],
+    "translator": "李镭",
+    "publisher": "中信出版集团",
+    "edition": "2023年1月第1版",
+    "isbn": "978-7-5217-4753-9",
+    "pdfPages": 426,
+    "level": "C",
+    "role": "阅读线索与问题组织，不用于幸福评分或独立制定医疗建议",
+    "limitations": "科普书汇集研究、访谈、案例和作者观点，不是整体经过临床验证的照护方案。原文件部分图表为图像；本轮核对正文、章节小结与相关段落，未独立核验全书每项研究。页码均为用户提供PDF的文件页序，不是纸书页码。",
+    "url": "https://foreverdog.com/"
+  },
+  "categories": [
+    {"id":"meals","title":"吃饭与选粮","question":"这一碗，怎样喂得更稳？","description":"主食、零食、体况与想尝试的新饮食。","icon":"Utensils"},
+    {"id":"outdoors","title":"出门与玩耍","question":"除了上厕所，还能做什么？","description":"按它的能力安排活动，留出探索机会。","icon":"Footprints"},
+    {"id":"connection","title":"相处与休息","question":"它愿意参与，也能安心退出吗？","description":"理解偏好，建立信任，照顾休息和独处。","icon":"Heart"},
+    {"id":"home","title":"居家与护理","question":"回到家，怎样更安心？","description":"日常清洁、食物安全与口腔照护。","icon":"House"},
+    {"id":"observations","title":"观察与就医","question":"哪里变了，要不要找兽医？","description":"记录变化，整理就诊资料，不用自查代替诊断。","icon":"ClipboardList"},
+    {"id":"lifetime","title":"一生的照护","question":"长大和变老，照护怎么跟着变？","description":"考虑生命阶段和个体能力，不用统一模板。","icon":"Sprout"}
+  ],
+  "chapters": [
+    {"number":1,"title":"令人心碎的短期陪伴","pdfPages":[23,46],"takeaway":"关注生活质量与可持续的小习惯，而非追求永生承诺。","categories":["observations","connection"],"boundary":"个体长寿故事不证明某种做法能延长所有犬只寿命。"},
+    {"number":2,"title":"我们与狗的共同进化","pdfPages":[47,69],"takeaway":"从共同生活的环境、活动与互动理解日常照护。","categories":["home","connection"],"boundary":"进化史不能直接推出家犬必须吃某种祖先饮食。"},
+    {"number":3,"title":"衰老的科学","pdfPages":[70,116],"takeaway":"年龄、体型、遗传和生活条件需要一起看。","categories":["lifetime","observations"],"boundary":"机制与跨物种研究不能直接证明家庭抗衰老疗法；不推算剩余寿命，不制定绝育方案。"},
+    {"number":4,"title":"通过饮食抵抗衰老","pdfPages":[118,163],"takeaway":"把吃什么、吃多少、什么时候吃分开讨论。","categories":["meals"],"boundary":"不据此判定狗粮必然有害，不推广统一低碳水比例或禁食窗口。"},
+    {"number":5,"title":"三重威胁","pdfPages":[164,190],"takeaway":"留意压力、孤独与活动机会不足。","categories":["outdoors","connection"],"boundary":"运动不能代替行为治疗；不采用接地或磁场疗效作为依据。"},
+    {"number":6,"title":"环境影响","pdfPages":[191,215],"takeaway":"把家庭用品、清洁和休息环境纳入照护。","categories":["home","connection"],"boundary":"不将所有化学用品视为有毒；不建议停用兽医开具的预防药物。"},
+    {"number":7,"title":"健康长寿的饮食习惯","pdfPages":[217,254],"takeaway":"小步尝试、预算与营养完整性比一次性全盘改变更可执行。","categories":["meals","home"],"boundary":"不输出大蒜喂食剂量、不复制防癌比例或食材疗效承诺。"},
+    {"number":8,"title":"健康长寿的营养补充习惯","pdfPages":[255,283],"takeaway":"先弄清补充目的、已有摄入、用药和个体情况。","categories":["meals"],"boundary":"不把书中补充剂清单变为人人必买清单，不提供药物、草药、CBD或补充剂剂量。"},
+    {"number":9,"title":"个性化饮食治疗","pdfPages":[284,349],"takeaway":"选粮时结合预算、标签、实际耐受与家庭执行条件。","categories":["meals","observations"],"boundary":"不沿用书中食物好坏排名作为临床结论，不直接提供长期完整均衡自制配方。"},
+    {"number":10,"title":"让狗狗真正做狗狗","pdfPages":[350,393],"takeaway":"观察偏好，提供安全的探索、互动、休息与长期记录。","categories":["outdoors","connection","home","observations","lifetime"],"boundary":"不统一规定运动强度，不把关闭路由器、排毒或停药作为健康方案。"}
+  ],
+  "appendix": {"pdfPages":[400,424],"coverage":"体检、食谱营养表、繁育者问题、生骨头和资源索引。","boundary":"只保留准备资料、向专业人士提问的方向；图像营养表未逐项复核，不转录食谱、骨头操作指南或检查套餐。"},
+  "exclusions": [
+    {"claim":"大蒜作为保健食材及剂量","bookPages":[253],"decision":"不采纳为家庭建议；误食风险由专业毒理资料处理。","evidenceRefs":["aspca-food-hazards"]},
+    {"claim":"生食或生骨头是默认健康升级","bookPages":[418,419],"decision":"不推荐生骨头代替刷牙，不提供生食升级路径。","evidenceRefs":["aaha-raw-protein-position","wsava-toothbrushing-toolkit-2022"]},
+    {"claim":"统一八小时进食窗口、抗衰老补充剂与排毒","bookPages":[255,283,349,389],"decision":"不制定禁食窗口、补充剂剂量或排毒方案；有需要时整理资料咨询兽医。","evidenceRefs":["aaha-nutrition-2021","aaha-senior-care-2023"]},
+    {"claim":"关闭路由器或接地能够改善健康","bookPages":[188,212,393],"decision":"没有在本库独立核实直接犬只临床获益，不转成建议或评分。","evidenceRefs":["aaha-behavior-2015"]}
+  ]
+}

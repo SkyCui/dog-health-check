@@ -8,7 +8,9 @@ import type { AssessmentInput, EvidenceReference, GeneratedResult, SupportRoute 
 export type ConsultationTopic =
   | "daily_feeding" | "weight_management" | "treats" | "diet_transition"
   | "home_prepared" | "raw_food" | "feeding_enrichment" | "life_stage"
-  | "relaxation" | "social_choice" | "care_records" | "oral_care";
+  | "relaxation" | "social_choice" | "care_records" | "oral_care"
+  | "daily_movement" | "food_labels" | "feeding_schedule" | "supplement_review"
+  | "household_safety" | "food_safety" | "senior_home";
 
 export type ConsultationPlanStep = { day: string; action: string };
 export type ConsultationResponse = {

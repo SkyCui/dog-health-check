@@ -10,6 +10,7 @@ const rules = readJson("knowledge/rules/assessment-rules.json");
 const contentRules = readJson("knowledge/rules/content-rules.json");
 const consultationSources = readJson("knowledge/consultation/sources.json");
 const consultationGuidance = readJson("knowledge/consultation/guidance.json");
+const bookGuide = readJson("knowledge/consultation/book-guide.json");
 const consultationSafety = readJson("knowledge/consultation/safety-rules.json");
 const agentPolicy = readJson("knowledge/consultation/agent-policy.json");
 const requestSchema = readJson("schemas/assess-request.schema.json");
@@ -129,7 +130,19 @@ consultationGuidance.entries.forEach((entry) => {
   validateRefs(`consultation:${entry.id}`, entry.evidenceRefs);
   assert(Array.isArray(entry.actions) && entry.actions.length >= 3, `${entry.id} needs actionable plan steps`);
   assert(Array.isArray(entry.watchFor) && entry.watchFor.length > 0, `${entry.id} needs limits or watch points`);
+  assert(bookGuide.categories.some(category => category.id === entry.category), `${entry.id} needs a valid owner routine`);
+  assert(entry.bookChapters?.length > 0 && entry.bookChapters.every(number => bookGuide.chapters.some(chapter => chapter.number === number)), `${entry.id} needs valid chapter references`);
+  assert(entry.bookPages?.length > 0 && entry.bookPages.every(page => Number.isInteger(page) && page > 0 && page <= bookGuide.book.pdfPages), `${entry.id} has invalid PDF page references`);
+  assert(typeof entry.bookNote === "string" && entry.bookNote.length > 10, `${entry.id} must distinguish reading notes from clinical guidance`);
 });
+assert(bookGuide.book.level === "C", "popular nonfiction cannot be promoted to validated clinical evidence");
+assert(bookGuide.chapters.length === 10 && new Set(bookGuide.chapters.map(chapter => chapter.number)).size === 10, "book guide must cover ten distinct chapters");
+bookGuide.chapters.forEach(chapter => {
+  assert(chapter.boundary?.length > 10 && chapter.takeaway?.length > 5, `chapter ${chapter.number} needs scope and limits`);
+  assert(consultationGuidance.entries.some(entry => entry.bookChapters.includes(chapter.number)), `chapter ${chapter.number} has no mapped guidance`);
+});
+bookGuide.exclusions.forEach(item => validateRefs(`book-exclusion:${item.claim}`, item.evidenceRefs));
+for (const file of [".gitignore", ".vercelignore"]) assert(fs.readFileSync(path.join(root, file), "utf8").includes("knowledge/reference-books/"), `${file} must exclude the private book`);
 validateRefs("consultation-safety", consultationSafety.evidenceRefs);
 assert(Array.isArray(consultationSafety.prohibitedOutputs) && consultationSafety.prohibitedOutputs.length > 0, "consultation safety must prohibit clinical outputs");
 

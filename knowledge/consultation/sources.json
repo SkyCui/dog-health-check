@@ -1,6 +1,28 @@
 {
-  "knowledgeVersion": "dog-care-consult-kb-1.1.0-beta",
+  "knowledgeVersion": "dog-care-consult-kb-1.2.0-beta",
   "sources": [
+    {
+      "id": "aspca-food-hazards", "level": "C",
+      "title": "People Foods to Avoid Feeding Your Pets",
+      "organization": "ASPCA Poison Control", "year": 2026,
+      "url": "https://www.aspca.org/pet-care/aspca-poison-control/people-foods-avoid-feeding-your-pets",
+      "peerReviewed": false,
+      "validation": "动物毒物控制机构的官方家庭安全教育资料，作为风险解释与就医提示，不用于自查评分。",
+      "conflicts": "机构公众教育页面，不是独立临床试验；毒物咨询服务可能收费。",
+      "scope": "常见人类食物的宠物误食风险与避免暴露。",
+      "limitations": "非完整毒物清单，不支持根据网页远程判定安全剂量或治疗；年份为核查年份，不代表页面首次发表年份。"
+    },
+    {
+      "id": "aspca-household-hazards", "level": "C",
+      "title": "Poisonous Household Products",
+      "organization": "ASPCA Poison Control", "year": 2026,
+      "url": "https://www.aspca.org/pet-care/aspca-poison-control/poisonous-household-products",
+      "peerReviewed": false,
+      "validation": "专业动物毒理机构的官方家庭用品安全教育资料，不用于数值评分。",
+      "conflicts": "公众教育而非临床对照研究；毒物咨询服务可能收费。",
+      "scope": "清洁剂、精油、药物和其他家居用品的安全使用与接触风险。",
+      "limitations": "具体风险取决于成分、浓度、暴露途径和个体情况；不支持自行诊断、催吐或解毒。年份为核查年份。"
+    },
     {
       "id": "wsava-global-nutrition",
       "level": "A1",

@@ -44,7 +44,7 @@ export function planCare(input: AssessmentInput | null, question: string, histor
   if (observations.includes(':"与平时不同"')) return pack({ route: "clarify", title: "先了解记录中的变化", summary: "最近记录中有与平时不同的观察，不能直接当作正常或用通用计划覆盖。请说明发生时间、频率和具体表现，持续或加重时联系兽医。", actions: [], watchFor: ["急症不等待随访或打卡，请及时就医。"], followUpQuestion: policy.clarifyQuestions[0], evidenceIds: policy.evidenceRefs });
   const followup = contains(question, policy.followupKeywords) || question.trim().length < 8;
   const search = followup ? [...history.filter(turn => turn.role === "user").slice(-2).map(turn => turn.content), question].join(" ") : question;
-  const ranked = guidance.entries.map(entry => ({ entry, score: entry.keywords.reduce((sum, keyword) => sum + (search.toLowerCase().includes(keyword.toLowerCase()) ? keyword.length : 0), 0) })).filter(item => item.score > 0).sort((a, b) => b.score - a.score);
+  const ranked = guidance.entries.map(entry => ({ entry, score: (question.trim() === entry.title ? 1000 : 0) + entry.keywords.reduce((sum, keyword) => sum + (search.toLowerCase().includes(keyword.toLowerCase()) ? keyword.length : 0), 0) })).filter(item => item.score > 0).sort((a, b) => b.score - a.score);
   const entries = ranked.slice(0, 3).map(item => item.entry);
   if (!entries.length) return pack({ route: "outside", title: "暂时没有足够的知识依据", summary: "当前知识库未匹配到可支持这个问题的条目。请换成具体的日常照护问题，或向兽医咨询；我不会用无关喂养建议填补答案。", actions: [], watchFor: [], followUpQuestion: "可以问：零食怎么控制、怎样刷牙、怎样安排休息区？", evidenceIds: [] });
   const primary = entries[0];

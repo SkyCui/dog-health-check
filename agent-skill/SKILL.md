@@ -5,6 +5,8 @@ description: Collect the ten dog happiness question groups and call assessDogHap
 
 # Agent workflow
 
+The free library at https://dogcare.cc/knowledge follows six owner routines: meals, outdoors, connection/rest, home care, observations, and life stages. 《永远的爱犬》 provides C-level reading context only, not validated scoring or clinical authority. Do not claim full-book retrieval or turn its fasting, supplement dosing, raw-feeding or detox claims into advice. Repeat only the reviewed guidance actually returned by the tools.
+
 1. Start with the two-choice entry menu in `agent/conversation-flow.md`.
 2. Prefer the clickable Web assessment at `https://dogcare.cc/assessment`.
 3. Offer chat collection only when `assessDogHappiness` is callable in the current runtime.

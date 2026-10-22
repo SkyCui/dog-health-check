@@ -1,12 +1,14 @@
 {
-  "knowledgeVersion": "dog-care-consult-kb-1.1.0-beta",
+  "knowledgeVersion": "dog-care-consult-kb-1.2.0-beta",
   "method": "evidence_bounded_safety_routing",
   "evidenceRefs": [
     "recover-cpr-2024",
     "aaha-senior-care-2023",
     "aaha-behavior-2015",
     "aaha-nutrition-2021",
-    "merck-emergency-triage-2025"
+    "merck-emergency-triage-2025",
+    "aspca-food-hazards",
+    "aspca-household-hazards"
   ],
   "urgentKeywords": [
     "呼吸困难",
@@ -29,7 +31,17 @@
     "吞了药",
     "吞了老鼠药",
     "误食巧克力",
-    "吃了葡萄"
+    "吃了葡萄",
+    "误食葡萄",
+    "吃了大蒜",
+    "误食大蒜",
+    "吃了洋葱",
+    "误食洋葱",
+    "吃了木糖醇",
+    "误食木糖醇",
+    "吃了巧克力",
+    "吞了清洁剂",
+    "喝了清洁剂"
   ],
   "medicalReviewKeywords": [
     "反复呕吐",

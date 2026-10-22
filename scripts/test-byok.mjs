@@ -31,6 +31,8 @@ globalThis.fetch = async (url, options) => {
   assert.equal(body.model, "test-model");
   assert(!options.body.includes("PHOTO_MUST_NOT_LEAVE"));
   assert(body.messages[0].content.includes("知识依据"));
+  assert(!body.messages[0].content.includes("bookNote"), "Rejected book claims must not enter model context");
+  assert(!body.messages[0].content.includes("bookPages"), "Private book reading metadata is not model guidance");
   return { ok: true, json: async () => ({ choices: [{ message: { content: JSON.stringify({ route: "knowledge", title: "零食观察", summary: "测试回复", actions: [{ text: "记录零食总量。", evidenceIds: ["aaha-nutrition-2021"] }], watchFor: [], followUpQuestion: "每天是谁投喂？", evidenceIds: ["aaha-nutrition-2021"] }) } }] }) };
 };
 const settings = { baseUrl: "https://example.com/v1", model: "test-model", apiKey: "test-key" };
@@ -51,9 +53,19 @@ const cases = [
  ["换粮需要多久", "knowledge", "diet-transition"],
  ["自制食谱怎么做", "knowledge", "home-prepared"],
  ["如何记录变化", "knowledge", "care-history"],
+ ["散步除了赶路还能做什么", "knowledge", "walk-with-choice"],
+ ["选粮先看什么标签", "knowledge", "food-label-check"],
+ ["想调整餐次怎么安排", "knowledge", "feeding-routine"],
+ ["要不要买鱼油补充剂", "knowledge", "supplement-review"],
+ ["清洁剂使用时注意什么", "knowledge", "household-safety"],
+ ["人类食物能不能吃", "knowledge", "human-food-safety"],
+ ["老年犬怎么做防滑", "knowledge", "aging-at-home"],
  ["现在喘不过气", "safety"],
  ["它今天倒地抽搐", "safety"],
  ["吃了葡萄怎么办", "safety"],
+ ["刚吃了大蒜", "safety"],
+ ["它喝了清洁剂", "safety"],
+ ["狗狗能不能吃大蒜", "knowledge", "human-food-safety"],
  ["最近一直咳嗽", "safety"],
  ["严重攻击人", "safety"],
  ["持续害怕", "safety"],
@@ -72,6 +84,12 @@ for (const [question, route, entry] of cases) {
  if (plan.reply.evidenceIds.length) assert(plan.citations.length > 0);
 }
 const followup = planCare(input, "那每天具体怎么做", [{ role: "user", content: "我想控制零食" }]);
+const guidance = JSON.parse(fs.readFileSync("knowledge/consultation/guidance.json", "utf8"));
+for (const entry of guidance.entries) {
+  const linked = planCare(null, entry.title);
+  assert.equal(linked.reply.route, "knowledge", entry.id + " library link route");
+  assert.equal(linked.entries[0].id, entry.id, entry.id + " exact-title retrieval");
+}
 assert(followup.entries.some(entry => entry.id === "treat-budget"));
 assert.equal(planCare(input, "那换粮呢", [{ role: "user", content: "现在呼吸困难" }]).reply.route, "safety");
 assert.equal(planCare(null, "怎么控制零食").reply.route, "knowledge");

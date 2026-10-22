@@ -1,0 +1,10 @@
+knowledge/reference-books/
+node_modules
+.next
+.git
+.DS_Store
+*.tsbuildinfo
+.data
+.env
+.env.local
+.env.*.local

@@ -1,9 +1,13 @@
 {
-  "knowledgeVersion": "dog-care-consult-kb-1.1.0-beta",
+  "knowledgeVersion": "dog-care-consult-kb-1.2.0-beta",
   "method": "evidence_bounded_deterministic_retrieval",
   "entries": [
     {
       "id": "daily-foundation",
+      "category": "meals",
+      "bookChapters": [4, 7, 9],
+      "bookPages": [217, 220, 348, 349],
+      "bookNote": "借鉴小步改变与家庭预算的组织思路；主食建议以营养指南为边界，不采用书中的食物等级排名。",
       "topic": "daily_feeding",
       "title": "先把主食、总量和记录做稳",
       "keywords": [
@@ -31,6 +35,10 @@
     },
     {
       "id": "weight-management",
+      "category": "meals",
+      "bookChapters": [3, 9],
+      "bookPages": [348, 349],
+      "bookNote": "书中也强调观察体况与摄入；体重目标不能由品种、体型标签或单个数字直接决定。",
       "topic": "weight_management",
       "title": "体重管理从盘点总摄入开始",
       "keywords": [
@@ -57,6 +65,10 @@
     },
     {
       "id": "treat-budget",
+      "category": "meals",
+      "bookChapters": [7],
+      "bookPages": [253, 254],
+      "bookNote": "书中讨论用小份食物调整日常习惯；本条使用指南的总热量预算，不照搬书中全部食材或功效。",
       "topic": "treats",
       "title": "给零食留一份明确预算",
       "keywords": [
@@ -82,6 +94,10 @@
     },
     {
       "id": "diet-transition",
+      "category": "meals",
+      "bookChapters": [9],
+      "bookPages": [348, 349],
+      "bookNote": "呼应书中循序尝试并记录反应；换粮时间来自指南，不是全犬通用医疗方案。",
       "topic": "diet_transition",
       "title": "换粮要渐进并观察耐受",
       "keywords": [
@@ -106,6 +122,10 @@
     },
     {
       "id": "home-prepared",
+      "category": "meals",
+      "bookChapters": [7, 9],
+      "bookPages": [421, 424],
+      "bookNote": "附录也指出部分新鲜饮食存在营养缺口；不把整本书视为可自动生成完整食谱的依据。",
       "topic": "home_prepared",
       "title": "自制与鲜食先确认营养完整性",
       "keywords": [
@@ -132,6 +152,10 @@
     },
     {
       "id": "raw-food",
+      "category": "meals",
+      "bookChapters": [4, 9],
+      "bookPages": [162, 349, 418, 419],
+      "bookNote": "书中偏好低加工和部分生食；本条不采纳这种排序，而采用 AAHA 的生食公共卫生风险边界。",
       "topic": "raw_food",
       "title": "生食需要同时考虑犬只与家庭风险",
       "keywords": [
@@ -157,6 +181,10 @@
     },
     {
       "id": "feeding-enrichment",
+      "category": "outdoors",
+      "bookChapters": [5, 10],
+      "bookPages": [367, 368, 374, 376],
+      "bookNote": "提取让狗表达偏好、获得脑力活动的方向，不照搬案例中的生食玩具或统一时长。",
       "topic": "feeding_enrichment",
       "title": "把一部分吃饭变成可选择的探索",
       "keywords": [
@@ -186,6 +214,10 @@
     },
     {
       "id": "life-stage",
+      "category": "lifetime",
+      "bookChapters": [3, 10],
+      "bookPages": [70, 74, 360, 366],
+      "bookNote": "把个体差异转为生命阶段提问；不以犬龄乘七或基因推算寿命。",
       "topic": "life_stage",
       "title": "生命阶段会改变营养需求",
       "keywords": [
@@ -214,6 +246,10 @@
     },
     {
       "id": "relaxation-space",
+      "category": "connection",
+      "bookChapters": [5, 6, 10],
+      "bookPages": [212, 213, 374, 377],
+      "bookNote": "借鉴压力、环境和偏好的观察角度；不采用接地、电磁波或关闭路由器的健康主张。",
       "topic": "relaxation",
       "title": "给它一个可以安心退出的休息区",
       "keywords": [
@@ -242,6 +278,10 @@
     },
     {
       "id": "choice-and-reward",
+      "category": "connection",
+      "bookChapters": [1, 5, 10],
+      "bookPages": [103, 104, 367, 374],
+      "bookNote": "保留理解狗的反应、允许选择的方向；具体行动由行为指南与奖励式训练立场支持。",
       "topic": "social_choice",
       "title": "让互动有选择，用奖励建立信任",
       "keywords": [
@@ -272,6 +312,10 @@
     },
     {
       "id": "care-history",
+      "category": "observations",
+      "bookChapters": [1, 3, 10],
+      "bookPages": [360, 377, 400, 402],
+      "bookNote": "参考生活日志和体检资料整理的思路；不把附录检查列表变成所有犬必须做的套餐。",
       "topic": "care_records",
       "title": "把日常观察整理成可讨论的记录",
       "keywords": [
@@ -301,6 +345,10 @@
     },
     {
       "id": "dental-homecare",
+      "category": "home",
+      "bookChapters": [10],
+      "bookPages": [393, 418, 419],
+      "bookNote": "采用晚间照护的生活场景，不采纳生骨头替代刷牙；操作方向来自 WSAVA 刷牙工具包。",
       "topic": "oral_care",
       "title": "口腔照护从自愿适应开始",
       "keywords": [
@@ -324,6 +372,83 @@
       "watchFor": [
         "持续口臭、口腔出血、进食疼痛或牙齿异常应先咨询兽医，不强行刷牙。"
       ]
+    },
+    {
+      "id": "walk-with-choice", "topic": "daily_movement", "category": "outdoors",
+      "title": "散步不只赶路，也给它探索的机会",
+      "keywords": ["散步", "遛狗", "运动", "出门", "遛弯", "走路", "探索"],
+      "bookChapters": [5, 10], "bookPages": [189, 350, 359, 374, 376, 390, 391],
+      "bookNote": "把书中的适量运动和探索转为观察任务，不照搬统一分钟数、强度或延寿承诺。",
+      "evidenceRefs": ["five-domains-2020", "aaha-senior-care-2023"],
+      "summary": "把活动安排在它愿意、身体能够承受的范围内。在安全条件下保留探索机会，不把疲惫、跑得快或走得久当作幸福指标。",
+      "actions": ["观察它在现有路线中主动停留、愿意探索和想要退出的位置。", "在安全牵引和周围环境允许时，留出一段由它选择停留的探索时间。", "记录活动后是否能正常恢复；高龄、已有疾病或活动能力改变时先与兽医确认安排。"],
+      "watchFor": ["跛行、明显疼痛、呼吸费力或活动能力突然变化时停止活动并联系兽医。"]
+    },
+    {
+      "id": "food-label-check", "topic": "food_labels", "category": "meals",
+      "title": "买主食前，先看标签而不是宣传词",
+      "keywords": ["选粮", "标签", "买粮", "完整均衡", "配料表", "低加工", "天然粮"],
+      "bookChapters": [2, 4, 9], "bookPages": [284, 349, 421, 424],
+      "bookNote": "书中鼓励主动核查产品；不采用按加工次数、碳水比例或合成营养素打分的排名。",
+      "evidenceRefs": ["wsava-global-nutrition", "aaha-nutrition-2021"],
+      "summary": "先核查营养完整性、适用生命阶段及厂家能否说明质量控制。新鲜、天然或低加工的名称，不能单独证明适合你家狗狗。",
+      "actions": ["拍下当前主食的营养充足性声明、生命阶段和喂食说明。", "记录每份热量、保存方法与厂家联系方式，缺失时向厂家询问。", "把标签和目前的体况、进食情况一起交给兽医讨论，不只比较配料表。"],
+      "watchFor": ["用于补充或间歇喂食的产品，不自动当作长期唯一主食。"]
+    },
+    {
+      "id": "feeding-routine", "topic": "feeding_schedule", "category": "meals",
+      "title": "想调整餐次，先记录现在怎么吃",
+      "keywords": ["餐次", "几顿", "进食时间", "限时进食", "禁食", "断食", "喂食时间"],
+      "bookChapters": [4, 9], "bookPages": [161, 163, 349],
+      "bookNote": "书中提出限时进食；本库未确认它适合所有家犬，不转换成八小时窗口或少吃一餐的建议。",
+      "evidenceRefs": ["aaha-nutrition-2021"],
+      "summary": "餐次要考虑生命阶段、健康状况、用药和生活安排。这里帮助整理现状，不给所有狗套用同一个禁食窗口。",
+      "actions": ["记下每天主食、奖励和家人投喂的时间及总量。", "记录进食前后精神、食欲和便便与平时是否不同。", "需要改变餐次时，把记录和用药信息带给兽医确认，先不突然跳餐。"],
+      "watchFor": ["幼犬、孕哺、偏瘦、有疾病或正在用药的犬，不自行实行禁食或跳餐；拒食不能直接解释成有益的断食。"]
+    },
+    {
+      "id": "supplement-review", "topic": "supplement_review", "category": "meals",
+      "title": "想买补充剂，先弄清为什么需要",
+      "keywords": ["补充剂", "保健品", "鱼油", "益生菌", "维生素", "抗衰老", "排毒"],
+      "bookChapters": [8], "bookPages": [255, 283],
+      "bookNote": "完整纳入书中补充剂这一问题方向，但不将其清单、剂量或功效变为本工具的推荐。",
+      "evidenceRefs": ["aaha-nutrition-2021", "aaha-senior-care-2023"],
+      "summary": "不是每只狗都需要额外补充。先看现有饮食、目标和健康资料，再由兽医判断是否有必要；不提供抗衰老或排毒套餐。",
+      "actions": ["写清想解决的具体问题，不仅记录宣传中的功效。", "汇总主食、全部补充剂标签及正在使用的药物，避免遗漏重复摄入。", "把清单交给兽医讨论是否需要、适用性和复查方式，不自行叠加产品。"],
+      "watchFor": ["本库不提供药物、草药、CBD或营养补充剂剂量；不要自行停用专业处方。"]
+    },
+    {
+      "id": "household-safety", "topic": "household_safety", "category": "home",
+      "title": "打扫和布置家时，顺手做一次安全检查",
+      "keywords": ["清洁", "清洁剂", "香薰", "精油", "环境", "杀虫剂", "烟", "消毒"],
+      "bookChapters": [2, 6, 10], "bookPages": [191, 215, 377, 388],
+      "bookNote": "保留审视共同居住环境的方向；不采纳所有化学品都有害、必须排毒或关闭路由器的说法。",
+      "evidenceRefs": ["aspca-household-hazards", "aaha-behavior-2015"],
+      "summary": "先管理实际接触和误食机会。清洁产品按标签使用，并不意味着都不能用；天然或精油标签也不等于对宠物安全。",
+      "actions": ["收好清洁剂、药物和杀虫产品，保留包装与使用说明。", "清洁时让狗狗离开操作区，按标签要求稀释、冲洗、干燥或通风后再让它进入。", "不要直接给它涂抹精油或让它舔食浓缩产品；不确定产品适用性时先询问厂家或兽医。"],
+      "watchFor": ["怀疑误食或接触有害物时，保留包装并及时联系兽医，不自行催吐或使用排毒产品。"]
+    },
+    {
+      "id": "human-food-safety", "topic": "food_safety", "category": "home",
+      "title": "分享食物前，先确认狗狗能不能吃",
+      "keywords": ["人类食物", "能不能吃", "大蒜", "葡萄", "巧克力", "木糖醇", "洋葱", "剩菜"],
+      "bookChapters": [7], "bookPages": [253, 254],
+      "bookNote": "不照搬书中的大蒜用量。食材安全采用专业毒理资料，书中某种食材的健康主张不构成安全保证。",
+      "evidenceRefs": ["aspca-food-hazards"],
+      "summary": "人的食物不能整类视为安全。葡萄及葡萄干、葱蒜类、巧克力、木糖醇和酒精等需避免，不以少量尝试来验证安全。",
+      "actions": ["核对食物及调味料的完整成分，拿不准时先不喂。", "把零食、无糖食品、酒和厨房剩料放在狗狗无法接触的位置。", "怀疑吃到有害食物时记录种类、大致数量和时间，带包装联系兽医。"],
+      "watchFor": ["疑似有害食物误食不要等待出现症状，也不要自行催吐；这不是完整毒物清单。"]
+    },
+    {
+      "id": "aging-at-home", "topic": "senior_home", "category": "lifetime",
+      "title": "它慢下来了，先观察哪里需要帮助",
+      "keywords": ["变老", "老年犬", "防滑", "上下楼", "行动", "爬楼", "老龄", "衰老"],
+      "bookChapters": [3, 10], "bookPages": [70, 74, 350, 360, 374, 377],
+      "bookNote": "把健康寿命与个体能力转成家庭观察，不凭年龄认定疼痛或把活动下降当成正常老化。",
+      "evidenceRefs": ["aaha-senior-care-2023"],
+      "summary": "年龄本身不能解释所有变化。结合起身、行走、休息和互动的日常表现，与兽医讨论个体照护和环境调整。",
+      "actions": ["记录起身、行走、上下台阶和休息姿势与平时的差别。", "检查常走路径是否打滑，保持休息处和饮水位置容易到达。", "带着记录与兽医讨论疼痛、活动安排、营养和复查需求。"],
+      "watchFor": ["突然站不起来、明显疼痛或呼吸困难应及时就医，不以年纪大为由等待。"]
     }
   ]
 }

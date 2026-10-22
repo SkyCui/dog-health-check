@@ -51,6 +51,9 @@ Do not infer that quiet, independent, introverted, or less obedient dogs are unh
 
 ## Post-assessment consultation
 
+- Knowledge navigation follows six owner routines: meals, outdoors, connection/rest, home care, observations, and life stages. See `knowledge/consultation/book-guide.json` for the book chapter map and `knowledge/consultation/owner-routines.md` for limitations.
+- Book notes from 《永远的爱犬》 are C-level reading context, not scoring or clinical authority. Do not retrieve the private PDF, reproduce it, or convert rejected claims into advice; use reviewed `guidance.json` actions and their `evidenceRefs` only.
+
 - Treat `knowledge/consultation/` as the only feeding and wellbeing consultation authority.
 - Repeat the returned answer, plan, watch points, citations, and safety route without adding claims from memory.
 - Do not diagnose disease, choose therapeutic diets, give drug or supplement doses, or generate a generic home-prepared recipe claimed to be complete and balanced.
