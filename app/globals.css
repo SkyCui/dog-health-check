@@ -270,6 +270,8 @@ button:disabled { cursor: not-allowed; opacity: .5; }
 .consult-page-heading { display:flex; align-items:center; justify-content:space-between; gap:25px; margin-bottom:28px; }
 .consult-page-heading .page-heading { margin-bottom:0; max-width:690px; }
 .consult-connect-button { display:inline-flex; align-items:center; justify-content:center; gap:8px; border:1px solid #c3d3e0; background:white; color:#1263b0; min-height:46px; padding:12px 16px; border-radius:5px; font-size:13px; font-weight:700; flex-shrink:0; }
+.settings-panel { scroll-margin-top:24px; }
+.model-settings-hint { padding:12px; border-left:3px solid #1263b0; background:#eef5fc; color:#425c70; font-size:12px; line-height:1.8; }
 .chat-workspace { border-radius:6px; }
 .chat-message.assistant { background:white; border-radius:0; padding:15px 0 25px; border-bottom:1px solid var(--line); }
 .chat-message.user { background:#eef5fc; }

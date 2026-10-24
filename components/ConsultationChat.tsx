@@ -19,6 +19,7 @@ export default function ConsultationChat() {
   const [settings, setSettings] = useState<ModelSettings>(blank);
   const [configured, setConfigured] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [settingsRequest, setSettingsRequest] = useState(0);
   const [remember, setRemember] = useState(false);
   const [rememberChat, setRememberChat] = useState(false);
   const [consent, setConsent] = useState(false);
@@ -52,8 +53,12 @@ export default function ConsultationChat() {
   }, []);
   useEffect(() => { end.current?.scrollIntoView({ behavior: "smooth", block: "nearest" }); }, [items, busy]);
   useEffect(() => {
-    if (showSettings && window.matchMedia("(max-width: 900px)").matches) settingsPanel.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-  }, [showSettings]);
+    if (!showSettings) return;
+    if (settingsRequest > 0 || window.matchMedia("(max-width: 900px)").matches) {
+      settingsPanel.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      if (settingsRequest > 0) settingsPanel.current?.querySelector<HTMLInputElement>('input[type="url"]')?.focus({ preventScroll: true });
+    }
+  }, [showSettings, settingsRequest]);
   useEffect(() => {
     if (!ready) return;
     try {
@@ -63,6 +68,12 @@ export default function ConsultationChat() {
       saveMemory(key, { ...saved, conversation: rememberChat ? items.slice(-30).map(item => ({ role: item.role, content: item.content, evidenceIds: item.evidenceIds ?? [], ...(item.feedback ? { feedback: item.feedback } : {}) })) : [] });
     } catch { setStorageError("对话保存失败。你仍可继续使用，请检查浏览器存储空间。"); }
   }, [items, rememberChat, ready, assessment]);
+
+  function openModelSettings() {
+    setShowSettings(true);
+    setMode("model");
+    setSettingsRequest(current => current + 1);
+  }
 
   function saveSettings() {
     try {
@@ -88,7 +99,7 @@ export default function ConsultationChat() {
     const review = clean.includes("复盘");
     const contextHistory = records.length && review ? [...items, { role: "user" as const, content: "最近观察记录：" + records.join("\n") }] : items;
     const plan = planCare(assessment, clean, contextHistory);
-    if (mode === "model" && plan.reply.route === "knowledge" && !configured) { setShowSettings(true); setError("填写自己的 API 配置后即可使用模型细化。你也可以切回免费知识库建议。"); return; }
+    if (mode === "model" && plan.reply.route === "knowledge" && !configured) { openModelSettings(); setError("填写自己的 API 配置后即可使用模型细化。你也可以切回免费知识库建议。"); return; }
     setBusy(true); setError(""); setQuestion("");
     setItems(current => [...current, { role: "user", content: clean }]);
     const abort = new AbortController(); controller.current = abort;
@@ -113,12 +124,13 @@ export default function ConsultationChat() {
   const update = (field: keyof ModelSettings, value: string) => { setSettings(current => ({ ...current, [field]: value })); setConfigured(false); };
   const feedback = (index: number, value: "helpful" | "unhelpful") => setItems(current => current.map((item, i) => i === index ? { ...item, feedback: value } : item));
   return <main className="page-wrap consult-page">
-    <header className="consult-page-heading"><div className="page-heading"><p className="eyebrow">有依据，记得住，能跟进</p><h1>AI顾问</h1><p>先用知识库找方向，再结合你家情况聊。当前专注狗狗日常照护，不提供疾病诊断。</p></div><button disabled={busy} onClick={() => { setShowSettings(true); setMode("model"); }} className="consult-connect-button"><KeyRound size={17}/>接入自己的模型 API<ArrowUpRight size={16}/></button></header>
+    <header className="consult-page-heading"><div className="page-heading"><p className="eyebrow">有依据，记得住，能跟进</p><h1>AI顾问</h1><p>先用知识库找方向，再结合你家情况聊。当前专注狗狗日常照护，不提供疾病诊断。</p></div><button disabled={busy} onClick={openModelSettings} aria-controls="model-api-settings" aria-expanded={showSettings} className="consult-connect-button"><KeyRound size={17}/>接入自己的模型 API<ArrowUpRight size={16}/></button></header>
     <div className="consult-layout"><aside className="consult-sidebar">
       <section className="care-profile"><img src={assessment?.dogPhoto || "/images/default-dog-avatar.png"} alt="当前狗狗档案"/><div><h2>{assessment?.dogName || "认识你的毛孩子"}</h2><p>{assessment ? `${assessment.breed} · ${assessment.age}` : "没有档案也可以先提问"}</p><Link href="/assessment">{assessment ? "更新幸福自查" : "建立免费档案"} <ArrowUpRight size={13}/></Link></div></section>
       <Link href="/companion" className="companion-entry"><ClipboardList size={20}/><span>陪伴记录<small>今天观察，过几天再复盘</small></span><ArrowUpRight size={16}/></Link>
-      <section className="settings-panel" ref={settingsPanel}><div className="flex items-center justify-between gap-2"><h2 className="font-bold"><KeyRound size={18} className="mr-2 inline"/>接入自己的模型 API</h2><button title="修改模型配置" aria-expanded={showSettings} onClick={() => setShowSettings(!showSettings)} disabled={busy} className="icon-button"><Settings2 size={18}/></button></div><p className="mt-2 break-words text-sm text-cocoa/65">{configured ? settings.model : "接入免费，模型费用由你的账户承担"}</p>
+      <section id="model-api-settings" className="settings-panel" ref={settingsPanel}><div className="flex items-center justify-between gap-2"><h2 className="font-bold"><KeyRound size={18} className="mr-2 inline"/>接入自己的模型 API</h2><button title="修改模型配置" aria-expanded={showSettings} onClick={() => setShowSettings(!showSettings)} disabled={busy} className="icon-button"><Settings2 size={18}/></button></div><p className="mt-2 break-words text-sm text-cocoa/65">{configured ? settings.model : "接入免费，模型费用由你的账户承担"}</p>
       {showSettings ? <div className="mt-5 space-y-4">
+        <p role="status" className="model-settings-hint">在这里填写 API 地址、模型名称和密钥，再点击“使用此配置”。无需跳转到其他页面。</p>
         <label className="field-label">API 基础地址<input type="url" value={settings.baseUrl} disabled={busy} onChange={e => update("baseUrl", e.target.value)} placeholder="https://你的服务商/v1" /></label>
         <label className="field-label">模型名称<input value={settings.model} disabled={busy} onChange={e => update("model", e.target.value)} placeholder="服务商提供的模型 ID" /></label>
         <label className="field-label">API 密钥<input type="password" autoComplete="off" value={settings.apiKey} disabled={busy} onChange={e => update("apiKey", e.target.value)} placeholder="仅当前页面使用" /></label>
@@ -127,12 +139,12 @@ export default function ConsultationChat() {
         <label className="check-label"><input type="checkbox" checked={consent} onChange={e => { setConsent(e.target.checked); setConfigured(false); }}/>我同意将问题、最近对话及测评文字资料发送至上述服务商；照片不会发送。</label>
         <label className="check-label"><input type="checkbox" checked={shareRecords} onChange={e => setShareRecords(e.target.checked)}/>同时向模型提供最近 7 天的照护记录（可选）</label>
         <button disabled={busy} onClick={saveSettings} className="primary-link w-full justify-center">使用此配置</button>
-      </div> : !configured ? <button onClick={() => { setShowSettings(true); setMode("model"); }} className="mt-4 font-bold text-rose">接入 API，启动 AI 助手 →</button> : null}
+      </div> : !configured ? <button onClick={openModelSettings} className="mt-4 font-bold text-rose">接入 API，启动 AI 助手 →</button> : null}
       {configured ? <button onClick={() => { setSettings(blank); setConfigured(false); setMode("knowledge"); localStorage.removeItem("dogcareModelPreferences"); }} disabled={busy} className="mt-4 inline-flex items-center gap-2 text-sm text-cocoa/60"><Trash2 size={15}/>清除模型配置</button> : null}</section>
       <section className="py-5"><p className="eyebrow">平台模型 · 待更新</p><p className="mt-2 text-sm leading-6 text-cocoa/70">暂时没有密钥？可以先用免费知识库建议。需要平台模型时，私信或进入群聊回复「需要Token」。</p></section>
       <Link href="/knowledge" className="inline-flex items-center gap-2 font-bold text-rose"><BookOpen size={18}/>浏览全部知识与来源</Link>
     </aside><section className="chat-workspace" aria-label="养狗顾问对话">
-      <div className="chat-mode" role="group" aria-label="选择回答方式"><button disabled={busy} aria-pressed={mode === "knowledge"} onClick={() => setMode("knowledge")}><BookOpen size={16}/>免费知识库建议</button><button disabled={busy} aria-pressed={mode === "model"} onClick={() => { setMode("model"); if (!configured) setShowSettings(true); }}><KeyRound size={16}/>我的模型细化</button></div>
+      <div className="chat-mode" role="group" aria-label="选择回答方式"><button disabled={busy} aria-pressed={mode === "knowledge"} onClick={() => setMode("knowledge")}><BookOpen size={16}/>免费知识库建议</button><button disabled={busy} aria-pressed={mode === "model"} onClick={() => { if (!configured) openModelSettings(); else setMode("model"); }}><KeyRound size={16}/>我的模型细化</button></div>
       <div className="chat-heading"><span className="status-dot"/>{mode === "knowledge" ? "按知识条目回答，无模型费用" : configured ? "已配置 · 发送后连接自己的模型" : "先填写 API 配置，或切回知识库建议"}</div>
       <div className="chat-messages" aria-live="polite">{!ready ? <p>正在读取本机资料…</p> : !items.length ? <div className="chat-empty"><img src="/images/default-dog-avatar.png" alt="白色雪纳瑞"/><h2>今天最想改善哪件小事？</h2><p>{assessment ? `已准备好${assessment.dogName || "毛孩子"}的自查资料。` : "可以直接提问，也可以先建档，让建议更贴近你家情况。"}先从一个具体问题开始。</p><div className="prompt-grid">{policy.starterQuestions.map(text => <button key={text} onClick={() => submit(text)}>{text}</button>)}</div></div> : items.map((item, index) => <article key={index} className={"chat-message " + item.role + (item.reply?.route === "safety" ? " safety-message" : "")}>
         {item.reply ? <><p className="answer-kind">{item.reply.route === "safety" ? "优先处理安全" : item.validation === "references_checked" ? "模型细化 · 来源 ID 已校验" : "知识库建议"}</p><h2 className="mt-2 text-lg font-bold">{item.reply.title}</h2><p className="mt-3 whitespace-pre-wrap break-words leading-7">{item.reply.summary}</p>{item.reply.actions.length ? <ol className="answer-actions">{item.reply.actions.map((action, i) => <li key={i}><span>{i + 1}</span><p>{action.text}</p></li>)}</ol> : null}{item.reply.watchFor.length ? <div className="answer-watch"><h3>什么时候需要停下或求助</h3>{item.reply.watchFor.map(text => <p key={text}>{text}</p>)}</div> : null}<p className="mt-4 whitespace-pre-wrap text-sm font-bold leading-7">{item.reply.followUpQuestion}</p>{item.validation === "fallback" ? <p className="mt-3 text-xs leading-5 text-cocoa/65">模型回复未通过格式或来源检查，已显示原始知识库建议，不展示未经校验内容。</p> : null}</> : <p className="whitespace-pre-wrap break-words leading-7">{item.content}</p>}
