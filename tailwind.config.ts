@@ -9,26 +9,26 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        ink: "#56313d",
-        cocoa: "#744552",
-        rose: "#ff78a7",
-        roseSoft: "#fff0f6",
-        blush: "#ffe6ef",
-        gold: "#f7b735",
-        goldSoft: "#fff3cf",
-        cream: "#fffaf4",
-        coral: "#d96b5f",
-        leaf: "#d86690",
-        mint: "#fff0f6",
-        amberSoft: "#fff3cf",
-        skySoft: "#eef7ff"
+        ink: "#18334b",
+        cocoa: "#425c70",
+        rose: "#1263b0",
+        roseSoft: "#eef5fc",
+        blush: "#dce9f6",
+        gold: "#8a6010",
+        goldSoft: "#fff9db",
+        cream: "#f7fafd",
+        coral: "#b62f39",
+        leaf: "#1263b0",
+        mint: "#eef5fc",
+        amberSoft: "#fff3e7",
+        skySoft: "#eef5fc"
       },
       boxShadow: {
-        panel: "0 18px 50px rgba(138, 76, 98, 0.13)",
-        candy: "0 18px 42px rgba(255, 120, 167, 0.28)"
+        panel: "0 4px 18px rgba(24, 51, 75, 0.04)",
+        candy: "0 4px 18px rgba(24, 51, 75, 0.06)"
       },
       borderRadius: {
-        blob: "2rem"
+        blob: "8px"
       }
     }
   },

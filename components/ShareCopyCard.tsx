@@ -58,7 +58,7 @@ function createEntryQrCode(width: number) {
     errorCorrectionLevel: "H",
     margin: 2,
     width,
-    color: { dark: "#56313d", light: "#ffffff" }
+    color: { dark: "#18334b", light: "#ffffff" }
   });
 }
 
@@ -91,65 +91,61 @@ async function createShareImageFile(result: GeneratedResult, assessment: Assessm
   const context = canvas.getContext("2d");
   if (!context) throw new Error("当前浏览器无法生成图片。");
 
-  const gradient = context.createLinearGradient(0, 0, 1080, 1440);
-  gradient.addColorStop(0, "#fff7fb"); gradient.addColorStop(0.48, "#ffe4ef"); gradient.addColorStop(1, "#fff0c9");
-  context.fillStyle = gradient; context.fillRect(0, 0, 1080, 1440);
-  context.fillStyle = "rgba(255,120,167,.13)";
-  for (const [x, y] of [[80,110],[970,160],[80,1280],[940,1200],[530,70]]) { context.beginPath(); context.arc(x, y, 34, 0, Math.PI * 2); context.fill(); }
+  context.fillStyle = "#eef5fc"; context.fillRect(0, 0, 1080, 1440);
 
-  context.fillStyle = "rgba(255,255,255,.93)"; roundRect(context, 60, 60, 960, 1320, 54); context.fill();
-  context.strokeStyle = "#ffc8dc"; context.lineWidth = 4; context.stroke();
+  context.fillStyle = "rgba(255,255,255,.93)"; roundRect(context, 60, 60, 960, 1320, 20); context.fill();
+  context.strokeStyle = "#c5d9eb"; context.lineWidth = 4; context.stroke();
 
-  context.fillStyle = "#ff78a7"; context.font = "800 32px system-ui, sans-serif"; context.fillText("✦ 毛孩子幸福小档案", 120, 145);
-  context.fillStyle = "#56313d"; context.font = "900 58px system-ui, sans-serif";
-  context.fillText(`${assessment?.dogName?.trim() || "我家狗狗"}的今日幸福卡`, 120, 230);
+  context.fillStyle = "#1263b0"; context.font = "800 32px system-ui, sans-serif"; context.fillText("你的毛孩子幸福吗？", 120, 145);
+  context.fillStyle = "#18334b"; context.font = "900 58px system-ui, sans-serif";
+  wrappedText(context, `${assessment?.dogName?.trim() || "我家狗狗"}的今日幸福卡`, 120, 230, 830, 64, 1);
 
   let photoDrawn = false;
   try {
     const image = await loadImage(assessment?.dogPhoto || DEFAULT_DOG_PHOTO);
-    context.fillStyle = "#fff3cf"; context.beginPath(); context.arc(254, 405, 130, 0, Math.PI * 2); context.fill();
+    context.fillStyle = "#fff9db"; context.beginPath(); context.arc(254, 405, 130, 0, Math.PI * 2); context.fill();
     drawCover(context, image, 144, 295, 220);
     photoDrawn = true;
   } catch { /* Render the safe fallback below. */ }
   if (!photoDrawn) {
-    context.fillStyle = "#fff0f6"; context.beginPath(); context.arc(254, 405, 110, 0, Math.PI * 2); context.fill();
+    context.fillStyle = "#eef5fc"; context.beginPath(); context.arc(254, 405, 110, 0, Math.PI * 2); context.fill();
     context.font = "100px system-ui, sans-serif"; context.textAlign = "center"; context.fillText("🐶", 254, 445); context.textAlign = "start";
   }
 
-  context.fillStyle = "#fff3cf"; roundRect(context, 430, 295, 510, 220, 34); context.fill();
-  context.fillStyle = "#744552"; context.font = "800 28px system-ui, sans-serif"; context.fillText("幸福指数", 480, 360);
+  context.fillStyle = "#fff9db"; roundRect(context, 430, 295, 510, 220, 16); context.fill();
+  context.fillStyle = "#425c70"; context.font = "800 28px system-ui, sans-serif"; context.fillText("幸福指数", 480, 360);
   const scoreText = String(result.happinessScore);
-  context.fillStyle = "#ff78a7"; context.font = "900 104px system-ui, sans-serif"; context.fillText(scoreText, 480, 455);
+  context.fillStyle = "#1263b0"; context.font = "900 104px system-ui, sans-serif"; context.fillText(scoreText, 480, 455);
   const scoreWidth = context.measureText(scoreText).width;
-  context.fillStyle = "#744552"; context.font = "800 28px system-ui, sans-serif"; context.fillText("/ 100", 480 + scoreWidth + 18, 442);
-  context.fillStyle = "#744552"; context.font = "700 25px system-ui, sans-serif"; wrappedText(context, result.statusText, 480, 492, 400, 30, 1);
+  context.fillStyle = "#425c70"; context.font = "800 28px system-ui, sans-serif"; context.fillText("/ 100", 480 + scoreWidth + 18, 442);
+  context.fillStyle = "#425c70"; context.font = "700 25px system-ui, sans-serif"; wrappedText(context, result.statusText, 480, 492, 400, 30, 1);
 
-  context.fillStyle = "#fff0f6"; roundRect(context, 120, 570, 840, 180, 34); context.fill();
-  context.fillStyle = "#ff78a7"; context.font = "800 27px system-ui, sans-serif"; context.fillText("今天最值得关注", 160, 630);
-  context.fillStyle = "#56313d"; context.font = "900 43px system-ui, sans-serif"; wrappedText(context, result.coreRisk.title, 160, 700, 750, 50, 2);
+  context.fillStyle = "#eef5fc"; roundRect(context, 120, 570, 840, 180, 16); context.fill();
+  context.fillStyle = "#1263b0"; context.font = "800 27px system-ui, sans-serif"; context.fillText("今天最值得关注", 160, 630);
+  context.fillStyle = "#18334b"; context.font = "900 38px system-ui, sans-serif"; wrappedText(context, result.coreRisk.title, 160, 683, 750, 44, 2);
 
-  context.fillStyle = "#56313d"; context.font = "900 34px system-ui, sans-serif"; context.fillText("身心双指标", 120, 800);
+  context.fillStyle = "#18334b"; context.font = "900 34px system-ui, sans-serif"; context.fillText("身心双指标", 120, 800);
   let y = 860;
   ([{ label: "健康习惯", score: result.healthScore }, { label: "精神福祉", score: result.mentalWellbeingScore }]).forEach(({ label, score }) => {
-    context.fillStyle = "#744552"; context.font = "700 25px system-ui, sans-serif"; context.fillText(label, 120, y);
-    context.fillStyle = "#f7e6ed"; roundRect(context, 310, y - 24, 520, 18, 9); context.fill();
-    const bar = context.createLinearGradient(310, 0, 830, 0); bar.addColorStop(0, "#ff78a7"); bar.addColorStop(1, "#f7b735");
+    context.fillStyle = "#425c70"; context.font = "700 25px system-ui, sans-serif"; context.fillText(label, 120, y);
+    context.fillStyle = "#dce8f3"; roundRect(context, 310, y - 24, 520, 18, 9); context.fill();
+    const bar = "#1263b0";
     context.fillStyle = bar; roundRect(context, 310, y - 24, Math.max(18, 520 * score / 100), 18, 9); context.fill();
-    context.fillStyle = "#744552"; context.fillText(String(score), 865, y); y += 78;
+    context.fillStyle = "#425c70"; context.fillText(String(score), 865, y); y += 78;
   });
 
-  context.fillStyle = "#fff8e8"; roundRect(context, 120, 985, 840, 150, 30); context.fill();
-  context.fillStyle = "#56313d"; context.font = "800 28px system-ui, sans-serif"; context.fillText("今天先做这一件事", 155, 1028);
-  context.fillStyle = "#744552"; context.font = "500 22px system-ui, sans-serif"; wrappedText(context, result.todayAction.body, 155, 1068, 785, 30, 2);
+  context.fillStyle = "#fff9db"; roundRect(context, 120, 985, 840, 150, 12); context.fill();
+  context.fillStyle = "#18334b"; context.font = "800 28px system-ui, sans-serif"; context.fillText("今天先做这一件事", 155, 1028);
+  context.fillStyle = "#425c70"; context.font = "500 22px system-ui, sans-serif"; wrappedText(context, result.todayAction.body, 155, 1068, 785, 30, 2);
 
-  context.fillStyle = "#fff0f6"; roundRect(context, 120, 1160, 840, 180, 30); context.fill();
-  context.fillStyle = "#56313d"; context.font = "900 29px system-ui, sans-serif"; context.fillText("扫码看看你家狗狗幸福吗？", 155, 1220);
-  context.fillStyle = "#744552"; context.font = "700 23px system-ui, sans-serif"; context.fillText("免费完成 10 题身心状态观察", 155, 1262);
-  context.fillStyle = "#ff78a7"; context.font = "800 22px system-ui, sans-serif"; context.fillText("dogcare.cc", 155, 1305);
+  context.fillStyle = "#eef5fc"; roundRect(context, 120, 1160, 840, 180, 12); context.fill();
+  context.fillStyle = "#18334b"; context.font = "900 29px system-ui, sans-serif"; context.fillText("扫码看看你家狗狗幸福吗？", 155, 1220);
+  context.fillStyle = "#425c70"; context.font = "700 23px system-ui, sans-serif"; context.fillText("免费完成 10 题身心状态观察", 155, 1262);
+  context.fillStyle = "#1263b0"; context.font = "800 22px system-ui, sans-serif"; context.fillText("dogcare.cc", 155, 1305);
   const qrImage = await loadImage(await createEntryQrCode(160));
   context.drawImage(qrImage, 775, 1170, 160, 160);
 
-  context.fillStyle = "#9a7180"; context.font = "600 19px system-ui, sans-serif"; context.fillText("我助力你更好了解毛孩子，但无法替代兽医或行为专业评估", 120, 1368);
+  context.fillStyle = "#64798b"; context.font = "600 19px system-ui, sans-serif"; context.fillText("我助力你更好了解毛孩子，但无法替代兽医或行为专业评估", 120, 1368);
 
   const blob = await new Promise<Blob>((resolve, reject) => canvas.toBlob((value) => value ? resolve(value) : reject(new Error("分享图生成失败。")), "image/png"));
   return new File([blob], `${assessment?.dogName?.trim() || "狗狗"}-幸福小档案.png`, { type: "image/png" });
@@ -244,10 +240,9 @@ export default function ShareCopyCard({ allowShare, shareCopy, result, assessmen
   }
 
   return (
-    <section className="candy-card overflow-hidden rounded-[2.2rem] p-5 sm:p-7">
+    <section className="share-section">
       <div className="grid gap-6 lg:grid-cols-[.86fr_1.14fr] lg:items-center">
-        <div className="relative mx-auto flex aspect-[3/4] w-full max-w-[330px] flex-col overflow-hidden rounded-[2rem] border-4 border-white bg-gradient-to-br from-roseSoft via-white to-goldSoft p-4 shadow-candy sm:p-5">
-          <span className="absolute right-4 top-3 text-3xl">✨</span>
+        <div className="share-preview relative mx-auto flex w-full max-w-[330px] flex-col overflow-hidden">
           <p className="text-xs font-black text-rose">毛孩子幸福小档案</p>
           <div className="mt-3 flex items-center gap-3">
             <div className="h-16 w-16 shrink-0 overflow-hidden rounded-[1.25rem] border-4 border-white bg-roseSoft shadow-panel sm:h-20 sm:w-20 sm:rounded-[1.5rem]">

@@ -19,7 +19,7 @@ export default function KnowledgeLibrary() {
 
   return <main className="page-wrap">
     <header className="page-heading knowledge-heading">
-      <div><p className="eyebrow">免费照护知识库</p><h1>从狗狗的一天，找到照护的答案</h1><p>吃饭、出门、玩耍、休息。选一件眼下关心的小事，找到今天能做的一步。</p></div>
+      <div><p className="eyebrow">狗狗幸福知识库 · 免费开放</p><h1>从狗狗的一天，找到照护的答案</h1><p>吃饭、出门、玩耍、休息。选一件眼下关心的小事，找到今天能做的一步。</p></div>
     </header>
     <label className="search-field"><Search size={20} aria-hidden="true"/><input aria-label="搜索知识库" value={query} onChange={event => setQuery(event.target.value)} placeholder="试试：选粮、散步、刷牙、补充剂…" />{query ? <button type="button" onClick={() => setQuery("")} className="text-sm whitespace-nowrap">清除</button> : null}</label>
     <nav className="knowledge-categories" aria-label="照护场景">

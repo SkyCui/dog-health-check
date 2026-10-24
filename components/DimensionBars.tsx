@@ -10,7 +10,7 @@ const dimensionLabels: Record<HealthDimensionKey, string> = {
 
 function getBarColor(score: number | null) {
   if (score === null) return "bg-slate-300";
-  if (score >= 85) return "bg-[#c94f82]";
+  if (score >= 85) return "bg-leaf";
   if (score >= 70) return "bg-amber-500";
   if (score >= 55) return "bg-coral";
   return "bg-red-700";

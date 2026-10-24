@@ -112,8 +112,8 @@ export default function ConsultationChat() {
   }
   const update = (field: keyof ModelSettings, value: string) => { setSettings(current => ({ ...current, [field]: value })); setConfigured(false); };
   const feedback = (index: number, value: "helpful" | "unhelpful") => setItems(current => current.map((item, i) => i === index ? { ...item, feedback: value } : item));
-  return <main className="page-wrap">
-    <div className="page-heading"><p className="eyebrow">有依据，记得住，能跟进</p><h1>陪你把毛孩子照顾得更好</h1><p>先获得一份有来源的小建议，再结合观察持续复盘。当前专注狗狗日常照护，不提供疾病诊断。</p></div>
+  return <main className="page-wrap consult-page">
+    <header className="consult-page-heading"><div className="page-heading"><p className="eyebrow">有依据，记得住，能跟进</p><h1>AI顾问</h1><p>先用知识库找方向，再结合你家情况聊。当前专注狗狗日常照护，不提供疾病诊断。</p></div><button disabled={busy} onClick={() => { setShowSettings(true); setMode("model"); }} className="consult-connect-button"><KeyRound size={17}/>接入自己的模型 API<ArrowUpRight size={16}/></button></header>
     <div className="consult-layout"><aside className="consult-sidebar">
       <section className="care-profile"><img src={assessment?.dogPhoto || "/images/default-dog-avatar.png"} alt="当前狗狗档案"/><div><h2>{assessment?.dogName || "认识你的毛孩子"}</h2><p>{assessment ? `${assessment.breed} · ${assessment.age}` : "没有档案也可以先提问"}</p><Link href="/assessment">{assessment ? "更新幸福自查" : "建立免费档案"} <ArrowUpRight size={13}/></Link></div></section>
       <Link href="/companion" className="companion-entry"><ClipboardList size={20}/><span>陪伴记录<small>今天观察，过几天再复盘</small></span><ArrowUpRight size={16}/></Link>

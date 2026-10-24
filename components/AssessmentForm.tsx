@@ -2,6 +2,8 @@
 
 import {
   Activity,
+  ArrowLeft,
+  ArrowRight,
   Apple,
   Bone,
   ClipboardCheck,
@@ -16,8 +18,8 @@ import {
   Upload
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useMemo, useRef, useState } from "react";
-import { getSizeWeightReview, parseWeightKg } from "@/lib/assessmentProtocol";
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { getSizeWeightReview, parseWeightKg, parseAssessmentInput } from "@/lib/assessmentProtocol";
 import type {
   AssessmentInput,
   BodyCondition,
@@ -30,6 +32,8 @@ import type {
 } from "@/lib/types";
 
 const STORAGE_KEY = "dogHealthAssessment";
+const DRAFT_KEY = "dogcareAssessmentDraft";
+const AssessmentStepContext = createContext(1);
 const DEFAULT_DOG_PHOTO = "/images/default-dog-avatar.png";
 const MAX_PHOTO_BYTES = 8 * 1024 * 1024;
 const ACCEPTED_PHOTO_TYPES = ["image/jpeg", "image/png", "image/webp"];
@@ -242,11 +246,12 @@ function OptionButton({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={`min-h-12 rounded-2xl border px-4 py-3 text-left text-sm font-medium transition hover:-translate-y-0.5 hover:border-rose ${
+      aria-pressed={selected}
+      className={`assessment-option min-h-12 rounded-lg border px-4 py-3 text-left text-sm font-medium transition hover:border-rose ${
         selected ? selectedClass : "border-rose/15 bg-white/90 text-cocoa"
       } disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:translate-y-0`}
     >
-      {children}
+      <span>{children}</span><span className={`option-indicator ${selected ? "selected" : ""}`} aria-hidden="true" />
     </button>
   );
 }
@@ -262,13 +267,15 @@ function QuestionShell({
   children: React.ReactNode;
   icon: React.ReactNode;
 }) {
+  const activeStep = useContext(AssessmentStepContext);
+  const number = Number(step.match(/\d+/)?.[0]);
   return (
-    <section className="sticker-card rounded-[2rem] p-5 sm:p-6">
+    <section hidden={number !== activeStep} className="assessment-question" aria-labelledby={`question-${number}`}>
       <div className="mb-4 flex items-center gap-3">
         <div className="grid h-11 w-11 place-items-center rounded-2xl bg-roseSoft text-rose shadow-sm">{icon}</div>
         <div>
           <p className="text-sm font-semibold text-leaf">{step}</p>
-          <h2 className="text-lg font-semibold text-ink">{title}</h2>
+          <h2 id={`question-${number}`} tabIndex={-1} className="text-lg font-semibold text-ink">{title}</h2>
         </div>
       </div>
       {children}
@@ -282,6 +289,9 @@ export default function AssessmentForm() {
   const [photoError, setPhotoError] = useState("");
   const [photoBusy, setPhotoBusy] = useState(false);
   const [submitError, setSubmitError] = useState("");
+  const [step, setStep] = useState(1);
+  const [draftReady, setDraftReady] = useState(false);
+  const [draftNotice, setDraftNotice] = useState("");
   const [input, setInput] = useState<AssessmentInput>({
     dogName: "",
     dogPhoto: "",
@@ -298,6 +308,45 @@ export default function AssessmentForm() {
     mentalState: { positiveEngagement: "often", relaxation: "easy", socialConnection: "secure", distressSignals: ["none"] }
   });
 
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY);
+      if (raw) {
+        const saved = JSON.parse(raw);
+        const parsed = parseAssessmentInput({ ...saved.input, age: saved.input?.age || "未填写", breed: saved.input?.breed || "未填写" });
+        if (parsed.input && typeof saved.input.age === "string" && typeof saved.input.breed === "string") {
+          setInput({ ...parsed.input, age: saved.input.age, breed: saved.input.breed, dogPhoto: typeof saved.input.dogPhoto === "string" && saved.input.dogPhoto.startsWith("data:image/") ? saved.input.dogPhoto : "" });
+          setStep(Number.isInteger(saved.step) && saved.step >= 1 && saved.step <= 10 ? saved.step : 1);
+          setDraftNotice("已恢复上次填写的进度，仅保存在此浏览器。");
+        }
+      }
+    } catch { setDraftNotice("暂时无法恢复进度，可重新填写。"); }
+    setDraftReady(true);
+  }, []);
+
+  useEffect(() => {
+    if (!draftReady) return;
+    try { localStorage.setItem(DRAFT_KEY, JSON.stringify({ input, step })); }
+    catch { setDraftNotice("草稿保存失败，请检查浏览器空间；可移除照片后重试。"); }
+  }, [input, step, draftReady]);
+
+  useEffect(() => {
+    if (!draftReady) return;
+    document.getElementById(`question-${step}`)?.focus({ preventScroll: true });
+  }, [step, draftReady]);
+
+  function changeStep(next: number) {
+    setSubmitError("");
+    if (next > step) {
+      if (step === 1 && (!input.age.trim() || !input.breed.trim())) { setSubmitError("请填写年龄和品种，混血犬可填写串串。"); return; }
+      if (step === 1 && input.weight?.trim() && parseWeightKg(input.weight) === null) { setSubmitError("请填写大于0的体重，单位为kg；也可以留空。"); return; }
+      if (step === 3 && !input.foodTypes.length) { setSubmitError("请至少选择一种食物。"); return; }
+      if ((step === 5 && !input.recentSignals.length) || (step === 6 && !input.homeEnvironment.length) || (step === 10 && !input.mentalState.distressSignals.length)) { setSubmitError("请至少选择一个最接近实际情况的答案。"); return; }
+    }
+    setStep(Math.max(1, Math.min(10, next)));
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
   const canSubmit = useMemo(() => {
     return input.age.trim() && input.breed.trim() && input.foodTypes.length > 0;
   }, [input]);
@@ -308,11 +357,15 @@ export default function AssessmentForm() {
 
   function submitAssessment(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (step < 10) { changeStep(step + 1); return; }
     if (!canSubmit) return;
 
     setSubmitError("");
+    const parsed = parseAssessmentInput(input);
+    if (!parsed.input) { setSubmitError("请检查答案是否完整：" + parsed.errors.join("；")); return; }
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(input));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...parsed.input, dogPhoto: input.dogPhoto }));
+      localStorage.removeItem(DRAFT_KEY);
       router.push("/result");
     } catch {
       setSubmitError("浏览器存储空间不足。请移除照片或换一张更小的照片后再生成。");
@@ -336,8 +389,11 @@ export default function AssessmentForm() {
   }
 
   return (
-    <form onSubmit={submitAssessment} className="space-y-5">
+    <AssessmentStepContext.Provider value={step}><form noValidate onSubmit={submitAssessment} className="assessment-form">
+      <div className="assessment-progress"><div><span>{step <= 6 ? "身体与日常习惯" : "最近两周的精神状态"}</span><span>{String(step).padStart(2, "0")} / 10</span></div><div role="progressbar" aria-label="自查进度" aria-valuenow={step} aria-valuemin={1} aria-valuemax={10}><span style={{ width: `${step * 10}%` }}/></div></div>
+      {draftNotice ? <p className="draft-notice" role="status">{draftNotice}</p> : null}
       <QuestionShell step="问题 1 / 10" title="基础信息" icon={<PawPrint size={20} aria-hidden="true" />}>
+        <p className="mb-5 text-sm leading-7 text-cocoa/70">先认识一下你家狗狗。前六题看身体与习惯，后四题看最近两周的行为变化。不替代专业评估。</p>
         <div className="mb-5 grid gap-4 rounded-[1.6rem] bg-gradient-to-br from-roseSoft to-goldSoft/70 p-4 sm:grid-cols-[9rem_1fr] sm:items-center">
           <div className="relative mx-auto h-32 w-32 overflow-hidden rounded-[2rem] border-4 border-white bg-white shadow-panel">
             {input.dogPhoto ? (
@@ -563,7 +619,7 @@ export default function AssessmentForm() {
         </div>
       </QuestionShell>
 
-      <div className="rounded-[2rem] border border-rose/20 bg-white/70 px-5 py-4 text-sm leading-6 text-cocoa/75">
+      <div hidden={step < 7} className="mental-observation-note">
         下面四题请观察最近两周，并与它平时的状态相比。安静、独处或不爱社交本身不代表不幸福。
       </div>
 
@@ -618,17 +674,20 @@ export default function AssessmentForm() {
         </div>
       </QuestionShell>
 
-      <div className="sticky bottom-4 z-10 flex justify-end">
+      {(step === 5 && input.recentSignals.some(signal => recentUrgentOptions.some(option => option.value === signal))) || (step === 10 && input.mentalState.distressSignals.some(signal => signal === "self_injury" || signal === "sudden_behavior_change")) ? <p className="assessment-safety" role="alert">你选择了需要优先确认的危险信号。如果正在发生，请立即联系兽医，不必等待完成自查。</p> : null}
+      <div className="assessment-controls">
         {submitError ? <p role="alert" className="mr-3 self-center rounded-2xl bg-red-50 px-4 py-2 text-sm font-bold text-red-700">{submitError}</p> : null}
+        <div className="assessment-control-row"><button type="button" onClick={() => changeStep(step - 1)} disabled={step === 1} className="assessment-back"><ArrowLeft size={17}/>上一步</button>
         <button
-          type="submit"
-          disabled={!canSubmit}
-          className="candy-button inline-flex items-center gap-2 rounded-full px-6 py-3 text-base font-black text-white transition hover:scale-[1.02] disabled:cursor-not-allowed disabled:grayscale"
+          key={step === 10 ? "generate-result" : "continue-assessment"}
+          type={step === 10 ? "submit" : "button"}
+          onClick={step < 10 ? () => changeStep(step + 1) : undefined}
+          disabled={photoBusy || (step === 10 && !canSubmit)}
+          className="sunny-primary"
         >
-          <ClipboardCheck size={20} aria-hidden="true" />
-          生成狗狗幸福卡
-        </button>
+          {step === 10 ? <><ClipboardCheck size={20} aria-hidden="true"/>生成狗狗幸福卡</> : <>下一步<ArrowRight size={18}/></>}
+        </button></div><p>填写进度仅保存在此浏览器 · 不上传照片</p>
       </div>
-    </form>
+    </form></AssessmentStepContext.Provider>
   );
 }

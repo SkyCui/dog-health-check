@@ -3,8 +3,8 @@ import "./globals.css";
 import SiteNav from "@/components/SiteNav";
 
 export const metadata: Metadata = {
-  title: "你的狗狗幸福吗？",
-  description: "从身体健康与精神状态出发的循证轻量自查 Beta。"
+  title: "你的毛孩子幸福吗？ | dogcare",
+  description: "从吃饭、散步到安心休息，一起读懂毛孩子。免费狗狗幸福自查、照护知识库与陪伴记录。"
 };
 
 export default function RootLayout({
