@@ -7,7 +7,7 @@ import { BookOpen, ClipboardList, HeartPulse, MessageCircle } from "lucide-react
 const links = [
   { href: "/assessment", label: "幸福自查", short: "幸福自查", icon: HeartPulse },
   { href: "/knowledge", label: "狗狗幸福知识库", short: "知识库", icon: BookOpen },
-  { href: "/consult", label: "AI顾问", short: "AI顾问", icon: MessageCircle },
+  { href: "/consult", label: "陪伴专家", short: "陪伴专家", icon: MessageCircle },
   { href: "/companion", label: "陪伴记录", short: "陪伴记录", icon: ClipboardList }
 ];
 

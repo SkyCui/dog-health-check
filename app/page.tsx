@@ -5,7 +5,7 @@ import ReturnVisit from "@/components/ReturnVisit";
 const paths = [
   { icon: HeartPulse, href: "/assessment", title: "幸福自查", text: "观察身体与精神状态，找到今天的一步行动。" },
   { icon: BookOpen, href: "/knowledge", title: "狗狗幸福知识库", text: "从吃饭、出门到休息，找到有依据的照护建议。" },
-  { icon: MessageCircle, href: "/consult", title: "AI顾问", text: "先获得知识库建议，再用自己的模型继续聊。" },
+  { icon: MessageCircle, href: "/consult", title: "陪伴专家", text: "先获得知识库建议，再用自己的模型继续聊。" },
   { icon: ClipboardList, href: "/companion", title: "陪伴记录", text: "记下今天的观察，下次多懂它一点。" }
 ];
 

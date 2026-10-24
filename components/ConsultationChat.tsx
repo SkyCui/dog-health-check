@@ -45,7 +45,7 @@ export default function ConsultationChat() {
       const saved = localStorage.getItem("dogcareModelPreferences");
       if (saved) { const value = JSON.parse(saved); setSettings({ baseUrl: typeof value.baseUrl === "string" ? value.baseUrl : "", model: typeof value.model === "string" ? value.model : "", apiKey: "" }); setRemember(true); }
       const prompt = new URLSearchParams(window.location.search).get("prompt");
-      if (prompt === "review") setQuestion("帮我复盘最近的照护记录");
+      if (prompt === "review") setQuestion("帮我复盘最近的陪伴记录");
       else if (prompt) setQuestion(prompt.slice(0, 300));
     } catch { setStorageError("本机资料暂时无法读取；仍可查询知识库。"); }
     setReady(true);
@@ -124,7 +124,7 @@ export default function ConsultationChat() {
   const update = (field: keyof ModelSettings, value: string) => { setSettings(current => ({ ...current, [field]: value })); setConfigured(false); };
   const feedback = (index: number, value: "helpful" | "unhelpful") => setItems(current => current.map((item, i) => i === index ? { ...item, feedback: value } : item));
   return <main className="page-wrap consult-page">
-    <header className="consult-page-heading"><div className="page-heading"><p className="eyebrow">有依据，记得住，能跟进</p><h1>AI顾问</h1><p>先用知识库找方向，再结合你家情况聊。当前专注狗狗日常照护，不提供疾病诊断。</p></div><button disabled={busy} onClick={openModelSettings} aria-controls="model-api-settings" aria-expanded={showSettings} className="consult-connect-button"><KeyRound size={17}/>接入自己的模型 API<ArrowUpRight size={16}/></button></header>
+    <header className="consult-page-heading"><div className="page-heading"><p className="eyebrow">有依据，记得住，能跟进</p><h1>陪伴专家</h1><p>用 AI 和知识库陪你照顾狗狗，结合你家情况继续聊。不是线上兽医或真人专家服务，不提供疾病诊断。</p></div><button disabled={busy} onClick={openModelSettings} aria-controls="model-api-settings" aria-expanded={showSettings} className="consult-connect-button"><KeyRound size={17}/>接入自己的模型 API<ArrowUpRight size={16}/></button></header>
     <div className="consult-layout"><aside className="consult-sidebar">
       <section className="care-profile"><img src={assessment?.dogPhoto || "/images/default-dog-avatar.png"} alt="当前狗狗档案"/><div><h2>{assessment?.dogName || "认识你的毛孩子"}</h2><p>{assessment ? `${assessment.breed} · ${assessment.age}` : "没有档案也可以先提问"}</p><Link href="/assessment">{assessment ? "更新幸福自查" : "建立免费档案"} <ArrowUpRight size={13}/></Link></div></section>
       <Link href="/companion" className="companion-entry"><ClipboardList size={20}/><span>陪伴记录<small>今天观察，过几天再复盘</small></span><ArrowUpRight size={16}/></Link>
@@ -137,13 +137,13 @@ export default function ConsultationChat() {
         <p className="text-xs leading-5 text-cocoa/60">支持允许浏览器跨域访问的 Chat Completions 接口。密钥只发送给所填服务商，刷新后清除。建议使用低额度专用密钥。</p>
         <label className="check-label"><input type="checkbox" checked={remember} onChange={e => setRemember(e.target.checked)}/>记住地址与模型名称，不保存密钥</label>
         <label className="check-label"><input type="checkbox" checked={consent} onChange={e => { setConsent(e.target.checked); setConfigured(false); }}/>我同意将问题、最近对话及测评文字资料发送至上述服务商；照片不会发送。</label>
-        <label className="check-label"><input type="checkbox" checked={shareRecords} onChange={e => setShareRecords(e.target.checked)}/>同时向模型提供最近 7 天的照护记录（可选）</label>
+        <label className="check-label"><input type="checkbox" checked={shareRecords} onChange={e => setShareRecords(e.target.checked)}/>同时向模型提供最近 7 天的陪伴记录（可选）</label>
         <button disabled={busy} onClick={saveSettings} className="primary-link w-full justify-center">使用此配置</button>
       </div> : !configured ? <button onClick={openModelSettings} className="mt-4 font-bold text-rose">接入 API，启动 AI 助手 →</button> : null}
       {configured ? <button onClick={() => { setSettings(blank); setConfigured(false); setMode("knowledge"); localStorage.removeItem("dogcareModelPreferences"); }} disabled={busy} className="mt-4 inline-flex items-center gap-2 text-sm text-cocoa/60"><Trash2 size={15}/>清除模型配置</button> : null}</section>
       <section className="py-5"><p className="eyebrow">平台模型 · 待更新</p><p className="mt-2 text-sm leading-6 text-cocoa/70">暂时没有密钥？可以先用免费知识库建议。需要平台模型时，私信或进入群聊回复「需要Token」。</p></section>
       <Link href="/knowledge" className="inline-flex items-center gap-2 font-bold text-rose"><BookOpen size={18}/>浏览全部知识与来源</Link>
-    </aside><section className="chat-workspace" aria-label="养狗顾问对话">
+    </aside><section className="chat-workspace" aria-label="陪伴专家对话">
       <div className="chat-mode" role="group" aria-label="选择回答方式"><button disabled={busy} aria-pressed={mode === "knowledge"} onClick={() => setMode("knowledge")}><BookOpen size={16}/>免费知识库建议</button><button disabled={busy} aria-pressed={mode === "model"} onClick={() => { if (!configured) openModelSettings(); else setMode("model"); }}><KeyRound size={16}/>我的模型细化</button></div>
       <div className="chat-heading"><span className="status-dot"/>{mode === "knowledge" ? "按知识条目回答，无模型费用" : configured ? "已配置 · 发送后连接自己的模型" : "先填写 API 配置，或切回知识库建议"}</div>
       <div className="chat-messages" aria-live="polite">{!ready ? <p>正在读取本机资料…</p> : !items.length ? <div className="chat-empty"><img src="/images/default-dog-avatar.png" alt="白色雪纳瑞"/><h2>今天最想改善哪件小事？</h2><p>{assessment ? `已准备好${assessment.dogName || "毛孩子"}的自查资料。` : "可以直接提问，也可以先建档，让建议更贴近你家情况。"}先从一个具体问题开始。</p><div className="prompt-grid">{policy.starterQuestions.map(text => <button key={text} onClick={() => submit(text)}>{text}</button>)}</div></div> : items.map((item, index) => <article key={index} className={"chat-message " + item.role + (item.reply?.route === "safety" ? " safety-message" : "")}>
