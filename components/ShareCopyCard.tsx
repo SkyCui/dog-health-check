@@ -3,7 +3,7 @@
 import { BookOpen, Check, Copy, Download, Image as ImageIcon, MessageCircle, Radio, RotateCcw, Sparkles } from "lucide-react";
 import Link from "next/link";
 import QRCode from "qrcode";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { AssessmentInput, GeneratedResult } from "@/lib/types";
 import { siteCredits } from "@/lib/siteCredits";
 
@@ -165,8 +165,42 @@ export default function ShareCopyCard({ allowShare, shareCopy, result, assessmen
   const [busyPlatform, setBusyPlatform] = useState<SharePlatform | "download" | null>(null);
   const [status, setStatus] = useState("");
   const [entryQrCode, setEntryQrCode] = useState("");
+  const [preparedFile, setPreparedFile] = useState<File | null>(null);
+  const [savePreview, setSavePreview] = useState("");
+  const [isMobile, setIsMobile] = useState(false);
+  const saveDialog = useRef<HTMLDialogElement>(null);
   const insufficient = result.status === "insufficient";
   const displayScore = (score: number | null) => score === null ? "--" : String(score);
+
+  useEffect(() => {
+    setIsMobile(/Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+      (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1));
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+    setPreparedFile(null);
+    // Prepare before the tap so image rendering cannot expire native-share activation.
+    if (allowShare) createShareImageFile(result, assessment).then(file => {
+      if (active) setPreparedFile(file);
+    }).catch(() => undefined);
+    return () => { active = false; };
+  }, [allowShare, result, assessment]);
+
+  useEffect(() => {
+    if (savePreview) saveDialog.current?.showModal();
+  }, [savePreview]);
+
+  async function showSavePreview(file: File) {
+    const dataUrl = await new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result));
+      reader.onerror = () => reject(new Error("图片读取失败"));
+      reader.readAsDataURL(file);
+    });
+    setSavePreview(dataUrl);
+    setStatus("请长按图片，选择存储图像或保存到相册。若没有该选项，请在系统浏览器中打开本页。");
+  }
 
   useEffect(() => {
     let active = true;
@@ -187,9 +221,24 @@ export default function ShareCopyCard({ allowShare, shareCopy, result, assessmen
   async function downloadImage() {
     setBusyPlatform("download"); setStatus("");
     try {
-      const file = await createShareImageFile(result, assessment);
-      downloadFile(file);
-      setStatus("分享图已保存到下载目录。");
+      const file = preparedFile || await createShareImageFile(result, assessment);
+      if (isMobile) {
+        if (preparedFile && navigator.share && navigator.canShare?.({ files: [file] })) {
+          try {
+            setStatus("请在系统菜单中选择存储图像或保存到相册；没有该选项时可取消后长按图片保存。");
+            await navigator.share({ files: [file] });
+            setStatus("系统图片菜单已关闭。如未存入相册，可长按下方原图保存。");
+          } catch (error) {
+            if (!(error instanceof DOMException && error.name === "AbortError")) {
+              setStatus("请长按原图，选择存储图像或保存到相册。");
+            }
+          }
+        }
+        await showSavePreview(file);
+      } else {
+        downloadFile(file);
+        setStatus("已发起 PNG 下载，请在浏览器下载列表中查看。");
+      }
     } catch {
       setStatus("图片生成失败了，请换个浏览器或重新上传照片后再试。");
     } finally {
@@ -208,7 +257,7 @@ export default function ShareCopyCard({ allowShare, shareCopy, result, assessmen
       : null;
     setBusyPlatform(platform); setStatus("");
     try {
-      const file = await createShareImageFile(result, assessment);
+      const file = preparedFile || await createShareImageFile(result, assessment);
 
       if (supportsNativeFileShare) {
         try {
@@ -224,15 +273,16 @@ export default function ShareCopyCard({ allowShare, shareCopy, result, assessmen
       }
 
       await copyText();
-      downloadFile(file);
+      if (isMobile) await showSavePreview(file);
+      else downloadFile(file);
       if (platform === "weibo") {
         const query = new URLSearchParams({ url: PUBLIC_SHARE_URL, title: shareCopy });
         const weiboUrl = `https://service.weibo.com/share/share.php?${query.toString()}`;
         if (weiboWindow) weiboWindow.location.href = weiboUrl;
         else window.open(weiboUrl, "_blank", "noopener,noreferrer");
-        setStatus("分享图已保存、文案已复制，并已打开微博发布页。");
+        setStatus(isMobile ? "文案已复制，并已打开微博发布页；请先长按原图存入相册，再添加图片。" : "已发起图片下载、文案已复制，并已打开微博发布页。");
       } else {
-        setStatus(`分享图已保存、文案已复制，请在${platformName}发布页选择图片。`);
+        setStatus(isMobile ? `文案已复制，请长按原图存入相册，再到${platformName}选择图片。` : `已发起图片下载、文案已复制，请在${platformName}发布页选择图片。`);
       }
     } catch {
       weiboWindow?.close();
@@ -276,7 +326,7 @@ export default function ShareCopyCard({ allowShare, shareCopy, result, assessmen
               <button disabled={busyPlatform !== null} onClick={() => shareToPlatform("wechat")} className="inline-flex items-center gap-2 rounded-full bg-[#1aad19] px-5 py-3 text-sm font-black text-white shadow-panel disabled:opacity-60"><MessageCircle size={18} />{busyPlatform === "wechat" ? "准备中…" : "朋友圈"}</button>
               <button disabled={busyPlatform !== null} onClick={() => shareToPlatform("xiaohongshu")} className="inline-flex items-center gap-2 rounded-full bg-[#ff2442] px-5 py-3 text-sm font-black text-white shadow-panel disabled:opacity-60"><BookOpen size={18} />{busyPlatform === "xiaohongshu" ? "准备中…" : "小红书"}</button>
               <button disabled={busyPlatform !== null} onClick={() => shareToPlatform("weibo")} className="inline-flex items-center gap-2 rounded-full bg-[#ff8200] px-5 py-3 text-sm font-black text-white shadow-panel disabled:opacity-60"><Radio size={18} />{busyPlatform === "weibo" ? "准备中…" : "微博"}</button>
-              <button disabled={busyPlatform !== null} onClick={downloadImage} className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-black text-rose shadow-panel ring-1 ring-rose/20 disabled:opacity-60"><Download size={18} />{busyPlatform === "download" ? "生成中…" : "保存分享图"}</button>
+              <button disabled={busyPlatform !== null} onClick={downloadImage} className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-black text-rose shadow-panel ring-1 ring-rose/20 disabled:opacity-60"><Download size={18} />{busyPlatform === "download" ? "准备中…" : isMobile ? "保存到相册" : "保存分享图"}</button>
               <button onClick={handleCopy} className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-black text-cocoa shadow-panel ring-1 ring-rose/10">{copied ? <Check size={18} /> : <Copy size={18} />}{copied ? "已复制" : "复制文案"}</button>
             </> : null}
             <Link href="/assessment" className="inline-flex items-center gap-2 rounded-full px-4 py-3 text-sm font-black text-cocoa/70"><RotateCcw size={18} />重新测一次</Link>
@@ -285,6 +335,14 @@ export default function ShareCopyCard({ allowShare, shareCopy, result, assessmen
           <p className="mt-4 flex items-center gap-2 text-xs text-cocoa/45"><ImageIcon size={15} />图片仅在你的设备上生成，不会上传服务器。</p>
         </div>
       </div>
+      <dialog ref={saveDialog} onClose={() => setSavePreview("")} aria-labelledby="save-image-title" className="m-auto max-h-[90dvh] w-[calc(100%-24px)] max-w-md overflow-auto rounded-lg bg-white p-4 text-ink backdrop:bg-black/60">
+        <div className="mb-3 flex items-center justify-between gap-3">
+          <h3 id="save-image-title" className="font-bold">保存幸福卡</h3>
+          <button type="button" onClick={() => saveDialog.current?.close()} className="px-3 py-2">关闭</button>
+        </div>
+        <p className="mb-3 text-sm leading-6">长按下方图片，选择“存储图像”或“保存到相册”。若没有该选项，请用 Safari 或系统浏览器打开本页后再试。</p>
+        {savePreview ? <img src={savePreview} alt="可长按保存到相册的完整幸福卡" className="h-auto w-full" style={{ WebkitTouchCallout: "default", userSelect: "auto" }} /> : null}
+      </dialog>
     </section>
   );
 }
