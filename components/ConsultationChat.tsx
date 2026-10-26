@@ -141,7 +141,7 @@ export default function ConsultationChat() {
         <button disabled={busy} onClick={saveSettings} className="primary-link w-full justify-center">使用此配置</button>
       </div> : !configured ? <button onClick={openModelSettings} className="mt-4 font-bold text-rose">接入 API，启动 AI 助手 →</button> : null}
       {configured ? <button onClick={() => { setSettings(blank); setConfigured(false); setMode("knowledge"); localStorage.removeItem("dogcareModelPreferences"); }} disabled={busy} className="mt-4 inline-flex items-center gap-2 text-sm text-cocoa/60"><Trash2 size={15}/>清除模型配置</button> : null}</section>
-      <section className="py-5"><p className="eyebrow">平台模型 · 待更新</p><p className="mt-2 text-sm leading-6 text-cocoa/70">暂时没有密钥？可以先用免费知识库建议。需要平台模型时，私信或进入群聊回复「需要Token」。</p></section>
+      <section className="py-5"><p className="eyebrow">平台模型 · 待更新</p><p className="mt-2 text-sm leading-6 text-cocoa/70">暂时没有密钥？可以先用免费知识库建议。希望接入我的AI助手或模型，可在小红书搜索@Friday（ID：friday_ai），私信我说「需要token」</p></section>
       <Link href="/knowledge" className="inline-flex items-center gap-2 font-bold text-rose"><BookOpen size={18}/>浏览全部知识与来源</Link>
     </aside><section className="chat-workspace" aria-label="陪伴专家对话">
       <div className="chat-mode" role="group" aria-label="选择回答方式"><button disabled={busy} aria-pressed={mode === "knowledge"} onClick={() => setMode("knowledge")}><BookOpen size={16}/>免费知识库建议</button><button disabled={busy} aria-pressed={mode === "model"} onClick={() => { if (!configured) openModelSettings(); else setMode("model"); }}><KeyRound size={16}/>我的模型细化</button></div>
