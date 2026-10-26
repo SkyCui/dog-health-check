@@ -5,6 +5,7 @@ import Link from "next/link";
 import QRCode from "qrcode";
 import { useEffect, useState } from "react";
 import type { AssessmentInput, GeneratedResult } from "@/lib/types";
+import { siteCredits } from "@/lib/siteCredits";
 
 type Props = {
   allowShare: boolean;
@@ -97,8 +98,10 @@ async function createShareImageFile(result: GeneratedResult, assessment: Assessm
   context.strokeStyle = "#c5d9eb"; context.lineWidth = 4; context.stroke();
 
   context.fillStyle = "#1263b0"; context.font = "800 32px system-ui, sans-serif"; context.fillText("你的毛孩子幸福吗？", 120, 145);
+  context.fillStyle = "#64798b"; context.font = "500 18px system-ui, sans-serif";
+  wrappedText(context, `陪伴发起 ${siteCredits.companion} · 工具开发 ${siteCredits.developer}`, 120, 180, 840, 22, 1);
   context.fillStyle = "#18334b"; context.font = "900 58px system-ui, sans-serif";
-  wrappedText(context, `${assessment?.dogName?.trim() || "我家狗狗"}的今日幸福卡`, 120, 230, 830, 64, 1);
+  wrappedText(context, `${assessment?.dogName?.trim() || "我家狗狗"}的今日幸福卡`, 120, 250, 830, 64, 1);
 
   let photoDrawn = false;
   try {
@@ -244,6 +247,7 @@ export default function ShareCopyCard({ allowShare, shareCopy, result, assessmen
       <div className="grid gap-6 lg:grid-cols-[.86fr_1.14fr] lg:items-center">
         <div className="share-preview relative mx-auto flex w-full max-w-[330px] flex-col overflow-hidden">
           <p className="text-xs font-black text-rose">毛孩子幸福小档案</p>
+          <p className="mt-2 text-[10px] leading-5 text-cocoa/70">陪伴发起：{siteCredits.companion}<br/>工具开发：{siteCredits.developer}</p>
           <div className="mt-3 flex items-center gap-3">
             <div className="h-16 w-16 shrink-0 overflow-hidden rounded-[1.25rem] border-4 border-white bg-roseSoft shadow-panel sm:h-20 sm:w-20 sm:rounded-[1.5rem]">
               <img

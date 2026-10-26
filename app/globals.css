@@ -199,6 +199,7 @@ button:disabled { cursor: not-allowed; opacity: .5; }
 .site-nav nav a svg { display:none; }
 .brand-mobile,.mobile-nav-caption,.nav-short { display:none; }
 .site-footer { color:#64798b; }
+.site-credit { overflow-wrap:anywhere; margin-top:5px; font-size:11px; }
 .primary-link { background:#1263b0; color:white; min-height:46px; border-radius:5px; }
 .primary-link:hover { background:#074d8c; }
 .candy-button { background:#ffe64d; color:#18334b; box-shadow:none; }

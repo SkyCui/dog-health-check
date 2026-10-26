@@ -4,6 +4,7 @@ import DashboardCard from "@/components/DashboardCard";
 import DimensionBars from "@/components/DimensionBars";
 import MentalDimensionBars from "@/components/MentalDimensionBars";
 import ScoreRing from "@/components/ScoreRing";
+import { siteCredits } from "@/lib/siteCredits";
 import ShareCopyCard from "@/components/ShareCopyCard";
 import VetReminderCard from "@/components/VetReminderCard";
 import { generateResult } from "@/lib/generateResult";
@@ -46,5 +47,6 @@ export default function ResultPage() {
     <ShareCopyCard allowShare={result.allowShare} shareCopy={result.shareCopy} result={result} assessment={assessment}/>
     <section className="section-band"><div><p className="eyebrow">明天再多懂它一点</p><h2 className="mt-2">把今天记下来。</h2><p className="mt-3 text-sm leading-7 text-cocoa/70">仅保存在本机，可导出备份，并主动添加复盘提醒。</p></div><Link href="/companion" className="primary-link"><ClipboardList size={18}/>陪伴记录</Link></section>
     <p className="mt-8 text-xs leading-6 text-cocoa/65">我助力你更好了解毛孩子，但无法替代兽医或行为专业评估。</p>
+    <p className="mt-3 text-xs leading-6 text-cocoa/65">陪伴发起：{siteCredits.companion}</p>
   </main>;
 }
