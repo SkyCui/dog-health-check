@@ -217,6 +217,9 @@ button:disabled { cursor: not-allowed; opacity: .5; }
 .sunny-hero h1 { font-size:58px; line-height:1.25; font-weight:850; margin-top:22px; max-width:600px; }
 .sunny-hero-subtitle { font-size:18px; line-height:1.9; margin-top:24px; }
 .sunny-hero-actions { display:flex; gap:12px; margin-top:28px; }
+.sunny-expert-link { display:inline-flex; align-items:center; gap:8px; min-height:44px; margin-top:10px; padding:8px 0; color:white; font-size:14px; font-weight:700; text-decoration:underline; text-underline-offset:5px; }
+.sunny-expert-link:hover { color:#ffe64d; }
+.sunny-expert-link:focus-visible { outline:2px solid #ffe64d; outline-offset:4px; }
 .home-below { max-width:1200px; padding:30px 24px 0; margin:auto; }
 .home-entries-caption { font-size:13px; line-height:1.8; color:#64798b; margin-bottom:12px; }
 .home-entries-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:28px; }

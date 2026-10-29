@@ -17,6 +17,7 @@ export default function HomePage() {
         <h1 id="home-title">你的毛孩子<br/>幸福吗？</h1>
         <p className="sunny-hero-subtitle">从吃饭、散步到安心休息，<br/>一起读懂毛孩子</p>
         <div className="sunny-hero-actions"><Link className="sunny-primary" href="/assessment">幸福自查 <ArrowRight size={18}/></Link><Link className="sunny-secondary" href="/knowledge">狗狗幸福指南 <ArrowUpRight size={17}/></Link></div>
+        <Link className="sunny-expert-link" href="/consult"><MessageCircle size={17}/>直接问AI专家 <ArrowUpRight size={16}/></Link>
       </div>
     </section>
     <div className="home-below">
