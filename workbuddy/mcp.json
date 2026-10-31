@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "dogcare-companion": {
+      "type": "streamableHttp",
+      "url": "https://dogcare.cc/api/mcp",
+      "timeout": 15000
+    }
+  }
+}

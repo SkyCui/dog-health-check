@@ -12,14 +12,18 @@
     "test:commerce": "node scripts/test-byok.mjs",
     "test:byok": "node scripts/test-byok.mjs",
     "test:knowledge": "node scripts/validate-knowledge.mjs",
-    "test:red-skill": "node scripts/validate-red-skill.mjs"
+    "test:red-skill": "node scripts/validate-red-skill.mjs",
+    "package:workbuddy": "node scripts/package-workbuddy.mjs",
+    "test:workbuddy": "node scripts/test-workbuddy.mjs"
   },
   "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2",
     "lucide-react": "^0.468.0",
     "next": "^16.4.2",
     "qrcode": "^1.5.4",
     "react": "^19.3.1",
-    "react-dom": "^19.3.1"
+    "react-dom": "^19.3.1",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@types/node": "^20.17.10",

@@ -1,0 +1,12 @@
+{
+  "name": "毛孩子幸福陪伴",
+  "name_en": "Dogcare Companion",
+  "description": "查询带来源的犬只照护知识、复盘主动提供的观察记录、完成幸福自查。测试版不保存云档案，不提供诊断。",
+  "description_en": "Source-backed dog care guidance, observation review and rule-based assessment. No cloud memory or diagnosis in this beta.",
+  "source": "dogcare-companion",
+  "type": "mcp",
+  "version": "0.1.0",
+  "minWorkbuddyVersion": "4.24.0",
+  "examples_zh": ["零食怎么控制更容易坚持？", "复盘我主动提供的这周狗狗观察记录", "我想做一次狗狗幸福自查"],
+  "examples_en": ["Find source-backed dog treat guidance", "Review the dog observations I provide", "Help me complete a dog happiness self-check"]
+}
