@@ -12,4 +12,7 @@ mkdirSync(path.join(root, "public/downloads"), { recursive: true });
 const output = path.join(root, "public/downloads/dogcare-workbuddy.zip");
 rmSync(output, { force: true });
 execFileSync("zip", ["-X", "-q", "-r", output, "connector-meta.json", "mcp.json", "icon.png", "skills", "README.md"], { cwd: bundle });
+const skillOutput = path.join(root, "public/downloads/dogcare-companion-skill.zip");
+rmSync(skillOutput, { force: true });
+execFileSync("zip", ["-X", "-q", "-r", skillOutput, "dogcare-companion"], { cwd: path.join(bundle, "skills") });
 console.log("Created public/downloads/dogcare-workbuddy.zip (no keys, records or private books).");
